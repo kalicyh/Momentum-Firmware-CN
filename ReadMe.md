@@ -4,7 +4,7 @@
 </p>
 
 <h2 align="center">
-  <a href="#安装方法:">安装</a> | <a href="#变更列表：">功能</a> | <a href="https://discord.gg/momentum">Discord</a>
+  <a href="#%E5%AE%89%E8%A3%85%E6%96%B9%E6%B3%95">安装</a> | <a href="#%E5%8F%98%E6%9B%B4%E5%88%97%E8%A1%A8">功能</a> | <a href="https://discord.gg/momentum">Discord</a>
 </h2>
 
 本项目基于`Momentum-Firmware`，添加个人所需的定制化需求。
