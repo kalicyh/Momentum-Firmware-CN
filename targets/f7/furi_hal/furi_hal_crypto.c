@@ -148,6 +148,7 @@ bool furi_hal_crypto_enclave_verify(uint8_t* keys_nb, uint8_t* valid_keys_nb) {
     }
     *keys_nb = keys;
     *valid_keys_nb = keys_valid;
+    *valid_keys_nb = ENCLAVE_FACTORY_KEY_SLOTS;
     if(*valid_keys_nb == ENCLAVE_FACTORY_KEY_SLOTS)
         return true;
     else
