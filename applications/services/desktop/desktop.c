@@ -16,6 +16,8 @@
 
 #define TAG "Desktop"
 
+extern const uint8_t kalicyh[1031];
+
 static void desktop_auto_lock_arm(Desktop*);
 static void desktop_auto_lock_inhibit(Desktop*);
 static void desktop_start_auto_lock_timer(Desktop*);
@@ -253,6 +255,7 @@ static void desktop_init_settings(Desktop* desktop) {
     desktop_keybinds_migrate(desktop);
     desktop_settings_load(&desktop->settings);
     desktop_apply_settings(desktop);
+    canvas_set_custom_u8g2_font(canvas, kalicyh);
 }
 
 static Desktop* desktop_alloc(void) {
