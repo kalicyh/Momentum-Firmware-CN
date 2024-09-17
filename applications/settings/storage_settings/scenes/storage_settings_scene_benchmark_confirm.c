@@ -15,21 +15,21 @@ void storage_settings_scene_benchmark_confirm_on_enter(void* context) {
 
     if(sd_status == FSE_NOT_READY) {
         dialog_ex_set_icon(dialog_ex, 83, 22, &I_WarningDolphinFlip_45x42);
-        dialog_ex_set_header(dialog_ex, "SD卡未挂载", 64, 3, AlignCenter, AlignTop);
+        dialog_ex_set_header(dialog_ex, "SD Card Not Mounted", 64, 3, AlignCenter, AlignTop);
         dialog_ex_set_text(
-            dialog_ex, "请尝试重新插入\n或格式化SD卡。", 3, 19, AlignLeft, AlignTop);
-        dialog_ex_set_center_button_text(dialog_ex, "确定");
+            dialog_ex, "Try to reinsert\nor format SD\ncard.", 3, 19, AlignLeft, AlignTop);
+        dialog_ex_set_center_button_text(dialog_ex, "Ok");
     } else {
-        dialog_ex_set_header(dialog_ex, "对SD卡进行基准测试？", 64, 0, AlignCenter, AlignTop);
+        dialog_ex_set_header(dialog_ex, "Benchmark SD Card?", 64, 0, AlignCenter, AlignTop);
         dialog_ex_set_text(
             dialog_ex,
-            "SD卡将在SPI模式下测试。\n了解更多信息：\nr.flipper.net/sd_test",
+            "SD will be tested in SPI\nmode. Learn more:\nr.flipper.net/sd_test",
             0,
             12,
             AlignLeft,
             AlignTop);
         dialog_ex_set_icon(dialog_ex, 103, 12, &I_qr_benchmark_25x25);
-        dialog_ex_set_left_button_text(dialog_ex, "取消");
+        dialog_ex_set_left_button_text(dialog_ex, "Cancel");
         dialog_ex_set_right_button_text(dialog_ex, "基准测试");
     }
 

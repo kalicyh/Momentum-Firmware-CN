@@ -41,7 +41,7 @@ void desktop_settings_scene_pin_error_on_enter(void* context) {
         furi_crash();
     }
     desktop_view_pin_input_set_label_secondary(app->pin_input_view, 0, 8, NULL);
-    desktop_view_pin_input_set_label_button(app->pin_input_view, "重试");
+    desktop_view_pin_input_set_label_button(app->pin_input_view, "Retry");
     desktop_view_pin_input_lock_input(app->pin_input_view);
     desktop_view_pin_input_set_pin(app->pin_input_view, &app->pincode_buffer);
 

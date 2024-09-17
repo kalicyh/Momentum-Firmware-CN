@@ -62,5 +62,38 @@ class ElfManifestV1:
 ## 目前字库内容
 
 ```
-心情最高等级关闭设备开启文件夹在前显示隐藏内部标签收超时默认选择资产包加载更新清单检查写入闪存验证无线固卸安装核正忙项字节份配置恢复理目录解压源动画面重中错误报告待卡取消对所有之的将被除完成蓝牙损坏模式只要这个我绝不会因为你陪而生气禁用返回保持主应外打多操作移快捷键上下右左按桌您改丢失长类型确定输当码已匹试到箭头激活请记住或来秒分钟自锁间乐一步准使符号忘能通过整阅读档如何般未知监听比度背光亮音量匿震儿电池机升需进行维护可助于决些问题效信息闲好吃充哎呀得耗满限制休眠数据基测挂尝插格化了擦出厂储和次法名称虚拟总计剩余现以块全容警调跟踪公英手旧版随方向位日期志别波特率堆栈睡命图形菜屏状态栏浏览器界协议杂幕海豚伪介绍列表本是否允许扩展范围照系统？！：
+心情最高等级关闭设备开启文件夹在前显示隐藏内部标签收超时默认选择资产包加载更新清单检查写入闪存验证无线固卸安装核正忙项字节份配置恢复理目录解压源动画面重中错误报告待卡取消对所有之的将被除完成蓝牙损坏模式只要这个我绝不会因为你陪而生气禁用返回保持主应外打多操作移快捷键上下右左按桌您改丢失长类型确定输当码已匹试到箭头激活请记住或来秒分钟自锁间乐一步准使符号忘能通过整阅读档如何般未知监听比度背光亮音量匿震儿电池机升需进行维护可助于决些问题效信息闲好吃充哎呀得耗满限制休眠数据基测挂尝插格化了擦出厂储和次法名称虚拟总计剩余现以块全容警调跟踪公英手旧版随方向位日期志别波特率堆栈睡命图形菜屏状态栏浏览器界协议杂幕海豚伪介绍列表本是否允许扩展范围照系统地拔掉？！：
+```
+
+## 可用函数
+
+```
+dialog_ex_set_right_button_text
+elements_multiline_text
+desktop_view_pin_input_set_label_secondary
+elements_button_left
+desktop_view_pin_input_set_label_primary
+其他不一一列举了...
+```
+
+### 已知bug
+
+暂时没找到方法实现中文的函数
+
+```
+snprintf
+furi_string_cat_printf
+dialog_ex_set_header
+dialog_ex_set_text
+elements_multiline_text_aligned
+popup_set_header
+```
+
+能中文但是显示异常
+
+```
+dialog_ex_set_left_button_text
+dialog_ex_set_center_button_text
+elements_button_right
+desktop_view_pin_input_set_label_button
 ```

@@ -40,8 +40,8 @@ static void draw_battery(Canvas* canvas, BatteryInfoModel* data, int x, int y) {
 
     // Set text
     if(current > 0) {
-        snprintf(emote, sizeof(emote), "%s", "好吃！");
-        snprintf(header, sizeof(header), "%s", "充电中");
+        snprintf(emote, sizeof(emote), "%s", "Yummy!");
+        snprintf(header, sizeof(header), "%s", "Charging at");
         snprintf(
             value,
             sizeof(value),
@@ -55,18 +55,18 @@ static void draw_battery(Canvas* canvas, BatteryInfoModel* data, int x, int y) {
             emote,
             sizeof(emote),
             "%s",
-            current < HIGH_DRAIN_CURRENT_THRESHOLD ? "哎呀！" : "吃得开心！");
-        snprintf(header, sizeof(header), "%s", "耗电量");
+            current < HIGH_DRAIN_CURRENT_THRESHOLD ? "Oh no!" : "Om-nom-nom!");
+        snprintf(header, sizeof(header), "%s", "Consumption is");
         snprintf(
             value,
             sizeof(value),
             "%ld %s",
             ABS(current),
-            current < HIGH_DRAIN_CURRENT_THRESHOLD ? "mA！" : "mA");
+            current < HIGH_DRAIN_CURRENT_THRESHOLD ? "mA!" : "mA");
     } else if(data->vbus_voltage > 0) {
         if(data->charge_voltage_limit < 4.2f) {
-            snprintf(emote, sizeof(emote), "已充满！");
-            snprintf(header, sizeof(header), "限制为");
+            snprintf(emote, sizeof(emote), "Charged!");
+            snprintf(header, sizeof(header), "Limited to");
             snprintf(
                 value,
                 sizeof(value),
@@ -74,10 +74,10 @@ static void draw_battery(Canvas* canvas, BatteryInfoModel* data, int x, int y) {
                 (uint32_t)(data->charge_voltage_limit),
                 (uint32_t)(data->charge_voltage_limit * 10) % 10);
         } else {
-            snprintf(header, sizeof(header), "已充满！");
+            snprintf(header, sizeof(header), "Charged!");
         }
     } else {
-        snprintf(header, sizeof(header), "休眠中...");
+        snprintf(header, sizeof(header), "Napping...");
         snprintf(value, sizeof(value), "(~%ld mA)", ABS(current));
     }
 

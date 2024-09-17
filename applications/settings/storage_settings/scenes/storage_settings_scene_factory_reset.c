@@ -18,13 +18,13 @@ void storage_settings_scene_factory_reset_on_enter(void* context) {
     dialog_ex_set_context(dialog_ex, app);
     dialog_ex_set_result_callback(dialog_ex, storage_settings_scene_factory_reset_dialog_callback);
 
-    dialog_ex_set_left_button_text(dialog_ex, "取消");
+    dialog_ex_set_left_button_text(dialog_ex, "Cancel");
     dialog_ex_set_right_button_text(dialog_ex, "擦除");
 
-    dialog_ex_set_header(dialog_ex, "确认恢复出厂设置？", 64, 0, AlignCenter, AlignTop);
+    dialog_ex_set_header(dialog_ex, "Confirm Factory Reset?", 64, 0, AlignCenter, AlignTop);
     dialog_ex_set_text(
         dialog_ex,
-        "内部存储将被擦除\n数据和设置将丢失！",
+        "Internal storage will be erased\ndata and settings will be lost!",
         64,
         14,
         AlignCenter,
@@ -51,7 +51,7 @@ bool storage_settings_scene_factory_reset_on_event(void* context, SceneManagerEv
             if(counter < STORAGE_SETTINGS_SCENE_FACTORY_RESET_CONFIRM_COUNT) {
                 furi_string_printf(
                     app->text_string,
-                    "%ld 次确认",
+                    "%ld presses left",
                     STORAGE_SETTINGS_SCENE_FACTORY_RESET_CONFIRM_COUNT - counter);
                 dialog_ex_set_text(
                     app->dialog_ex,
