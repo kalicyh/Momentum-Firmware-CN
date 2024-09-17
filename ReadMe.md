@@ -9,7 +9,13 @@
 
 本项目基于`Momentum-Firmware`，添加个人所需的定制化需求。
 
-- Momentum-Firmware
+汉化进行中...
+
+如果你愿意PR加快项目进度，或者有什么翻译不好的地方
+
+请参考[汉化教程](https://github.com/kalicyh/Momentum-Firmware/blob/kamisama/applications/services/gui)
+
+## Momentum-Firmware
 
 该自定义固件基于[官方固件](https://github.com/flipperdevices/flipperzero-firmware)开发，并包括了[Unleashed](https://github.com/DarkFlippers/unleashed-firmware)的许多强大功能。它是 Xtreme 固件的直接延续，由同一开发团队打造。
 
