@@ -3,6 +3,7 @@
 #include <gui/elements.h>
 #include <assets_icons.h>
 
+#include <gui/kalicyh_font.h>
 struct PowerUnplugUsb {
     View* view;
 };
@@ -16,9 +17,10 @@ static void power_unplug_usb_draw_callback(Canvas* canvas, void* _model) {
     canvas_draw_icon(canvas, 0, (64 - 10), &I_Unplug_bg_bottom_128x10);
 
     canvas_set_color(canvas, ColorWhite);
-    canvas_set_font(canvas, FontPrimary);
+    // canvas_set_font(canvas, FontPrimary);
+    canvas_set_custom_u8g2_font(canvas, kalicyh);
     elements_multiline_text_aligned(
-        canvas, 64, 32, AlignCenter, AlignCenter, "It's now safe to unplug\nthe USB cable");
+        canvas, 64, 32, AlignCenter, AlignCenter, "现在可以安全地拔掉USB线了");
 }
 
 PowerUnplugUsb* power_unplug_usb_alloc(void) {

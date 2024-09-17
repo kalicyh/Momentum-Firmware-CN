@@ -9,4 +9,5 @@ extern const uint8_t kalicyh[];
 
 
 // #include "kalicyh_font.h"
+// #include <gui/kalicyh_font.h>
 // canvas_set_custom_u8g2_font(canvas, kalicyh);

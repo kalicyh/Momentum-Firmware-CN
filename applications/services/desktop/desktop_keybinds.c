@@ -208,7 +208,7 @@ void desktop_run_keybind(Desktop* desktop, InputType _type, InputKey _key) {
         loader_start_detached_with_gui_error(
             desktop->loader, EXT_PATH("apps/Tools/nightstand.fap"), "");
     } else if(furi_string_equal(keybind, "Device Info")) {
-        loader_start_detached_with_gui_error(desktop->loader, "Power", "about_battery");
+        loader_start_detached_with_gui_error(desktop->loader, "电源", "about_battery");
     } else if(furi_string_equal(keybind, "Lock Menu")) {
         view_dispatcher_send_custom_event(desktop->view_dispatcher, DesktopMainEventOpenLockMenu);
     } else if(furi_string_equal(keybind, "Lock Keypad")) {
