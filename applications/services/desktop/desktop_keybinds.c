@@ -63,7 +63,7 @@ const char* desktop_keybinds_defaults[DesktopKeybindTypeMAX][DesktopKeybindKeyMA
         {
             [DesktopKeybindKeyUp] = "Lock Menu",
             [DesktopKeybindKeyDown] = "Archive",
-            [DesktopKeybindKeyRight] = "Passport",
+            [DesktopKeybindKeyRight] = "护照",
             [DesktopKeybindKeyLeft] = "Clock",
         },
     [DesktopKeybindTypeHold] =

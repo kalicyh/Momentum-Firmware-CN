@@ -13,13 +13,13 @@
 修改`canvas.c`文件
 
 添加以下代码
-```
+```C
 #include "kalicyh_font.h"
 canvas_set_custom_u8g2_font(canvas, kalicyh);
 ```
 
 ##### 示例：
-```
+```C
 #include "kalicyh_font.h"
 
 void canvas_draw_str(Canvas* canvas, int32_t x, int32_t y, const char* str) {
@@ -36,10 +36,27 @@ void canvas_draw_str(Canvas* canvas, int32_t x, int32_t y, const char* str) {
 
 #### 设置内的APP列表
 
-修改以下文件
+修改`Momentum-Firmware\applications\settings`目录内的`*.fam`的`name`字段
 
-```
-build\f7-firmware-C\applications\applications.c
+修改`scripts\fbt\elfmanifest.py`内的`self.name.encode("UTF-8")`
+
+```PY
+@dataclass
+class ElfManifestV1:
+    stack_size: int
+    app_version: int
+    name: str = ""
+    icon: bytes = field(default=b"")
+
+    def as_bytes(self):
+        return struct.pack(
+            "<hI32s?32s",
+            self.stack_size,
+            self.app_version,
+            bytes(self.name.encode("UTF-8")),
+            bool(self.icon),
+            self.icon,
+        )
 ```
 
 ## 目前字库内容
