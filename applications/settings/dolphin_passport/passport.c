@@ -33,20 +33,20 @@ static void render_callback(Canvas* canvas, void* _ctx) {
     PassportContext* ctx = _ctx;
     DolphinStats* stats = ctx->stats;
 
-    char level_str[12];
-    char xp_str[12];
+    char level_str[32];
+    char xp_str[32];
     const char* mood_str = NULL;
     const Icon* portrait = NULL;
 
     if(stats->butthurt <= 4) {
         portrait = &I_passport_happy_46x49;
-        mood_str = "Mood: Happy";
+        mood_str = "心情：开心";
     } else if(stats->butthurt <= 9) {
         portrait = &I_passport_okay_46x49;
-        mood_str = "Mood: Okay";
+        mood_str = "心情：一般";
     } else {
         portrait = &I_passport_bad_46x49;
-        mood_str = "Mood: Angry";
+        mood_str = "心情：生气";
     }
 
     uint32_t xp_progress = 0;
@@ -77,13 +77,13 @@ static void render_callback(Canvas* canvas, void* _ctx) {
     canvas_draw_icon(canvas, 11, 2, portrait);
 
     const char* my_name = furi_hal_version_get_name_ptr();
-    snprintf(level_str, sizeof(level_str), "Level: %hu", stats->level);
-    canvas_draw_str(canvas, 59, 10, my_name ? my_name : "Unknown");
+    snprintf(level_str, sizeof(level_str), "等级：%hu", stats->level);
+    canvas_draw_str(canvas, 59, 10, my_name ? my_name : "未知");
     canvas_draw_str(canvas, 59, 22, mood_str);
     canvas_draw_str(canvas, 59, 34, level_str);
 
     if(stats->level == DOLPHIN_LEVEL_COUNT + 1) {
-        snprintf(xp_str, sizeof(xp_str), "Max Level!");
+        snprintf(xp_str, sizeof(xp_str), "最高等级！");
     } else {
         snprintf(xp_str, sizeof(xp_str), "%lu/%lu", xp_have, xp_target);
     }

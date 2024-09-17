@@ -22,13 +22,13 @@ void storage_settings_scene_start_on_enter(void* context) {
 
     submenu_add_item(
         submenu,
-        "About Internal Storage",
+        "关于内部存储",
         StorageSettingsStartSubmenuIndexInternalInfo,
         storage_settings_scene_start_submenu_callback,
         app);
     submenu_add_item(
         submenu,
-        "About SD Card",
+        "关于 SD 卡",
         StorageSettingsStartSubmenuIndexSDInfo,
         storage_settings_scene_start_submenu_callback,
         app);
@@ -37,14 +37,14 @@ void storage_settings_scene_start_on_enter(void* context) {
     if(sd_status != FSE_OK) {
         submenu_add_item(
             submenu,
-            "Mount SD Card",
+            "挂载 SD 卡",
             StorageSettingsStartSubmenuIndexUnmount,
             storage_settings_scene_start_submenu_callback,
             app);
     } else {
         submenu_add_item(
             submenu,
-            "Unmount SD Card",
+            "卸载 SD 卡",
             StorageSettingsStartSubmenuIndexUnmount,
             storage_settings_scene_start_submenu_callback,
             app);
@@ -52,25 +52,25 @@ void storage_settings_scene_start_on_enter(void* context) {
 
     submenu_add_item(
         submenu,
-        "Format SD Card",
+        "格式化 SD 卡",
         StorageSettingsStartSubmenuIndexFormat,
         storage_settings_scene_start_submenu_callback,
         app);
     submenu_add_item(
         submenu,
-        "Benchmark SD Card",
+        "基准测试 SD 卡",
         StorageSettingsStartSubmenuIndexBenchy,
         storage_settings_scene_start_submenu_callback,
         app);
     submenu_add_item(
         submenu,
-        "Factory Reset",
+        "恢复出厂设置",
         StorageSettingsStartSubmenuIndexFactoryReset,
         storage_settings_scene_start_submenu_callback,
         app);
     submenu_add_item(
         submenu,
-        "Wipe Device",
+        "清除设备",
         StorageSettingsStartSubmenuIndexWipeDevice,
         storage_settings_scene_start_submenu_callback,
         app);

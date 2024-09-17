@@ -22,24 +22,24 @@ void storage_settings_scene_internal_info_on_enter(void* context) {
 
     if(error != FSE_OK) {
         dialog_ex_set_header(
-            dialog_ex, "Internal Storage Error", 64, 10, AlignCenter, AlignCenter);
+            dialog_ex, "内部存储错误", 64, 10, AlignCenter, AlignCenter);
         dialog_ex_set_text(
             dialog_ex, storage_error_get_desc(error), 64, 32, AlignCenter, AlignCenter);
     } else {
         furi_string_printf(
             app->text_string,
-            "Name: %s\nType: Virtual (/.int on SD)\nTotal: %lu KiB\nFree: %lu KiB\n",
-            furi_hal_version_get_name_ptr() ? furi_hal_version_get_name_ptr() : "Unknown",
+            "名称: %s\n类型: 虚拟 (/.int 在SD卡上)\n总计: %lu KiB\n剩余: %lu KiB\n",
+            furi_hal_version_get_name_ptr() ? furi_hal_version_get_name_ptr() : "未知",
             (uint32_t)(total_space / 1024),
             (uint32_t)(free_space / 1024));
 
         uint32_t free_flash =
             furi_hal_flash_get_free_end_address() - furi_hal_flash_get_free_start_address();
         if(free_flash < 1024) {
-            furi_string_cat_printf(app->text_string, "Flash: %lu B free", free_flash);
+            furi_string_cat_printf(app->text_string, "闪存: %lu B 剩余", free_flash);
         } else {
             furi_string_cat_printf(
-                app->text_string, "Flash: %.2f KiB free", (double)free_flash / 1024);
+                app->text_string, "闪存: %.2f KiB 剩余", (double)free_flash / 1024);
         }
 
         dialog_ex_set_text(

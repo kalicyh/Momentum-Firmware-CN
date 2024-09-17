@@ -45,15 +45,15 @@ void power_settings_scene_start_on_enter(void* context) {
     VariableItem* item;
     uint8_t value_index;
 
-    variable_item_list_add(variable_item_list, "Battery Info", 1, NULL, NULL);
+    variable_item_list_add(variable_item_list, "电池信息", 1, NULL, NULL);
 
-    variable_item_list_add(variable_item_list, "Reboot", 1, NULL, NULL);
+    variable_item_list_add(variable_item_list, "重启", 1, NULL, NULL);
 
-    variable_item_list_add(variable_item_list, "Power OFF", 1, NULL, NULL);
+    variable_item_list_add(variable_item_list, "关机", 1, NULL, NULL);
 
     item = variable_item_list_add(
         variable_item_list,
-        "Shutdown on Idle",
+        "闲置时关机",
         SHUTDOWN_IDLE_DELAY_COUNT,
         power_settings_scene_start_auto_lock_delay_changed,
         app);
