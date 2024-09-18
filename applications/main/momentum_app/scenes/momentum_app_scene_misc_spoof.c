@@ -6,10 +6,10 @@ enum VarItemListIndex {
 };
 
 const char* const shell_color_names[FuriHalVersionColorCount] = {
-    "Real",
-    "Black",
-    "White",
-    "Transparent",
+    "真实",
+    "黑色",
+    "白色",
+    "透明",
 };
 static void momentum_app_scene_misc_spoof_shell_color_changed(VariableItem* item) {
     MomentumApp* app = variable_item_get_context(item);
@@ -30,12 +30,12 @@ void momentum_app_scene_misc_spoof_on_enter(void* context) {
     VariableItemList* var_item_list = app->var_item_list;
     VariableItem* item;
 
-    item = variable_item_list_add(var_item_list, "Flipper Name", 0, NULL, app);
+    item = variable_item_list_add(var_item_list, "翻盖名称", 0, NULL, app);
     variable_item_set_current_value_text(item, app->device_name);
 
     item = variable_item_list_add(
         var_item_list,
-        "Shell Color",
+        "外壳颜色",
         FuriHalVersionColorCount,
         momentum_app_scene_misc_spoof_shell_color_changed,
         app);
