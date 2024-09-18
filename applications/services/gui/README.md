@@ -89,6 +89,7 @@ dialog_ex_set_header
 dialog_ex_set_text
 elements_multiline_text_aligned
 popup_set_header
+popup_set_text
 ```
 
 能中文但是显示异常
