@@ -21,7 +21,7 @@ static void gpio_i2c_scanner_draw_callback(Canvas* canvas, void* _model) {
     GpioI2CScannerModel* model = _model;
 
     char temp_str[25];
-    elements_button_center(canvas, "开始扫描");
+    elements_button_center(canvas, "Start scan");
     canvas_draw_line(canvas, 2, 10, 125, 10);
     canvas_draw_line(canvas, 2, 52, 125, 52);
 
@@ -31,7 +31,7 @@ static void gpio_i2c_scanner_draw_callback(Canvas* canvas, void* _model) {
     canvas_draw_str(canvas, 3, 42, "SCL:");
 
     canvas_set_font(canvas, FontSecondary);
-    snprintf(temp_str, 25, "从设备: %u", model->items);
+    snprintf(temp_str, 25, "Slaves: %u", model->items);
     canvas_draw_str_aligned(canvas, 126, 8, AlignRight, AlignBottom, temp_str);
 
     canvas_draw_str(canvas, 29, 25, "Pin 15");
@@ -41,7 +41,7 @@ static void gpio_i2c_scanner_draw_callback(Canvas* canvas, void* _model) {
 
     char temp_str2[6];
     if(model->items > 0) {
-        snprintf(temp_str, 25, "地址:");
+        snprintf(temp_str, 25, "Addr:");
         for(int i = 0; i < model->items; i++) {
             snprintf(temp_str2, 6, "0x%x ", model->responding_address[i]);
             strcat(temp_str, temp_str2);
