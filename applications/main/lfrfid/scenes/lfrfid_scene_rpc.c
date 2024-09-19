@@ -45,7 +45,7 @@ bool lfrfid_scene_rpc_on_event(void* context, SceneManagerEvent event) {
                     result = true;
                 } else {
                     rpc_system_app_set_error_code(app->rpc_ctx, RpcAppSystemErrorCodeParseFile);
-                    rpc_system_app_set_error_text(app->rpc_ctx, "Cannot load key file");
+                    rpc_system_app_set_error_text(app->rpc_ctx, "无法加载密钥文件");
                 }
             }
             rpc_system_app_confirm(app->rpc_ctx, result);

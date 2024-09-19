@@ -13,13 +13,13 @@ void lfrfid_scene_emulate_on_enter(void* context) {
     LfRfid* app = context;
     Widget* widget = app->widget;
 
-    FuriString* display_text = furi_string_alloc_set("\e#Emulating\e#\n");
+    FuriString* display_text = furi_string_alloc_set("\e#模拟中\e#\n");
 
     furi_string_cat_printf(
         display_text,
         "[%s]\n%s",
         protocol_dict_get_name(app->dict, app->protocol_id),
-        furi_string_empty(app->file_name) ? "Unsaved Tag" : furi_string_get_cstr(app->file_name));
+        furi_string_empty(app->file_name) ? "未保存的标签" : furi_string_get_cstr(app->file_name));
 
     widget_add_icon_element(widget, 0, 0, &I_NFC_dolphin_emulation_51x64);
     widget_add_text_box_element(

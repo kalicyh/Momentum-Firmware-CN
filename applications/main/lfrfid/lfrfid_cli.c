@@ -15,14 +15,14 @@
 #include <toolbox/pulse_protocols/pulse_glue.h>
 
 static void lfrfid_cli_print_usage(void) {
-    printf("Usage:\r\n");
-    printf("rfid read <optional: normal | indala>         - read in ASK/PSK mode\r\n");
-    printf("rfid <write | emulate> <key_type> <key_data>  - write or emulate a card\r\n");
-    printf("rfid raw_read <ask | psk> <filename>          - read and save raw data to a file\r\n");
+    printf("用法:\r\n");
+    printf("rfid read <可选: normal | indala>         - 以 ASK/PSK 模式读取\r\n");
+    printf("rfid <write | emulate> <key_type> <key_data>  - 写入或模拟卡片\r\n");
+    printf("rfid raw_read <ask | psk> <filename>          - 读取并将原始数据保存到文件\r\n");
     printf(
-        "rfid raw_emulate <filename>                   - emulate raw data (not very useful, but helps debug protocols)\r\n");
+        "rfid raw_emulate <filename>                   - 模拟原始数据（不太实用，但有助于调试协议）\r\n");
     printf(
-        "rfid raw_analyze <filename>                   - outputs raw data to the cli and tries to decode it (useful for protocol development)\r\n");
+        "rfid raw_analyze <filename>                   - 输出原始数据到 CLI 并尝试解码（对协议开发有用）\r\n");
 }
 
 typedef struct {
@@ -47,13 +47,13 @@ static void lfrfid_cli_read(Cli* cli, FuriString* args) {
 
     if(args_read_string_and_trim(args, type_string)) {
         if(furi_string_cmp_str(type_string, "normal") == 0 ||
-           furi_string_cmp_str(type_string, "ask") == 0) {
-            // ask
+            furi_string_cmp_str(type_string, "ask") == 0) {
+            // ask 模式
             type = LFRFIDWorkerReadTypeASKOnly;
         } else if(
             furi_string_cmp_str(type_string, "indala") == 0 ||
             furi_string_cmp_str(type_string, "psk") == 0) {
-            // psk
+            // psk 模式
             type = LFRFIDWorkerReadTypePSKOnly;
         } else {
             lfrfid_cli_print_usage();
@@ -71,7 +71,7 @@ static void lfrfid_cli_read(Cli* cli, FuriString* args) {
 
     lfrfid_worker_start_thread(worker);
 
-    printf("Reading RFID...\r\nPress Ctrl+C to abort\r\n");
+    printf("正在读取 RFID...\r\n按 Ctrl+C 取消\r\n");
 
     const uint32_t available_flags = (1 << LFRFIDWorkerReadDone);
 
@@ -115,7 +115,7 @@ static void lfrfid_cli_read(Cli* cli, FuriString* args) {
         furi_string_free(info);
     }
 
-    printf("Reading stopped\r\n");
+    printf("读取结束\r\n");
     protocol_dict_free(dict);
 
     furi_event_flag_free(context.event);
@@ -130,24 +130,24 @@ static bool lfrfid_cli_parse_args(FuriString* args, ProtocolDict* dict, Protocol
     uint8_t* data = malloc(data_size);
 
     do {
-        // load args
+        // 读取参数
         if(!args_read_string_and_trim(args, protocol_name) ||
-           !args_read_string_and_trim(args, data_text)) {
+            !args_read_string_and_trim(args, data_text)) {
             lfrfid_cli_print_usage();
             break;
         }
 
-        // check protocol arg
+        // 检查协议参数
         *protocol = protocol_dict_get_protocol_by_name(dict, furi_string_get_cstr(protocol_name));
         if(*protocol == PROTOCOL_NO) {
             printf(
-                "Unknown protocol: %s\r\n"
-                "Available protocols:\r\n",
+                "未知协议: %s\r\n"
+                "可用协议:\r\n",
                 furi_string_get_cstr(protocol_name));
 
             for(ProtocolId i = 0; i < LFRFIDProtocolMax; i++) {
                 printf(
-                    "\t%s, %zu bytes long\r\n",
+                    "\t%s, 长度 %zu 字节\r\n",
                     protocol_dict_get_name(dict, i),
                     protocol_dict_get_data_size(dict, i));
             }
@@ -156,16 +156,16 @@ static bool lfrfid_cli_parse_args(FuriString* args, ProtocolDict* dict, Protocol
 
         data_size = protocol_dict_get_data_size(dict, *protocol);
 
-        // check data arg
+        // 检查数据参数
         if(!args_read_hex_bytes(data_text, data, data_size)) {
             printf(
-                "%s data needs to be %zu bytes long\r\n",
+                "%s 数据需要 %zu 字节长\r\n",
                 protocol_dict_get_name(dict, *protocol),
                 data_size);
             break;
         }
 
-        // load data to protocol
+        // 将数据加载到协议中
         protocol_dict_set_data(dict, *protocol, data, data_size);
 
         result = true;
@@ -198,30 +198,30 @@ static void lfrfid_cli_write(Cli* cli, FuriString* args) {
     lfrfid_worker_start_thread(worker);
     lfrfid_worker_write_start(worker, protocol, lfrfid_cli_write_callback, event);
 
-    printf("Writing RFID...\r\nPress Ctrl+C to abort\r\n");
+    printf("正在写入 RFID...\r\n按 Ctrl+C 取消\r\n");
     const uint32_t available_flags = (1 << LFRFIDWorkerWriteOK) |
-                                     (1 << LFRFIDWorkerWriteProtocolCannotBeWritten) |
-                                     (1 << LFRFIDWorkerWriteFobCannotBeWritten);
+        (1 << LFRFIDWorkerWriteProtocolCannotBeWritten) |
+        (1 << LFRFIDWorkerWriteFobCannotBeWritten);
 
     while(!cli_cmd_interrupt_received(cli)) {
         uint32_t flags = furi_event_flag_wait(event, available_flags, FuriFlagWaitAny, 100);
         if(flags != (unsigned)FuriFlagErrorTimeout) {
             if(FURI_BIT(flags, LFRFIDWorkerWriteOK)) {
-                printf("Written!\r\n");
+                printf("写入成功！\r\n");
                 break;
             }
 
             if(FURI_BIT(flags, LFRFIDWorkerWriteProtocolCannotBeWritten)) {
-                printf("This protocol cannot be written.\r\n");
+                printf("此协议无法写入。\r\n");
                 break;
             }
 
             if(FURI_BIT(flags, LFRFIDWorkerWriteFobCannotBeWritten)) {
-                printf("Seems this fob cannot be written.\r\n");
+                printf("似乎此钥匙扣无法写入。\r\n");
             }
         }
     }
-    printf("Writing stopped\r\n");
+    printf("写入结束\r\n");
 
     lfrfid_worker_stop(worker);
     lfrfid_worker_stop_thread(worker);
@@ -244,11 +244,11 @@ static void lfrfid_cli_emulate(Cli* cli, FuriString* args) {
     lfrfid_worker_start_thread(worker);
     lfrfid_worker_emulate_start(worker, protocol);
 
-    printf("Emulating RFID...\r\nPress Ctrl+C to abort\r\n");
+    printf("正在模拟 RFID...\r\n按 Ctrl+C 取消\r\n");
     while(!cli_cmd_interrupt_received(cli)) {
         furi_delay_ms(100);
     }
-    printf("Emulation stopped\r\n");
+    printf("模拟结束\r\n");
 
     lfrfid_worker_stop(worker);
     lfrfid_worker_stop_thread(worker);
@@ -274,12 +274,12 @@ static void lfrfid_cli_raw_analyze(Cli* cli, FuriString* args) {
         }
 
         if(!lfrfid_raw_file_open_read(file, furi_string_get_cstr(filepath))) {
-            printf("Failed to open file\r\n");
+            printf("无法打开文件\r\n");
             break;
         }
 
         if(!lfrfid_raw_file_read_header(file, &frequency, &duty_cycle)) {
-            printf("Invalid header\r\n");
+            printf("无效的文件头\r\n");
             break;
         }
 
@@ -320,7 +320,7 @@ static void lfrfid_cli_raw_analyze(Cli* cli, FuriString* args) {
                     }
 
                     if(total_protocol != PROTOCOL_NO) {
-                        printf(" <FOUND %s>", protocol_dict_get_name(dict, total_protocol));
+                        printf(" <找到 %s>", protocol_dict_get_name(dict, total_protocol));
                     }
                 }
 
@@ -333,18 +333,18 @@ static void lfrfid_cli_raw_analyze(Cli* cli, FuriString* args) {
                     break;
                 }
             } else {
-                printf("Failed to read pair\r\n");
+                printf("读取数据对失败\r\n");
                 break;
             }
         }
 
-        printf("   Frequency: %f\r\n", (double)frequency);
-        printf("  Duty Cycle: %f\r\n", (double)duty_cycle);
-        printf("       Warns: %lu\r\n", total_warns);
-        printf("   Pulse sum: %lu\r\n", total_pulse);
-        printf("Duration sum: %lu\r\n", total_duration);
-        printf("     Average: %f\r\n", (double)((float)total_pulse / (float)total_duration));
-        printf("    Protocol: ");
+        printf("   频率: %f\r\n", (double)frequency);
+        printf("  占空比: %f\r\n", (double)duty_cycle);
+        printf("  警告数: %lu\r\n", total_warns);
+        printf(" 脉冲总和: %lu\r\n", total_pulse);
+        printf(" 持续时间: %lu\r\n", total_duration);
+        printf("    平均值: %f\r\n", (double)((float)total_pulse / (float)total_duration));
+        printf("    协议: ");
 
         if(total_protocol != PROTOCOL_NO) {
             size_t data_size = protocol_dict_get_data_size(dict, total_protocol);
@@ -365,7 +365,7 @@ static void lfrfid_cli_raw_analyze(Cli* cli, FuriString* args) {
 
             free(data);
         } else {
-            printf("not found\r\n");
+            printf("未找到协议\r\n");
         }
 
         protocol_dict_free(dict);
@@ -394,7 +394,7 @@ static void lfrfid_cli_raw_read(Cli* cli, FuriString* args) {
     do {
         if(args_read_string_and_trim(args, type_string)) {
             if(furi_string_cmp_str(type_string, "normal") == 0 ||
-               furi_string_cmp_str(type_string, "ask") == 0) {
+                furi_string_cmp_str(type_string, "ask") == 0) {
                 // ask
                 type = LFRFIDWorkerReadTypeASKOnly;
             } else if(
@@ -422,7 +422,7 @@ static void lfrfid_cli_raw_read(Cli* cli, FuriString* args) {
         bool overrun = false;
 
         const uint32_t available_flags = (1 << LFRFIDWorkerReadRawFileError) |
-                                         (1 << LFRFIDWorkerReadRawOverrun);
+            (1 << LFRFIDWorkerReadRawOverrun);
 
         lfrfid_worker_read_raw_start(
             worker, furi_string_get_cstr(filepath), type, lfrfid_cli_raw_read_callback, event);
@@ -431,13 +431,13 @@ static void lfrfid_cli_raw_read(Cli* cli, FuriString* args) {
 
             if(flags != (unsigned)FuriFlagErrorTimeout) {
                 if(FURI_BIT(flags, LFRFIDWorkerReadRawFileError)) {
-                    printf("File is not RFID raw file\r\n");
+                    printf("文件不是 RFID 原始文件\r\n");
                     break;
                 }
 
                 if(FURI_BIT(flags, LFRFIDWorkerReadRawOverrun)) {
                     if(!overrun) {
-                        printf("Overrun\r\n");
+                        printf("超限\r\n");
                         overrun = true;
                     }
                 }
@@ -447,7 +447,7 @@ static void lfrfid_cli_raw_read(Cli* cli, FuriString* args) {
         }
 
         if(overrun) {
-            printf("An overrun occurred during read\r\n");
+            printf("读取过程中发生超限\r\n");
         }
 
         lfrfid_worker_stop(worker);
@@ -484,7 +484,7 @@ static void lfrfid_cli_raw_emulate(Cli* cli, FuriString* args) {
         }
 
         if(!storage_file_exists(storage, furi_string_get_cstr(filepath))) {
-            printf("File not found: \"%s\"\r\n", furi_string_get_cstr(filepath));
+            printf("找不到文件: \"%s\"\r\n", furi_string_get_cstr(filepath));
             break;
         }
 
@@ -506,13 +506,13 @@ static void lfrfid_cli_raw_emulate(Cli* cli, FuriString* args) {
 
             if(flags != (unsigned)FuriFlagErrorTimeout) {
                 if(FURI_BIT(flags, LFRFIDWorkerEmulateRawFileError)) {
-                    printf("File is not RFID raw file\r\n");
+                    printf("文件不是 RFID 原始文件\r\n");
                     break;
                 }
 
                 if(FURI_BIT(flags, LFRFIDWorkerEmulateRawOverrun)) {
                     if(!overrun) {
-                        printf("Overrun\r\n");
+                        printf("溢出\r\n");
                         overrun = true;
                     }
                 }
@@ -522,7 +522,7 @@ static void lfrfid_cli_raw_emulate(Cli* cli, FuriString* args) {
         }
 
         if(overrun) {
-            printf("An overrun occurred during emulation\r\n");
+            printf("仿真期间发生溢出\r\n");
         }
 
         lfrfid_worker_stop(worker);
@@ -550,17 +550,17 @@ static void lfrfid_cli(Cli* cli, FuriString* args, void* context) {
         return;
     }
 
-    if(furi_string_cmp_str(cmd, "read") == 0) {
+    if(furi_string_cmp_str(cmd, "读取") == 0) {
         lfrfid_cli_read(cli, args);
-    } else if(furi_string_cmp_str(cmd, "write") == 0) {
+    } else if(furi_string_cmp_str(cmd, "写入") == 0) {
         lfrfid_cli_write(cli, args);
-    } else if(furi_string_cmp_str(cmd, "emulate") == 0) {
+    } else if(furi_string_cmp_str(cmd, "仿真") == 0) {
         lfrfid_cli_emulate(cli, args);
-    } else if(furi_string_cmp_str(cmd, "raw_read") == 0) {
+    } else if(furi_string_cmp_str(cmd, "原始读取") == 0) {
         lfrfid_cli_raw_read(cli, args);
-    } else if(furi_string_cmp_str(cmd, "raw_emulate") == 0) {
+    } else if(furi_string_cmp_str(cmd, "原始仿真") == 0) {
         lfrfid_cli_raw_emulate(cli, args);
-    } else if(furi_string_cmp_str(cmd, "raw_analyze") == 0) {
+    } else if(furi_string_cmp_str(cmd, "原始分析") == 0) {
         lfrfid_cli_raw_analyze(cli, args);
     } else {
         lfrfid_cli_print_usage();

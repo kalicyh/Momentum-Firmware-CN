@@ -4,11 +4,11 @@ void lfrfid_scene_retry_confirm_on_enter(void* context) {
     LfRfid* app = context;
     Widget* widget = app->widget;
 
-    widget_add_button_element(widget, GuiButtonTypeLeft, "Retry", lfrfid_widget_callback, app);
-    widget_add_button_element(widget, GuiButtonTypeRight, "Stay", lfrfid_widget_callback, app);
-    widget_add_string_element(widget, 64, 0, AlignCenter, AlignTop, FontPrimary, "Retry Reading?");
+    widget_add_button_element(widget, GuiButtonTypeLeft, "重试", lfrfid_widget_callback, app);
+    widget_add_button_element(widget, GuiButtonTypeRight, "停留", lfrfid_widget_callback, app);
+    widget_add_string_element(widget, 64, 0, AlignCenter, AlignTop, FontPrimary, "重新读取？");
     widget_add_string_element(
-        widget, 64, 13, AlignCenter, AlignTop, FontSecondary, "All unsaved data will be lost");
+        widget, 64, 13, AlignCenter, AlignTop, FontSecondary, "所有未保存的数据将丢失");
 
     view_dispatcher_switch_to_view(app->view_dispatcher, LfRfidViewWidget);
 }

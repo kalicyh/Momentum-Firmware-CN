@@ -12,18 +12,18 @@ void lfrfid_scene_start_on_enter(void* context) {
     Submenu* submenu = app->submenu;
 
     submenu_add_item(
-        submenu, "Read", LfRfidMenuIndexRead, lfrfid_scene_start_submenu_callback, app);
+        submenu, "读取", LfRfidMenuIndexRead, lfrfid_scene_start_submenu_callback, app);
     submenu_add_item(
-        submenu, "Saved", LfRfidMenuIndexSaved, lfrfid_scene_start_submenu_callback, app);
+        submenu, "已保存", LfRfidMenuIndexSaved, lfrfid_scene_start_submenu_callback, app);
     submenu_add_item(
         submenu,
-        "Add Manually",
+        "手动添加",
         LfRfidMenuIndexAddManually,
         lfrfid_scene_start_submenu_callback,
         app);
     submenu_add_item(
         submenu,
-        "Extra Actions",
+        "其他操作",
         LfRfidMenuIndexExtraActions,
         lfrfid_scene_start_submenu_callback,
         app);
@@ -31,7 +31,7 @@ void lfrfid_scene_start_on_enter(void* context) {
     submenu_set_selected_item(
         submenu, scene_manager_get_scene_state(app->scene_manager, LfRfidSceneStart));
 
-    // clear key
+    // 清除密钥
     furi_string_reset(app->file_name);
     app->protocol_id = PROTOCOL_NO;
     app->read_type = LFRFIDWorkerReadTypeAuto;
