@@ -17,6 +17,7 @@ static void u2f_view_draw_callback(Canvas* canvas, void* _model) {
     U2fModel* model = _model;
 
     canvas_draw_icon(canvas, 8, 14, &I_Drive_112x35);
+    // canvas_set_font(canvas, FontSecondary);
     canvas_set_custom_u8g2_font(canvas, kalicyh);
 
     if(model->display_msg == U2fMsgNotConnected) {
