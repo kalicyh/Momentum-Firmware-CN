@@ -300,7 +300,7 @@ void subghz_read_raw_draw(Canvas* canvas, SubGhzReadRAWModel* model) {
         // TODO
         canvas_draw_str(
             canvas,
-            77,
+            67,
             7,
             (model->device_type == SubGhzRadioDeviceTypeInternal) ? "R: Int" : "R: Ext");
     } else {
