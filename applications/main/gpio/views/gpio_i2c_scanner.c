@@ -21,7 +21,7 @@ static void gpio_i2c_scanner_draw_callback(Canvas* canvas, void* _model) {
     GpioI2CScannerModel* model = _model;
 
     char temp_str[25];
-    elements_button_center(canvas, "开始扫描");
+    elements_button_center(canvas, "Start scan");
     canvas_draw_line(canvas, 2, 10, 125, 10);
     canvas_draw_line(canvas, 2, 52, 125, 52);
 

@@ -24,7 +24,7 @@ typedef struct {
 static void gpio_usb_uart_draw_callback(Canvas* canvas, void* _model) {
     GpioUsbUartModel* model = _model;
     char temp_str[18];
-    elements_button_left(canvas, "配置");
+    elements_button_left(canvas, "Config");
     canvas_draw_line(canvas, 2, 10, 125, 10);
     canvas_draw_line(canvas, 44, 52, 123, 52);
 
