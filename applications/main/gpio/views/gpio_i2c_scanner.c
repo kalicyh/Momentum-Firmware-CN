@@ -26,7 +26,7 @@ static void gpio_i2c_scanner_draw_callback(Canvas* canvas, void* _model) {
     canvas_draw_line(canvas, 2, 52, 125, 52);
 
     canvas_set_font(canvas, FontPrimary);
-    canvas_draw_str(canvas, 2, 9, "I2C-Scanner");
+    canvas_draw_str(canvas, 2, 9, "I2C-扫描器");
     canvas_draw_str(canvas, 3, 25, "SDA:");
     canvas_draw_str(canvas, 3, 42, "SCL:");
 
