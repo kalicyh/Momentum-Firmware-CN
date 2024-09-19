@@ -158,7 +158,7 @@ void subghz_scene_radio_settings_on_enter(void* context) {
         value_count_device = 1; // Only 1 item if external disconnected
     item = variable_item_list_add(
         subghz->variable_item_list,
-        "Module",
+        "模块",
         value_count_device,
         subghz_scene_radio_settings_set_device,
         subghz);
@@ -169,7 +169,7 @@ void subghz_scene_radio_settings_on_enter(void* context) {
 
     item = variable_item_list_add(
         variable_item_list,
-        "GPS Baudrate",
+        "GPS 波特率",
         GPS_COUNT,
         subghz_scene_receiver_config_set_gps,
         subghz);
@@ -182,7 +182,7 @@ void subghz_scene_radio_settings_on_enter(void* context) {
 
     item = variable_item_list_add(
         variable_item_list,
-        "Protocol Names",
+        "协议名称",
         TIMESTAMP_NAMES_COUNT,
         subghz_scene_receiver_config_set_protocol_file_names,
         subghz);
@@ -192,7 +192,7 @@ void subghz_scene_radio_settings_on_enter(void* context) {
 
     item = variable_item_list_add(
         variable_item_list,
-        "Counter Incr.",
+        "计数器增量",
         furi_hal_rtc_is_flag_set(FuriHalRtcFlagDebug) ? DEBUG_COUNTER_COUNT : 3,
         subghz_scene_receiver_config_set_debug_counter,
         subghz);
@@ -207,7 +207,7 @@ void subghz_scene_radio_settings_on_enter(void* context) {
 
     item = variable_item_list_add(
         variable_item_list,
-        "Debug Pin",
+        "调试引脚",
         DEBUG_P_COUNT,
         subghz_scene_receiver_config_set_debug_pin,
         subghz);
@@ -217,10 +217,10 @@ void subghz_scene_radio_settings_on_enter(void* context) {
     variable_item_set_locked(
         item,
         !furi_hal_rtc_is_flag_set(FuriHalRtcFlagDebug),
-        "Enable\n"
-        "Settings >\n"
-        "System >\n"
-        "Debug");
+        "启用\n"
+        "设置 >\n"
+        "系统 >\n"
+        "调试");
 
     view_dispatcher_switch_to_view(subghz->view_dispatcher, SubGhzViewIdVariableItemList);
 }
