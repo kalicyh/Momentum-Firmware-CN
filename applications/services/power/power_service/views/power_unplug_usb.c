@@ -3,7 +3,6 @@
 #include <gui/elements.h>
 #include <assets_icons.h>
 
-#include <gui/kalicyh_font.h>
 struct PowerUnplugUsb {
     View* view;
 };
