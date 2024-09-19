@@ -6,7 +6,7 @@ void lfrfid_scene_saved_info_on_enter(void* context) {
 
     FuriString* display_text = furi_string_alloc();
 
-    furi_string_printf(display_text, "名字: %s\n", furi_string_get_cstr(app->file_name));
+    furi_string_printf(display_text, "Name: %s\n", furi_string_get_cstr(app->file_name));
 
     const char* protocol = protocol_dict_get_name(app->dict, app->protocol_id);
     const char* manufacturer = protocol_dict_get_manufacturer(app->dict, app->protocol_id);

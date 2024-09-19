@@ -31,7 +31,7 @@ void lfrfid_scene_start_on_enter(void* context) {
     submenu_set_selected_item(
         submenu, scene_manager_get_scene_state(app->scene_manager, LfRfidSceneStart));
 
-    // 清除密钥
+    // clear key
     furi_string_reset(app->file_name);
     app->protocol_id = PROTOCOL_NO;
     app->read_type = LFRFIDWorkerReadTypeAuto;
