@@ -34,20 +34,20 @@ static void gpio_i2c_sfp_draw_callback(Canvas* canvas, void* _model) {
     char temp_str[280];
 
     canvas_set_font(canvas, FontSecondary);
-    elements_button_center(canvas, "读取");
+    elements_button_center(canvas, "Read");
     canvas_draw_str(canvas, 2, 63, "P15 SCL");
     canvas_draw_str(canvas, 92, 63, "P16 SDA");
 
-    snprintf(temp_str, 280, "厂商: %s", model->vendor);
+    snprintf(temp_str, 280, "Vendor: %s", model->vendor);
     canvas_draw_str(canvas, 2, 9, temp_str);
 
-    snprintf(temp_str, 280, "型号: %s", model->pn);
+    snprintf(temp_str, 280, "PN: %s", model->pn);
     canvas_draw_str(canvas, 2, 19, temp_str);
 
-    snprintf(temp_str, 280, "序列号: %s", model->sn);
+    snprintf(temp_str, 280, "SN: %s", model->sn);
     canvas_draw_str(canvas, 2, 29, temp_str);
 
-    snprintf(temp_str, 280, "版本: %s", model->rev);
+    snprintf(temp_str, 280, "REV: %s", model->rev);
     canvas_draw_str(canvas, 2, 39, temp_str);
 
     snprintf(temp_str, 280, "CON: %s", model->connector);
@@ -59,11 +59,11 @@ static void gpio_i2c_sfp_draw_callback(Canvas* canvas, void* _model) {
 
     // These values will be zero if not applicable..
     if(model->sm_reach != 0) {
-        snprintf(temp_str, 280, "%u km (单模)", model->sm_reach);
+        snprintf(temp_str, 280, "%u km (SM)", model->sm_reach);
         canvas_draw_str(canvas, 50, 49, temp_str);
     }
     if(model->mm_reach_om3 != 0) {
-        snprintf(temp_str, 280, "%u m (多模 OM3)", model->mm_reach_om3);
+        snprintf(temp_str, 280, "%u m (MM OM3)", model->mm_reach_om3);
         canvas_draw_str(canvas, 50, 49, temp_str);
     }
 }

@@ -41,7 +41,7 @@ static void gpio_i2c_scanner_draw_callback(Canvas* canvas, void* _model) {
 
     char temp_str2[6];
     if(model->items > 0) {
-        snprintf(temp_str, 25, "Addr:");
+        snprintf(temp_str, 25, "Addr: ");
         for(int i = 0; i < model->items; i++) {
             snprintf(temp_str2, 6, "0x%x ", model->responding_address[i]);
             strcat(temp_str, temp_str2);
