@@ -23,7 +23,7 @@ enum VarItemListIndexUsb {
 void bad_kb_scene_config_connection_callback(VariableItem* item) {
     BadKbApp* bad_kb = variable_item_get_context(item);
     bad_kb->is_bt = variable_item_get_current_value_index(item);
-    variable_item_set_current_value_text(item, bad_kb->is_bt ? "BT" : "USB");
+    variable_item_set_current_value_text(item, bad_kb->is_bt ? "蓝牙" : "USB");
     view_dispatcher_send_custom_event(bad_kb->view_dispatcher, VarItemListIndexConnection);
 }
 
@@ -36,14 +36,14 @@ void bad_kb_scene_config_bt_remember_callback(VariableItem* item) {
     if(bad_kb->set_bt_id) {
         bad_kb->id_config.ble.bonding = value;
     }
-    variable_item_set_current_value_text(item, value ? "ON" : "OFF");
+    variable_item_set_current_value_text(item, value ? "开" : "关");
     view_dispatcher_send_custom_event(bad_kb->view_dispatcher, VarItemListIndexBtRemember);
 }
 
 const char* const bt_pairing_names[GapPairingCount] = {
-    "YesNo",
-    "PIN Type",
-    "PIN Y/N",
+    "是/否",
+    "PIN类型",
+    "PIN 是/否",
 };
 void bad_kb_scene_config_bt_pairing_callback(VariableItem* item) {
     BadKbApp* bad_kb = variable_item_get_context(item);
@@ -68,49 +68,49 @@ void bad_kb_scene_config_on_enter(void* context) {
     VariableItemList* var_item_list = bad_kb->var_item_list;
     VariableItem* item;
 
-    item = variable_item_list_add(var_item_list, "Keyboard layout", 0, NULL, bad_kb);
+    item = variable_item_list_add(var_item_list, "键盘布局", 0, NULL, bad_kb);
 
     item = variable_item_list_add(
-        var_item_list, "Connection", 2, bad_kb_scene_config_connection_callback, bad_kb);
+        var_item_list, "连接方式", 2, bad_kb_scene_config_connection_callback, bad_kb);
     variable_item_set_current_value_index(item, bad_kb->is_bt);
-    variable_item_set_current_value_text(item, bad_kb->is_bt ? "BT" : "USB");
+    variable_item_set_current_value_text(item, bad_kb->is_bt ? "蓝牙" : "USB");
 
     if(bad_kb->is_bt) {
         BadKbConfig* cfg = bad_kb->set_bt_id ? &bad_kb->id_config : &bad_kb->config;
 
         item = variable_item_list_add(
-            var_item_list, "BT Remember", 2, bad_kb_scene_config_bt_remember_callback, bad_kb);
+            var_item_list, "记住蓝牙", 2, bad_kb_scene_config_bt_remember_callback, bad_kb);
         variable_item_set_current_value_index(item, cfg->ble.bonding);
-        variable_item_set_current_value_text(item, cfg->ble.bonding ? "ON" : "OFF");
+        variable_item_set_current_value_text(item, cfg->ble.bonding ? "开" : "关");
 
         item = variable_item_list_add(
             var_item_list,
-            "BT Pairing",
+            "蓝牙配对",
             GapPairingCount,
             bad_kb_scene_config_bt_pairing_callback,
             bad_kb);
         variable_item_set_current_value_index(item, cfg->ble.pairing);
         variable_item_set_current_value_text(item, bt_pairing_names[cfg->ble.pairing]);
 
-        item = variable_item_list_add(var_item_list, "BT Device Name", 0, NULL, bad_kb);
+        item = variable_item_list_add(var_item_list, "蓝牙设备名称", 0, NULL, bad_kb);
 
-        item = variable_item_list_add(var_item_list, "BT MAC Address", 0, NULL, bad_kb);
+        item = variable_item_list_add(var_item_list, "蓝牙 MAC 地址", 0, NULL, bad_kb);
         if(cfg->ble.bonding) {
-            variable_item_set_locked(item, true, "Remember\nmust be Off!");
+            variable_item_set_locked(item, true, "记住\n必须关闭！");
         }
 
-        item = variable_item_list_add(var_item_list, "Randomize BT MAC", 0, NULL, bad_kb);
+        item = variable_item_list_add(var_item_list, "随机化蓝牙 MAC", 0, NULL, bad_kb);
         if(cfg->ble.bonding) {
-            variable_item_set_locked(item, true, "Remember\nmust be Off!");
+            variable_item_set_locked(item, true, "记住\n必须关闭！");
         }
     } else {
-        item = variable_item_list_add(var_item_list, "USB Manufacturer", 0, NULL, bad_kb);
+        item = variable_item_list_add(var_item_list, "USB 制造商", 0, NULL, bad_kb);
 
-        item = variable_item_list_add(var_item_list, "USB Product Name", 0, NULL, bad_kb);
+        item = variable_item_list_add(var_item_list, "USB 产品名称", 0, NULL, bad_kb);
 
-        item = variable_item_list_add(var_item_list, "USB VID and PID", 0, NULL, bad_kb);
+        item = variable_item_list_add(var_item_list, "USB VID 和 PID", 0, NULL, bad_kb);
 
-        item = variable_item_list_add(var_item_list, "Randomize USB VID:PID", 0, NULL, bad_kb);
+        item = variable_item_list_add(var_item_list, "随机化 USB VID:PID", 0, NULL, bad_kb);
     }
 
     variable_item_list_set_enter_callback(
