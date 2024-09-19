@@ -6,7 +6,7 @@ void gpio_scene_usb_uart_close_rpc_on_enter(void* context) {
 
     widget_add_icon_element(app->widget, 78, 0, &I_ActiveConnection_50x64);
     widget_add_string_multiline_element(
-        app->widget, 3, 2, AlignLeft, AlignTop, FontPrimary, "连接\n已激活！");
+        app->widget, 3, 2, AlignLeft, AlignTop, FontPrimary, "Connection\nIs Active!");
     widget_add_string_multiline_element(
         app->widget,
         3,
@@ -14,7 +14,7 @@ void gpio_scene_usb_uart_close_rpc_on_enter(void* context) {
         AlignLeft,
         AlignTop,
         FontSecondary,
-        "断开与 PC 或手机的连接\n以使用此功能。");
+        "Disconnect from\nPC or phone to\nuse this function.");
 
     view_dispatcher_switch_to_view(app->view_dispatcher, GpioAppViewUsbUartCloseRpc);
 }
