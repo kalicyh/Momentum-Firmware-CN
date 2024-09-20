@@ -21,51 +21,51 @@ void infrared_scene_start_on_enter(void* context) {
 
     submenu_add_item(
         submenu,
-        "Universal Remotes",
+        "万能遥控器",
         SubmenuIndexUniversalRemotes,
         infrared_scene_start_submenu_callback,
         infrared);
     submenu_add_item(
         submenu,
-        "Learn New Remote",
+        "学习新遥控器",
         SubmenuIndexLearnNewRemote,
         infrared_scene_start_submenu_callback,
         infrared);
     submenu_add_item(
         submenu,
-        "Saved Remotes",
+        "已保存的遥控器",
         SubmenuIndexSavedRemotes,
         infrared_scene_start_submenu_callback,
         infrared);
     submenu_add_item(
         submenu,
-        "GPIO Settings",
+        "GPIO 设置",
         SubmenuIndexGpioSettings,
         infrared_scene_start_submenu_callback,
         infrared);
 
     submenu_add_lockable_item(
         submenu,
-        "Learn New Remote RAW",
+        "学习新遥控器 RAW",
         SubmenuIndexLearnNewRemoteRaw,
         infrared_scene_start_submenu_callback,
         infrared,
         !infrared->app_state.is_debug_enabled,
-        "Enable\n"
-        "Settings >\n"
-        "System >\n"
-        "Debug");
+        "启用\n"
+        "设置 >\n"
+        "系统 >\n"
+        "调试");
     submenu_add_lockable_item(
         submenu,
-        "Debug RX",
+        "调试 RX",
         SubmenuIndexDebug,
         infrared_scene_start_submenu_callback,
         infrared,
         !infrared->app_state.is_debug_enabled,
-        "Enable\n"
-        "Settings >\n"
-        "System >\n"
-        "Debug");
+        "启用\n"
+        "设置 >\n"
+        "系统 >\n"
+        "调试");
 
     const uint32_t submenu_index =
         scene_manager_get_scene_state(scene_manager, InfraredSceneStart);
