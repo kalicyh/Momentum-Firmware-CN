@@ -16,7 +16,7 @@ Bubble slots: 1
 Slot: 0
 X: 7
 Y: 46
-Text: GOOD JOB!
+Text: 干得好！
 AlignH: Center
 AlignV: Top
 StartFrame: 54

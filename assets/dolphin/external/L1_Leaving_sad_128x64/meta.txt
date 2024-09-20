@@ -16,7 +16,7 @@ Bubble slots: 1
 Slot: 0
 X: 51
 Y: 49
-Text: Adios.
+Text: 再见。
 AlignH: Center
 AlignV: Top
 StartFrame: 6
@@ -25,7 +25,7 @@ EndFrame: 9
 Slot: 0
 X: 1
 Y: 49
-Text: Forgot something...
+Text: 忘了点东西...
 AlignH: Center
 AlignV: Top
 StartFrame: 42

@@ -16,7 +16,7 @@ Bubble slots: 1
 Slot: 0
 X: 57
 Y: 24
-Text: No mistakes,
+Text: 没有错误，
 AlignH: Left
 AlignV: Center
 StartFrame: 11
@@ -25,7 +25,7 @@ EndFrame: 14
 Slot: 0
 X: 57
 Y: 21
-Text: only happy\n accidents
+Text: 只有开心的\n意外
 AlignH: Left
 AlignV: Center
 StartFrame: 15

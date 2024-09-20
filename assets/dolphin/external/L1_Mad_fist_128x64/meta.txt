@@ -16,7 +16,7 @@ Bubble slots: 1
 Slot: 0
 X: 67
 Y: 24
-Text: Am I a joke\nto you?!?!
+Text: 在你眼里\n我是个笑话吗？！？！
 AlignH: Left
 AlignV: Center
 StartFrame: 15

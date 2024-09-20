@@ -16,7 +16,7 @@ Bubble slots: 2
 Slot: 0
 X: 53
 Y: 20
-Text: In a lucid dream,\nI could walk...
+Text: 在清醒的梦中，\n我可以走...
 AlignH: Left
 AlignV: Bottom
 StartFrame: 3
@@ -25,7 +25,7 @@ EndFrame: 9
 Slot: 1
 X: 53
 Y: 20
-Text: OH MY GOD!
+Text: 我的天哪！
 AlignH: Left
 AlignV: Bottom
 StartFrame: 3
@@ -34,7 +34,7 @@ EndFrame: 5
 Slot: 1
 X: 53
 Y: 31
-Text: Just a dream...
+Text: 只是个梦...
 AlignH: Left
 AlignV: Bottom
 StartFrame: 6

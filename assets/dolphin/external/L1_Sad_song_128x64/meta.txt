@@ -16,7 +16,7 @@ Bubble slots: 4
 Slot: 0
 X: 65
 Y: 14
-Text: All by myself
+Text: 我一个人
 AlignH: Left
 AlignV: Bottom
 StartFrame: 45
@@ -25,7 +25,7 @@ EndFrame: 51
 Slot: 0
 X: 5
 Y: 16
-Text: Don't want
+Text: 不想
 AlignH: Right
 AlignV: Bottom
 StartFrame: 56
@@ -34,7 +34,7 @@ EndFrame: 58
 Slot: 0
 X: 15
 Y: 15
-Text: to be
+Text: 成为
 AlignH: Right
 AlignV: Bottom
 StartFrame: 59
@@ -43,7 +43,7 @@ EndFrame: 60
 Slot: 0
 X: 14
 Y: 14
-Text: All by myself
+Text: 我一个人
 AlignH: Right
 AlignV: Bottom
 StartFrame: 63
@@ -52,7 +52,7 @@ EndFrame: 69
 Slot: 0
 X: 81
 Y: 25
-Text: anymore
+Text: 不再
 AlignH: Left
 AlignV: Bottom
 StartFrame: 72
@@ -61,7 +61,7 @@ EndFrame: 74
 Slot: 1
 X: 65
 Y: 14
-Text: Nevermind
+Text: 没关系
 AlignH: Left
 AlignV: Bottom
 StartFrame: 45
@@ -70,7 +70,7 @@ EndFrame: 48
 Slot: 1
 X: 65
 Y: 14
-Text: I'll find
+Text: 我会找到
 AlignH: Left
 AlignV: Bottom
 StartFrame: 49
@@ -79,7 +79,7 @@ EndFrame: 52
 Slot: 1
 X: 2
 Y: 16
-Text: Someone like
+Text: 像你这样的
 AlignH: Right
 AlignV: Bottom
 StartFrame: 56
@@ -88,7 +88,7 @@ EndFrame: 58
 Slot: 1
 X: 11
 Y: 16
-Text: youuuuu
+Text: 人
 AlignH: Right
 AlignV: Bottom
 StartFrame: 59
@@ -97,7 +97,7 @@ EndFrame: 60
 Slot: 1
 X: 3
 Y: 14
-Text: I wish nothing
+Text: 我只希望
 AlignH: Right
 AlignV: Bottom
 StartFrame: 64
@@ -106,7 +106,7 @@ EndFrame: 66
 Slot: 1
 X: 6
 Y: 14
-Text: but the best
+Text: 最好的
 AlignH: Right
 AlignV: Bottom
 StartFrame: 67
@@ -115,7 +115,7 @@ EndFrame: 70
 Slot: 1
 X: 81
 Y: 25
-Text: for you
+Text: 给你
 AlignH: Left
 AlignV: Bottom
 StartFrame: 72
@@ -124,7 +124,7 @@ EndFrame: 74
 Slot: 2
 X: 65
 Y: 14
-Text: What have I
+Text: 我成了什么
 AlignH: Left
 AlignV: Bottom
 StartFrame: 45
@@ -133,7 +133,7 @@ EndFrame: 48
 Slot: 2
 X: 65
 Y: 14
-Text: become
+Text: 呢
 AlignH: Left
 AlignV: Bottom
 StartFrame: 47
@@ -142,7 +142,7 @@ EndFrame: 51
 Slot: 2
 X: 6
 Y: 16
-Text: My dearest
+Text: 我最亲爱的
 AlignH: Right
 AlignV: Bottom
 StartFrame: 56
@@ -151,7 +151,7 @@ EndFrame: 58
 Slot: 2
 X: 14
 Y: 16
-Text: friend
+Text: 朋友
 AlignH: Right
 AlignV: Bottom
 StartFrame: 59
@@ -160,7 +160,7 @@ EndFrame: 60
 Slot: 2
 X: 17
 Y: 14
-Text: Everyone
+Text: 每个人
 AlignH: Right
 AlignV: Bottom
 StartFrame: 63
@@ -169,7 +169,7 @@ EndFrame: 64
 Slot: 2
 X: 17
 Y: 14
-Text: I know
+Text: 我知道
 AlignH: Right
 AlignV: Bottom
 StartFrame: 65
@@ -178,7 +178,7 @@ EndFrame: 67
 Slot: 2
 X: 17
 Y: 14
-Text: goes away
+Text: 都离开
 AlignH: Right
 AlignV: Bottom
 StartFrame: 68
@@ -187,7 +187,7 @@ EndFrame: 70
 Slot: 2
 X: 81
 Y: 25
-Text: in the\n end
+Text: 在\n最后
 AlignH: Left
 AlignV: Bottom
 StartFrame: 72
@@ -196,7 +196,7 @@ EndFrame: 74
 Slot: 3
 X: 73
 Y: 14
-Text: We could\n have been
+Text: 我们本可以\n在一起
 AlignH: Left
 AlignV: Bottom
 StartFrame: 45
@@ -205,7 +205,7 @@ EndFrame: 48
 Slot: 3
 X: 73
 Y: 14
-Text: so good\n together
+Text: 这么好\n在一起
 AlignH: Left
 AlignV: Bottom
 StartFrame: 49
@@ -214,7 +214,7 @@ EndFrame: 51
 Slot: 3
 X: 7
 Y: 17
-Text: We could\n have lived
+Text: 我们本可以\n一直生活
 AlignH: Right
 AlignV: Bottom
 StartFrame: 55
@@ -223,7 +223,7 @@ EndFrame: 57
 Slot: 3
 X: 7
 Y: 17
-Text: this dance\n forever
+Text: 这个舞蹈\n永远
 AlignH: Right
 AlignV: Bottom
 StartFrame: 58
@@ -232,7 +232,7 @@ EndFrame: 60
 Slot: 3
 X: 12
 Y: 14
-Text: But now
+Text: 但现在
 AlignH: Right
 AlignV: Bottom
 StartFrame: 64
@@ -241,7 +241,7 @@ EndFrame: 65
 Slot: 3
 X: 5
 Y: 14
-Text: who's gonna
+Text: 谁来
 AlignH: Right
 AlignV: Bottom
 StartFrame: 66
@@ -250,7 +250,7 @@ EndFrame: 67
 Slot: 3
 X: 7
 Y: 14
-Text: dance with
+Text: 跟我跳舞
 AlignH: Right
 AlignV: Bottom
 StartFrame: 68
@@ -259,7 +259,7 @@ EndFrame: 69
 Slot: 3
 X: 26
 Y: 14
-Text: me?
+Text: 呢？
 AlignH: Right
 AlignV: Bottom
 StartFrame: 70
@@ -268,7 +268,7 @@ EndFrame: 70
 Slot: 3
 X: 81
 Y: 25
-Text: Please
+Text: 请
 AlignH: Left
 AlignV: Bottom
 StartFrame: 72
@@ -277,7 +277,7 @@ EndFrame: 74
 Slot: 3
 X: 81
 Y: 25
-Text: stay
+Text: 留下
 AlignH: Left
 AlignV: Bottom
 StartFrame: 74

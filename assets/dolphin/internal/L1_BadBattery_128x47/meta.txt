@@ -16,7 +16,7 @@ Bubble slots: 1
 Slot: 0
 X: 4
 Y: 21
-Text: I feel so sick!\nI'm dying...
+Text: 我感觉好糟糕！\n我快死了...
 AlignH: Right
 AlignV: Center
 StartFrame: 0

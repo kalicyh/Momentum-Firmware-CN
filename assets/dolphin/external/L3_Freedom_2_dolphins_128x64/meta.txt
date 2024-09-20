@@ -16,7 +16,7 @@ Bubble slots: 1
 Slot: 0
 X: 52
 Y: 46
-Text: Thanks, man!
+Text: 谢谢你，伙计！
 AlignH: Left
 AlignV: Top
 StartFrame: 37

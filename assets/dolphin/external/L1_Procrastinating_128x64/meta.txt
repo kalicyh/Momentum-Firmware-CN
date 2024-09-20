@@ -16,7 +16,7 @@ Bubble slots: 1
 Slot: 0
 X: 2
 Y: 36
-Text: I'll just get\nback to work
+Text: 我就回去\n工作了
 AlignH: Right
 AlignV: Center
 StartFrame: 42

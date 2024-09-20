@@ -25,7 +25,7 @@ EndFrame: 4
 Slot: 1
 X: 78
 Y: 16
-Text: What ya\nlookin at?!
+Text: 你在\n看什么？！
 AlignH: Left
 AlignV: Center
 StartFrame: 10

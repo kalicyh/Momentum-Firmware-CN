@@ -16,7 +16,7 @@ Bubble slots: 1
 Slot: 0
 X: 5
 Y: 29
-Text: SENPAI !!!
+Text: 前辈！！！
 AlignH: Right
 AlignV: Center
 StartFrame: 28

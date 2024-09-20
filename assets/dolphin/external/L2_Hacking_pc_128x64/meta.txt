@@ -16,7 +16,7 @@ Bubble slots: 1
 Slot: 0
 X: 22
 Y: 25
-Text: Mess with\nthe best,
+Text: 和最好的玩弄，\n就会死得像其他人一样。
 AlignH: Right
 AlignV: Center
 StartFrame: 4
@@ -25,7 +25,7 @@ EndFrame: 7
 Slot: 0
 X: 31
 Y: 25
-Text: die like\nthe rest.
+Text: 像其他人一样死去。
 AlignH: Right
 AlignV: Center
 StartFrame: 8

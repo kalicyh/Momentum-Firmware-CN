@@ -98,7 +98,7 @@ class FlipperFormatFile:
         self.writeKey("Version", version)
 
     def load(self, filename: str):
-        with open(filename, "r") as file:
+        with open(filename, "r", encoding="utf-8") as file:
             self.lines = file.readlines()
 
     def save(self, filename: str):

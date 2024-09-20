@@ -16,7 +16,7 @@ Bubble slots: 1
 Slot: 0
 X: 60
 Y: 23
-Text: I have to rest
+Text: 我得休息
 AlignH: Left
 AlignV: Bottom
 StartFrame: 7
@@ -25,7 +25,7 @@ EndFrame: 10
 Slot: 0
 X: 60
 Y: 23
-Text: but not today
+Text: 但不是今天
 AlignH: Left
 AlignV: Bottom
 StartFrame: 11
