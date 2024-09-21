@@ -191,19 +191,24 @@ void canvas_set_font(Canvas* canvas, Font font) {
     }
     switch(font) {
     case FontPrimary:
-        u8g2_SetFont(&canvas->fb, u8g2_font_helvB08_tr);
+        // u8g2_SetFont(&canvas->fb, u8g2_font_helvB08_tr);
+        canvas_set_custom_u8g2_font(canvas, kalicyh);
         break;
     case FontSecondary:
-        u8g2_SetFont(&canvas->fb, u8g2_font_haxrcorp4089_tr);
+        // u8g2_SetFont(&canvas->fb, u8g2_font_haxrcorp4089_tr);
+        canvas_set_custom_u8g2_font(canvas, kalicyh);
         break;
     case FontKeyboard:
-        u8g2_SetFont(&canvas->fb, u8g2_font_profont11_mr);
+        // u8g2_SetFont(&canvas->fb, u8g2_font_profont11_mr);
+        canvas_set_custom_u8g2_font(canvas, kalicyh);
         break;
     case FontBigNumbers:
-        u8g2_SetFont(&canvas->fb, u8g2_font_profont22_tn);
+        // u8g2_SetFont(&canvas->fb, u8g2_font_profont22_tn);
+        canvas_set_custom_u8g2_font(canvas, kalicyh);
         break;
     case FontBatteryPercent:
-        u8g2_SetFont(&canvas->fb, u8g2_font_5x7_tr); //u8g2_font_micro_tr);
+        // u8g2_SetFont(&canvas->fb, u8g2_font_5x7_tr); //u8g2_font_micro_tr);
+        canvas_set_custom_u8g2_font(canvas, kalicyh);
         break;
     default:
         furi_crash();
