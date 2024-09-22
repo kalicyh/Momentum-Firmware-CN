@@ -3,6 +3,7 @@
 #include <furi_hal_bt.h>
 #include <furi_hal_random.h>
 #include <furi_hal_bus.h>
+#include <momentum/momentum.h>
 
 #include <stm32wbxx_ll_cortex.h>
 #include <furi.h>
@@ -148,7 +149,9 @@ bool furi_hal_crypto_enclave_verify(uint8_t* keys_nb, uint8_t* valid_keys_nb) {
     }
     *keys_nb = keys;
     *valid_keys_nb = keys_valid;
+    if(momentum_settings.spoof_status) {
     *valid_keys_nb = ENCLAVE_FACTORY_KEY_SLOTS;
+    }
     if(*valid_keys_nb == ENCLAVE_FACTORY_KEY_SLOTS)
         return true;
     else
