@@ -7,13 +7,22 @@
   <a href="#%E5%AE%89%E8%A3%85%E6%96%B9%E6%B3%95">安装</a> | <a href="#%E5%8F%98%E6%9B%B4%E5%88%97%E8%A1%A8">功能</a> | <a href="https://discord.gg/momentum">Discord</a>
 </h2>
 
+<img src="https://github.com/user-attachments/assets/2b66b346-0af1-4f6b-bf83-4f5acc48896b" align="right" height="280vh"/>
+
 本项目基于`Momentum-Firmware`，添加个人所需的定制化需求。
 
-汉化进行中...
+为复刻设备提供开关切换去除弹窗等功能
 
-如果你愿意PR加快项目进度，或者有什么翻译不好的地方
+细节汉化进行中...
+
+如果你愿意PR加快项目进度，或者有什么翻译不好的地方给我提出意见，谢谢
 
 请参考[汉化教程](https://github.com/kalicyh/Momentum-Firmware/blob/kamisama/applications/services/gui)
+
+QQ交流群：716547787
+
+
+
 
 ## Momentum-Firmware
 
