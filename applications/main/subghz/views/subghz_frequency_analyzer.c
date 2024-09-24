@@ -161,7 +161,7 @@ void subghz_frequency_analyzer_draw(Canvas* canvas, SubGhzFrequencyAnalyzerModel
     canvas_set_font(canvas, FontSecondary);
 
     //canvas_draw_str(canvas, 0, 7, model->is_ext_radio ? "Ext" : "Int");
-    canvas_draw_str(canvas, 20, 7, "Frequency Analyzer");
+    canvas_draw_str(canvas, 20, 7, "频率分析仪");
 
     // RSSI
     canvas_draw_str(canvas, 33, 62, "RSSI");

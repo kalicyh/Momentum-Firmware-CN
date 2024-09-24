@@ -20,7 +20,7 @@ void lfrfid_scene_enter_password_on_enter(void* context) {
         bit_lib_num_to_bytes_be(pass, 4, app->password);
     }
 
-    byte_input_set_header_text(byte_input, "Enter the password in hex");
+    byte_input_set_header_text(byte_input, "请输入密码（十六进制）");
 
     byte_input_set_result_callback(
         byte_input, lfrfid_text_input_callback, NULL, app, app->password, 4);

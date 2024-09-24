@@ -14,7 +14,7 @@ void bad_kb_scene_config_bt_name_on_enter(void* context) {
         bad_kb->bt_name_buf,
         bad_kb->set_bt_id ? bad_kb->id_config.ble.name : bad_kb->config.ble.name,
         sizeof(bad_kb->bt_name_buf));
-    text_input_set_header_text(text_input, "Set BT device name");
+    text_input_set_header_text(text_input, "设置蓝牙设备名称");
 
     text_input_set_result_callback(
         text_input,

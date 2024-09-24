@@ -21,7 +21,7 @@ void archive_scene_new_dir_on_enter(void* context) {
     TextInput* text_input = archive->text_input;
 
     archive->text_store[0] = '\0';
-    text_input_set_header_text(text_input, "New directory:");
+    text_input_set_header_text(text_input, "新建文件夹:");
 
     text_input_set_result_callback(
         text_input,

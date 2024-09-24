@@ -16,7 +16,7 @@ void subghz_scene_need_saving_on_enter(void* context) {
     SubGhz* subghz = context;
 
     widget_add_string_multiline_element(
-        subghz->widget, 64, 13, AlignCenter, AlignCenter, FontPrimary, "Discard Signals?");
+        subghz->widget, 64, 13, AlignCenter, AlignCenter, FontPrimary, "放弃信号？");
     widget_add_string_multiline_element(
         subghz->widget,
         64,
@@ -24,12 +24,12 @@ void subghz_scene_need_saving_on_enter(void* context) {
         AlignCenter,
         AlignCenter,
         FontSecondary,
-        "All unsaved data\nwill be lost!");
+        "所有未保存的数据\n将会丢失！");
 
     widget_add_button_element(
-        subghz->widget, GuiButtonTypeRight, "Stay", subghz_scene_need_saving_callback, subghz);
+        subghz->widget, GuiButtonTypeRight, "留在此处", subghz_scene_need_saving_callback, subghz);
     widget_add_button_element(
-        subghz->widget, GuiButtonTypeLeft, "Continue", subghz_scene_need_saving_callback, subghz);
+        subghz->widget, GuiButtonTypeLeft, "继续", subghz_scene_need_saving_callback, subghz);
 
     view_dispatcher_switch_to_view(subghz->view_dispatcher, SubGhzViewIdWidget);
 }

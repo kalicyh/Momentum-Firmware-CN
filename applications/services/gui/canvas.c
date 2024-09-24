@@ -7,6 +7,7 @@
 #include <u8g2_glue.h>
 #include <momentum/asset_packs_i.h>
 #include <momentum/settings.h>
+#include "kalicyh_font.h"
 
 const CanvasFontParameters canvas_font_params[FontTotalNumber] = {
     [FontPrimary] = {.leading_default = 12, .leading_min = 11, .height = 8, .descender = 2},
@@ -190,19 +191,24 @@ void canvas_set_font(Canvas* canvas, Font font) {
     }
     switch(font) {
     case FontPrimary:
-        u8g2_SetFont(&canvas->fb, u8g2_font_helvB08_tr);
+        // u8g2_SetFont(&canvas->fb, u8g2_font_helvB08_tr);
+        canvas_set_custom_u8g2_font(canvas, kalicyh);
         break;
     case FontSecondary:
-        u8g2_SetFont(&canvas->fb, u8g2_font_haxrcorp4089_tr);
+        // u8g2_SetFont(&canvas->fb, u8g2_font_haxrcorp4089_tr);
+        canvas_set_custom_u8g2_font(canvas, kalicyh);
         break;
     case FontKeyboard:
-        u8g2_SetFont(&canvas->fb, u8g2_font_profont11_mr);
+        // u8g2_SetFont(&canvas->fb, u8g2_font_profont11_mr);
+        canvas_set_custom_u8g2_font(canvas, kalicyh);
         break;
     case FontBigNumbers:
-        u8g2_SetFont(&canvas->fb, u8g2_font_profont22_tn);
+        // u8g2_SetFont(&canvas->fb, u8g2_font_profont22_tn);
+        canvas_set_custom_u8g2_font(canvas, kalicyh);
         break;
     case FontBatteryPercent:
-        u8g2_SetFont(&canvas->fb, u8g2_font_5x7_tr); //u8g2_font_micro_tr);
+        // u8g2_SetFont(&canvas->fb, u8g2_font_5x7_tr); //u8g2_font_micro_tr);
+        canvas_set_custom_u8g2_font(canvas, kalicyh);
         break;
     default:
         furi_crash();
@@ -217,6 +223,7 @@ void canvas_set_custom_u8g2_font(Canvas* canvas, const uint8_t* font) {
 }
 
 void canvas_draw_str(Canvas* canvas, int32_t x, int32_t y, const char* str) {
+    canvas_set_custom_u8g2_font(canvas, kalicyh);
     furi_check(canvas);
     if(!str) return;
     x += canvas->offset_x;
