@@ -54,9 +54,9 @@ bool gpio_scene_usb_uart_on_event(void* context, SceneManagerEvent event) {
     } else if(event.type == SceneManagerEventTypeBack) {
         DialogEx* dialog = app->dialog;
         dialog_ex_set_context(dialog, app);
-        dialog_ex_set_left_button_text(dialog, "Exit");
-        dialog_ex_set_right_button_text(dialog, "Stay");
-        dialog_ex_set_header(dialog, "Exit USB-UART?", 22, 12, AlignLeft, AlignTop);
+        dialog_ex_set_left_button_text(dialog, "退出");
+        dialog_ex_set_right_button_text(dialog, "停留");
+        dialog_ex_set_header(dialog, "退出 USB-UART？", 22, 12, AlignLeft, AlignTop);
         dialog_ex_set_result_callback(dialog, gpio_scene_usb_uart_dialog_callback);
         view_dispatcher_switch_to_view(app->view_dispatcher, GpioAppViewExitConfirm);
         return true;

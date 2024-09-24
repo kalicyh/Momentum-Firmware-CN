@@ -11,7 +11,7 @@ enum PowerSettingsSubmenuIndex {
 
 #define SHUTDOWN_IDLE_DELAY_COUNT 9
 const char* const shutdown_idle_delay_text[SHUTDOWN_IDLE_DELAY_COUNT] = {
-    "OFF",
+    "禁用",
     "15m",
     "30m",
     "1h",
