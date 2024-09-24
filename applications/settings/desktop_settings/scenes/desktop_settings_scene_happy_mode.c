@@ -26,7 +26,7 @@ void desktop_settings_scene_happy_mode_on_enter(void* context) {
     dolphin_get_settings(dolphin, &settings);
     furi_record_close(RECORD_DOLPHIN);
 
-    dialog_ex_set_header(app->dialog_ex, "快乐模式", 64, 0, AlignCenter, AlignTop);
+    dialog_ex_set_header(app->dialog_ex, "快乐模式", 64, 2, AlignCenter, AlignTop);
     dialog_ex_set_text(
         app->dialog_ex,
         "只要启用了这个模式\n我永远不会因为你\n没陪我而生气",

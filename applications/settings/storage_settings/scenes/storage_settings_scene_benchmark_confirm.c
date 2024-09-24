@@ -20,10 +20,10 @@ void storage_settings_scene_benchmark_confirm_on_enter(void* context) {
             dialog_ex, "请尝试重新插入\n或格式化 SD 卡。", 3, 19, AlignLeft, AlignTop);
         dialog_ex_set_center_button_text(dialog_ex, "确定");
     } else {
-        dialog_ex_set_header(dialog_ex, "测试 SD 卡性能？", 64, 0, AlignCenter, AlignTop);
+        dialog_ex_set_header(dialog_ex, "测试 SD 卡性能？", 64, 2, AlignCenter, AlignTop);
         dialog_ex_set_text(
             dialog_ex,
-            "SD 卡将以 SPI 模式进行测试。\n了解更多：\nr.flipper.net/sd_test",
+            "SD 卡将以 SPI 模式\n进行测试。\n了解更多：\nr.flipper.net/sd_test",
             0,
             12,
             AlignLeft,

@@ -20,8 +20,8 @@ void storage_settings_scene_format_confirm_on_enter(void* context) {
             dialog_ex, "请尝试重新插入\n或格式化 SD 卡。", 3, 19, AlignLeft, AlignTop);
         dialog_ex_set_center_button_text(dialog_ex, "确定");
     } else {
-        dialog_ex_set_header(dialog_ex, "格式化 SD 卡？", 64, 0, AlignCenter, AlignTop);
-        dialog_ex_set_text(dialog_ex, "所有数据将会丢失！", 64, 12, AlignCenter, AlignTop);
+        dialog_ex_set_header(dialog_ex, "格式化 SD 卡？", 64, 2, AlignCenter, AlignTop);
+        dialog_ex_set_text(dialog_ex, "所有数据将会丢失！", 64, 14, AlignCenter, AlignTop);
         dialog_ex_set_left_button_text(dialog_ex, "取消");
         dialog_ex_set_right_button_text(dialog_ex, "格式化");
     }

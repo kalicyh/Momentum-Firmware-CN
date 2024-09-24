@@ -11,9 +11,9 @@ void bt_settings_scene_forget_dev_confirm_dialog_callback(DialogExResult result,
 void bt_settings_scene_forget_dev_confirm_on_enter(void* context) {
     BtSettingsApp* app = context;
     DialogEx* dialog = app->dialog;
-    dialog_ex_set_header(dialog, "取消配对所有设备？", 64, 0, AlignCenter, AlignTop);
+    dialog_ex_set_header(dialog, "取消配对所有设备？", 64, 2, AlignCenter, AlignTop);
     dialog_ex_set_text(
-        dialog, "所有之前的配对\n将会丢失！", 64, 14, AlignCenter, AlignTop);
+        dialog, "所有之前的配对\n将会丢失！", 64, 16, AlignCenter, AlignTop);
     dialog_ex_set_left_button_text(dialog, "取消");
     dialog_ex_set_right_button_text(dialog, "取消配对");
     dialog_ex_set_context(dialog, app);

@@ -21,7 +21,7 @@ void storage_settings_scene_factory_reset_on_enter(void* context) {
     dialog_ex_set_left_button_text(dialog_ex, "取消");
     dialog_ex_set_right_button_text(dialog_ex, "擦除");
 
-    dialog_ex_set_header(dialog_ex, "Confirm Factory Reset?", 64, 0, AlignCenter, AlignTop);
+    dialog_ex_set_header(dialog_ex, "确定恢复出厂模式？", 64, 2, AlignCenter, AlignTop);
     dialog_ex_set_text(
         dialog_ex,
         "内部存储将被清除\n数据和设置将会丢失！",
