@@ -10,8 +10,12 @@
   - UL: Add GangQi protocol (static 34 bit) with button parsing and add manually (by @xMasterX & @Skorpionm)
   - UL: Add Hollarm protocol (static 42 bit) with button parsing and add manually (by @xMasterX & @Skorpionm)
   - UL: Add Hay21 protocol (dynamic 21 bit) with button parsing (by @xMasterX)
-  - UL: Princeton custom buttons support (0x1, 0x2, 0x4, 0x8, 0xF) (by @xMasterX)
+  - UL: Princeton custom buttons support (by @xMasterX)
 - NFC:
+  - OFW: MIFARE Classic Key Recovery Improvements (PR 3822 by @noproto)
+    - Accelerated dictionary attack: dictionary attacks reduced to several seconds - checks ~3500 keys per second
+    - Nested attack support: collects nested nonces to be cracked by MFKey, no longer requiring Flipper Nested app
+    - Static encrypted backdoor support: collects static encrypted nonces to be cracked by MFKey using NXP/Fudan backdoor, allowing key recovery of all non-hardened MIFARE Classic tags on-device
   - Add SmartRider Parser (#203 by @jaylikesbunda)
   - Add API to enforce ISO15693 mode (#225 by @aaronjamt)
 - BadKB:
@@ -25,21 +29,24 @@
 
 ### Updated:
 - Apps:
+  - MFKey: Added Static Encrypted Nested key recovery, Added NFC app support, Dropped FlipperNested support (by @noproto)
   - WAV Player: Better fix for unresponsiveness, handle thread exit signal (by @CookiePLMonster)
   - Laser Tag: External Infrared board support, crash fixes (by @RocketGod-git), RFID support for ammo reload, thread leak fix (by @jamisonderek)
-  - ESP Flasher: Update blackmagic bin with WiFi Logs (by @DrZlo13)
+  - ESP Flasher: Update blackmagic bin with WiFi Logs (by @DrZlo13), support more board types (by @xMasterX)
   - Picopass: File loading improvements and fixes (by @bettse), force ISO15693 1OutOf4 mode (by @aaronjamt)
   - Quac!: External IR board support (by @daniilty), import all IR from file, iButton support, code improvements (by @rdefeo)
   - DTMF Dolphin: Add EAS tone support (by @JendrBendr)
   - NFC Playlist: Error screens for playlist already exists and item already in playlist, general improvements (by @acegoal07)
   - CLI-GUI Bridge: Fixes and improvements (by @ranchordo)
   - Seader: Enable T=1 (by @bettse)
+  - BLE Spam: Fix menu index callback (by @Willy-JL)
   - UL: Sub-GHz Bruteforcer: Add new protocols for existing dump option (by @xMasterX), use FW functions for top buttons (by @DerSkythe)
   - UL: NRF24 Apps: Use string library compatible with OFW SDK (by @xMasterX)
   - OFW: SPI Mem Manager: Fixed UI rendering bug related to line breaks (by @portasynthinca3)
 - CLI: Print plugin name on load fail (by @Willy-JL)
 - NFC:
   - Added 6 new Mifare Classic keys from Bulgaria Hotel (#216 by @z3r0l1nk)
+  - NDEF parser supports NTAG I2C Plus 1k and 2k chips too (by @RocketGod-git)
   - OFW: Rename 'Detect Reader' to 'Extract MF Keys' (by @bettse)
 - Sub-GHz:
   - UL: Frequency analyzer fixes and improvements (by @xMasterX):
@@ -66,7 +73,6 @@
   - OFW: GProxII Fix Writing and Rendering Conflict (by @zinongli)
 - Desktop:
   - Fallback Poweroff prompt when power settings is unavailable (by @Willy-JL)
-  - OFW: Autolock fixes (by @portasynthinca3)
 - Storage:
   - Fallback SD format prompt when storage settings is unavailable (by @Willy-JL)
   - OFW: Fix folder rename fails (by @portasynthinca3)
@@ -81,3 +87,7 @@
 - OFW: Furi: Clean up of LFS traces (by @hedger)
 - OFW: Debug: Use proper hook for handle_exit in flipperapps (by @skotopes)
 - OFW: API: Fix kerel typo in documentation (by @EntranceJew)
+
+### Removed:
+- Apps:
+  - Mifare Nested: Superseded by NFC app after OFW PR 3822 (MIFARE Classic Key Recovery Improvements)
