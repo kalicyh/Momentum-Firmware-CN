@@ -11,7 +11,6 @@
 #include <stdint.h>
 #include <furi.h>
 #include "canvas.h"
-#include "kalicyh_font.h"
 
 #ifdef __cplusplus
 extern "C" {

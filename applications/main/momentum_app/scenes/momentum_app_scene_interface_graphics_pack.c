@@ -28,7 +28,7 @@ void momentum_app_scene_interface_graphics_pack_on_enter(void* context) {
             app);
     }
 
-    submenu_set_header(submenu, "选择资产包：");
+    submenu_set_header(submenu, "选择资源包：");
 
     submenu_set_selected_item(submenu, app->asset_pack_index);
 

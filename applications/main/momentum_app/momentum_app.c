@@ -71,8 +71,7 @@ bool momentum_app_apply(MomentumApp* app) {
             if(!flipper_format_file_open_always(file, "/ext/subghz/assets/extend_range.txt"))
                 break;
             if(!flipper_format_write_header_cstr(file, "Flipper SubGhz 设置文件", 1)) break;
-            if(!flipper_format_write_comment_cstr(
-                   file, "是否允许扩展范围，可能会损坏你的设备"))
+            if(!flipper_format_write_comment_cstr(file, "是否允许扩展范围，可能会损坏你的设备"))
                 break;
             if(!flipper_format_write_bool(
                    file, "use_ext_range_at_own_risk", &app->subghz_extend, 1))
