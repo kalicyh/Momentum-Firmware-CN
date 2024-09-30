@@ -19,7 +19,7 @@
 
 如果你愿意PR加快项目进度，或者有什么翻译不好的地方给我提出意见，谢谢
 
-请参考[汉化教程](https://github.com/kalicyh/Momentum-Firmware/blob/kamisama/applications/services/gui)
+注意！！！！ 默认进入会没有字体，请参考[汉化方法](./汉化方法.md)进行操作！！！
 
 QQ交流群：716547787
 
