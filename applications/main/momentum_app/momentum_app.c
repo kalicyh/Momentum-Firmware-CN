@@ -16,7 +16,7 @@ bool momentum_app_apply(MomentumApp* app) {
     if(app->save_mainmenu_apps) {
         Stream* stream = file_stream_alloc(app->storage);
         if(file_stream_open(stream, MAINMENU_APPS_PATH, FSAM_READ_WRITE, FSOM_CREATE_ALWAYS)) {
-            stream_write_format(stream, "MenuAppList Version %u\n", 1);
+            stream_write_format(stream, "菜单应用列表 版本 %u\n", 1);
             for(size_t i = 0; i < CharList_size(app->mainmenu_app_exes); i++) {
                 stream_write_format(stream, "%s\n", *CharList_get(app->mainmenu_app_exes, i));
             }
@@ -70,9 +70,8 @@ bool momentum_app_apply(MomentumApp* app) {
         do {
             if(!flipper_format_file_open_always(file, "/ext/subghz/assets/extend_range.txt"))
                 break;
-            if(!flipper_format_write_header_cstr(file, "Flipper SubGhz Setting File", 1)) break;
-            if(!flipper_format_write_comment_cstr(
-                   file, "Whether to allow extended ranges that can break your flipper"))
+            if(!flipper_format_write_header_cstr(file, "Flipper SubGhz 设置文件", 1)) break;
+            if(!flipper_format_write_comment_cstr(file, "是否允许扩展范围，可能会损坏你的设备"))
                 break;
             if(!flipper_format_write_bool(
                    file, "use_ext_range_at_own_risk", &app->subghz_extend, 1))
@@ -123,8 +122,8 @@ bool momentum_app_apply(MomentumApp* app) {
     if(app->show_slideshow) {
         callback_reboot(NULL);
     } else if(app->require_reboot) {
-        popup_set_header(app->popup, "Rebooting...", 64, 26, AlignCenter, AlignCenter);
-        popup_set_text(app->popup, "Applying changes...", 64, 40, AlignCenter, AlignCenter);
+        popup_set_header(app->popup, "正在重启...", 64, 26, AlignCenter, AlignCenter);
+        popup_set_text(app->popup, "正在应用更改...", 64, 40, AlignCenter, AlignCenter);
         popup_set_callback(app->popup, callback_reboot);
         popup_set_context(app->popup, app);
         popup_set_timeout(app->popup, 1000);
@@ -133,8 +132,8 @@ bool momentum_app_apply(MomentumApp* app) {
         return true;
     } else if(app->apply_pack) {
         asset_packs_free();
-        popup_set_header(app->popup, "Reloading...", 64, 26, AlignCenter, AlignCenter);
-        popup_set_text(app->popup, "Applying asset pack...", 64, 40, AlignCenter, AlignCenter);
+        popup_set_header(app->popup, "正在重新加载...", 64, 26, AlignCenter, AlignCenter);
+        popup_set_text(app->popup, "正在应用资源包...", 64, 40, AlignCenter, AlignCenter);
         popup_set_callback(app->popup, NULL);
         popup_set_context(app->popup, NULL);
         popup_set_timeout(app->popup, 0);

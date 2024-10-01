@@ -40,6 +40,7 @@ MomentumSettings momentum_settings = {
     .uart_nmea_channel = FuriHalSerialIdUsart, // pin 13,14
     .file_naming_prefix_after = false, // Before
     .spoof_color = FuriHalVersionColorUnknown, // Real
+    .spoof_status = false, // OFF
     .rpc_color_fg = {{ScreenColorModeDefault, {.value = 0x000000}}}, // Default Black
     .rpc_color_bg = {{ScreenColorModeDefault, {.value = 0xFF8200}}}, // Default Orange
 };
@@ -109,6 +110,7 @@ static const struct {
     {setting_enum(uart_nmea_channel, FuriHalSerialIdMax)},
     {setting_bool(file_naming_prefix_after)},
     {setting_enum(spoof_color, FuriHalVersionColorCount)},
+    {setting_bool(spoof_status)},
     {setting_uint(rpc_color_fg, 0x000000, 0xFFFFFF)},
     {setting_uint(rpc_color_bg, 0x000000, 0xFFFFFF)},
 };

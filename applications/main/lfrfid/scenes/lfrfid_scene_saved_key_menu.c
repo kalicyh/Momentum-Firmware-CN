@@ -22,23 +22,23 @@ void lfrfid_scene_saved_key_menu_on_enter(void* context) {
     Submenu* submenu = app->submenu;
 
     submenu_add_item(
-        submenu, "Emulate", SubmenuIndexEmulate, lfrfid_scene_saved_key_menu_submenu_callback, app);
+        submenu, "模拟", SubmenuIndexEmulate, lfrfid_scene_saved_key_menu_submenu_callback, app);
     submenu_add_item(
-        submenu, "Write", SubmenuIndexWrite, lfrfid_scene_saved_key_menu_submenu_callback, app);
+        submenu, "写入", SubmenuIndexWrite, lfrfid_scene_saved_key_menu_submenu_callback, app);
     submenu_add_item(
         submenu,
-        "Write and set password",
+        "写入并设置密码",
         SubmenuIndexWriteAndSetPass,
         lfrfid_scene_saved_key_menu_submenu_callback,
         app);
     submenu_add_item(
-        submenu, "Edit", SubmenuIndexEdit, lfrfid_scene_saved_key_menu_submenu_callback, app);
+        submenu, "编辑", SubmenuIndexEdit, lfrfid_scene_saved_key_menu_submenu_callback, app);
     submenu_add_item(
-        submenu, "Rename", SubmenuIndexRename, lfrfid_scene_saved_key_menu_submenu_callback, app);
+        submenu, "重命名", SubmenuIndexRename, lfrfid_scene_saved_key_menu_submenu_callback, app);
     submenu_add_item(
-        submenu, "Delete", SubmenuIndexDelete, lfrfid_scene_saved_key_menu_submenu_callback, app);
+        submenu, "删除", SubmenuIndexDelete, lfrfid_scene_saved_key_menu_submenu_callback, app);
     submenu_add_item(
-        submenu, "Info", SubmenuIndexInfo, lfrfid_scene_saved_key_menu_submenu_callback, app);
+        submenu, "信息", SubmenuIndexInfo, lfrfid_scene_saved_key_menu_submenu_callback, app);
 
     submenu_set_selected_item(
         submenu, scene_manager_get_scene_state(app->scene_manager, LfRfidSceneSavedKeyMenu));

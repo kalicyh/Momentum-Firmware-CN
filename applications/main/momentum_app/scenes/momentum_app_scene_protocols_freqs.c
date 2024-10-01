@@ -14,7 +14,7 @@ void momentum_app_scene_protocols_freqs_var_item_list_callback(void* context, ui
 static void momentum_app_scene_protocols_freqs_use_defaults_changed(VariableItem* item) {
     MomentumApp* app = variable_item_get_context(item);
     bool value = variable_item_get_current_value_index(item);
-    variable_item_set_current_value_text(item, value ? "ON" : "OFF");
+    variable_item_set_current_value_text(item, value ? "开启" : "关闭");
     app->subghz_use_defaults = value;
     app->save_subghz_freqs = true;
 }
@@ -26,17 +26,17 @@ void momentum_app_scene_protocols_freqs_on_enter(void* context) {
 
     item = variable_item_list_add(
         var_item_list,
-        "Use Defaults",
+        "使用默认值",
         2,
         momentum_app_scene_protocols_freqs_use_defaults_changed,
         app);
     variable_item_set_current_value_index(item, app->subghz_use_defaults);
-    variable_item_set_current_value_text(item, app->subghz_use_defaults ? "ON" : "OFF");
+    variable_item_set_current_value_text(item, app->subghz_use_defaults ? "开" : "关");
 
-    item = variable_item_list_add(var_item_list, "Static Freqs", 0, NULL, app);
+    item = variable_item_list_add(var_item_list, "静态频率", 0, NULL, app);
     variable_item_set_current_value_text(item, ">");
 
-    item = variable_item_list_add(var_item_list, "Hopper Freqs", 0, NULL, app);
+    item = variable_item_list_add(var_item_list, "跳频频率", 0, NULL, app);
     variable_item_set_current_value_text(item, ">");
 
     variable_item_list_set_enter_callback(

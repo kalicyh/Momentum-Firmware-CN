@@ -77,7 +77,7 @@ static bool
 static void storage_settings_scene_benchmark(StorageSettings* app) {
     DialogEx* dialog_ex = app->dialog_ex;
     uint8_t* bench_data;
-    dialog_ex_set_header(dialog_ex, "Preparing Data...", 64, 32, AlignCenter, AlignCenter);
+    dialog_ex_set_header(dialog_ex, "准备数据...", 64, 32, AlignCenter, AlignCenter);
 
     bench_data = malloc(BENCH_DATA_SIZE);
     for(size_t i = 0; i < BENCH_DATA_SIZE; i++) {
@@ -88,7 +88,7 @@ static void storage_settings_scene_benchmark(StorageSettings* app) {
     uint32_t bench_w_speed[BENCH_COUNT] = {0, 0, 0, 0, 0, 0};
     uint32_t bench_r_speed[BENCH_COUNT] = {0, 0, 0, 0, 0, 0};
 
-    dialog_ex_set_header(dialog_ex, "Benchmarking...", 74, 32, AlignCenter, AlignCenter);
+    dialog_ex_set_header(dialog_ex, "基准测试中...", 74, 32, AlignCenter, AlignCenter);
     dialog_ex_set_icon(dialog_ex, 12, 20, &I_LoadingHourglass_24x24);
     for(size_t i = 0; i < BENCH_COUNT; i++) {
         if(!storage_settings_scene_bench_write(
@@ -136,10 +136,10 @@ void storage_settings_scene_benchmark_on_enter(void* context) {
 
     if(sd_status != FSE_OK) {
         dialog_ex_set_icon(dialog_ex, 83, 22, &I_WarningDolphinFlip_45x42);
-        dialog_ex_set_header(dialog_ex, "SD Card Not Mounted", 64, 3, AlignCenter, AlignTop);
+        dialog_ex_set_header(dialog_ex, "SD卡未安装", 64, 3, AlignCenter, AlignTop);
         dialog_ex_set_text(
-            dialog_ex, "Try to reinsert\nor format SD\ncard.", 3, 19, AlignLeft, AlignTop);
-        dialog_ex_set_center_button_text(dialog_ex, "Ok");
+            dialog_ex, "请尝试重新插入\n或格式化 SD\n卡。", 3, 19, AlignLeft, AlignTop);
+        dialog_ex_set_center_button_text(dialog_ex, "确定");
     } else {
         storage_settings_scene_benchmark(app);
         notification_message(app->notification, &sequence_blink_green_100);

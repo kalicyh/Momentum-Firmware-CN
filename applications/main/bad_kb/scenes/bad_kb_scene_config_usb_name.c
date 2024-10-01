@@ -15,13 +15,13 @@ void bad_kb_scene_config_usb_name_on_enter(void* context) {
             bad_kb->usb_name_buf,
             bad_kb->set_usb_id ? bad_kb->id_config.usb.manuf : bad_kb->config.usb.manuf,
             sizeof(bad_kb->usb_name_buf));
-        text_input_set_header_text(text_input, "Set USB manufacturer name");
+        text_input_set_header_text(text_input, "设置USB制造商名称");
     } else {
         strlcpy(
             bad_kb->usb_name_buf,
             bad_kb->set_usb_id ? bad_kb->id_config.usb.product : bad_kb->config.usb.product,
             sizeof(bad_kb->usb_name_buf));
-        text_input_set_header_text(text_input, "Set USB product name");
+        text_input_set_header_text(text_input, "设置USB产品名称");
     }
 
     text_input_set_result_callback(

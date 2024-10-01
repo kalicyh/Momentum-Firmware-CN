@@ -18,13 +18,13 @@ void storage_settings_scene_factory_reset_on_enter(void* context) {
     dialog_ex_set_context(dialog_ex, app);
     dialog_ex_set_result_callback(dialog_ex, storage_settings_scene_factory_reset_dialog_callback);
 
-    dialog_ex_set_left_button_text(dialog_ex, "Cancel");
-    dialog_ex_set_right_button_text(dialog_ex, "Erase");
+    dialog_ex_set_left_button_text(dialog_ex, "取消");
+    dialog_ex_set_right_button_text(dialog_ex, "擦除");
 
-    dialog_ex_set_header(dialog_ex, "Confirm Factory Reset?", 64, 0, AlignCenter, AlignTop);
+    dialog_ex_set_header(dialog_ex, "确定恢复出厂模式？", 64, 2, AlignCenter, AlignTop);
     dialog_ex_set_text(
         dialog_ex,
-        "Internal storage will be erased\ndata and settings will be lost!",
+        "内部存储将被清除\n数据和设置将会丢失！",
         64,
         14,
         AlignCenter,

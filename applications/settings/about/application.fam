@@ -1,6 +1,6 @@
 App(
     appid="about",
-    name="About",
+    name="关于",
     apptype=FlipperAppType.SETTINGS,
     entry_point="about_settings_app",
     cdefines=["APP_ABOUT"],

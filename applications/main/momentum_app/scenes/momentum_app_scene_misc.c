@@ -31,16 +31,16 @@ void momentum_app_scene_misc_on_enter(void* context) {
     VariableItem* item;
     uint8_t value_index;
 
-    item = variable_item_list_add(var_item_list, "Screen", 0, NULL, app);
+    item = variable_item_list_add(var_item_list, "屏幕", 0, NULL, app);
     variable_item_set_current_value_text(item, ">");
 
-    item = variable_item_list_add(var_item_list, "Dolphin", 0, NULL, app);
+    item = variable_item_list_add(var_item_list, "海豚", 0, NULL, app);
     variable_item_set_current_value_text(item, ">");
 
-    item = variable_item_list_add(var_item_list, "Spoofing Options", 0, NULL, app);
+    item = variable_item_list_add(var_item_list, "伪装选项", 0, NULL, app);
     variable_item_set_current_value_text(item, ">");
 
-    item = variable_item_list_add(var_item_list, "VGM Options", 0, NULL, app);
+    item = variable_item_list_add(var_item_list, "VGM选项", 0, NULL, app);
     variable_item_set_current_value_text(item, ">");
 
     char cap_str[6];
@@ -48,14 +48,14 @@ void momentum_app_scene_misc_on_enter(void* context) {
     snprintf(cap_str, sizeof(cap_str), "%lu%%", (uint32_t)value_index * CHARGE_CAP_INTV);
     item = variable_item_list_add(
         var_item_list,
-        "Charge Cap",
+        "充电上限",
         100 / CHARGE_CAP_INTV,
         momentum_app_scene_misc_charge_cap_changed,
         app);
     variable_item_set_current_value_index(item, value_index - 1);
     variable_item_set_current_value_text(item, cap_str);
 
-    variable_item_list_add(var_item_list, "Show Momentum Intro", 0, NULL, app);
+    variable_item_list_add(var_item_list, "显示固件介绍", 0, NULL, app);
 
     variable_item_list_set_enter_callback(
         var_item_list, momentum_app_scene_misc_var_item_list_callback, app);

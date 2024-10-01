@@ -27,7 +27,7 @@ void lfrfid_scene_save_name_on_enter(void* context) {
         path_extract_dirname(furi_string_get_cstr(app->file_path), folder_path);
     }
 
-    text_input_set_header_text(text_input, "Name the card");
+    text_input_set_header_text(text_input, "为卡片命名");
     text_input_set_result_callback(
         text_input,
         lfrfid_text_input_callback,

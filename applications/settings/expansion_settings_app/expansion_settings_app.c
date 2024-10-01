@@ -44,7 +44,7 @@ static ExpansionSettingsApp* expansion_settings_app_alloc(void) {
 
     item = variable_item_list_add(
         app->var_item_list,
-        "Listen UART",
+        "监听 UART",
         COUNT_OF(expansion_uart_text),
         expansion_settings_app_uart_changed,
         app);

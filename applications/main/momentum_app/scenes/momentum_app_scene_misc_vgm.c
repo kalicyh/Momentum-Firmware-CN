@@ -15,28 +15,28 @@ static const struct {
     RgbColor color;
 } vgm_colors[] = {
     // clang-format off
-    {"Default", {{0, 0, 0}}},
-    {"Rainbow", {{0, 0, 0}}},
-    {"RgbMod", {{0, 0, 0}}},
-    {"Black", {{0, 0, 0}}},
-    {"Orange", {{255, 130, 0}}},
-    {"Red", {{255, 0, 0}}},
-    {"Maroon", {{128, 0, 0}}},
-    {"Yellow", {{255, 255, 0}}},
-    {"Olive", {{128, 128, 0}}},
-    {"Lime", {{0, 255, 0}}},
-    {"Green", {{0, 128, 0}}},
-    {"Aqua", {{0, 255, 127}}},
-    {"Cyan", {{0, 210, 210}}},
-    {"Azure", {{0, 127, 255}}},
-    {"Teal", {{0, 128, 128}}},
-    {"Blue", {{0, 0, 255}}},
-    {"Navy", {{0, 0, 128}}},
-    {"Purple", {{128, 0, 128}}},
-    {"Fuchsia", {{255, 0, 255}}},
-    {"Pink", {{173, 31, 173}}},
-    {"Brown", {{165, 42, 42}}},
-    {"White", {{255, 192, 203}}},
+    {"默认", {{0, 0, 0}}},
+    {"彩虹", {{0, 0, 0}}},
+    {"RGB 模式", {{0, 0, 0}}},
+    {"黑色", {{0, 0, 0}}},
+    {"橙色", {{255, 130, 0}}},
+    {"红色", {{255, 0, 0}}},
+    {"栗色", {{128, 0, 0}}},
+    {"黄色", {{255, 255, 0}}},
+    {"橄榄绿", {{128, 128, 0}}},
+    {"青柠绿", {{0, 255, 0}}},
+    {"绿色", {{0, 128, 0}}},
+    {"水绿", {{0, 255, 127}}},
+    {"青色", {{0, 210, 210}}},
+    {"蔚蓝", {{0, 127, 255}}},
+    {"深青色", {{0, 128, 128}}},
+    {"蓝色", {{0, 0, 255}}},
+    {"海军蓝", {{0, 0, 128}}},
+    {"紫色", {{128, 0, 128}}},
+    {"品红", {{255, 0, 255}}},
+    {"粉色", {{173, 31, 173}}},
+    {"棕色", {{165, 42, 42}}},
+    {"白色", {{255, 192, 203}}},
     // clang-format on
 };
 
@@ -48,11 +48,11 @@ static void momentum_app_scene_misc_vgm_foreground_changed(VariableItem* item) {
     variable_item_set_current_value_text(item, vgm_colors[index].name);
     momentum_settings.rpc_color_fg.rgb = vgm_colors[index].color;
 
-    if(strcmp("Default", vgm_colors[index].name) == 0) {
+    if(strcmp("默认", vgm_colors[index].name) == 0) {
         momentum_settings.rpc_color_fg.mode = ScreenColorModeDefault;
-    } else if(strcmp("Rainbow", vgm_colors[index].name) == 0) {
+    } else if(strcmp("彩虹", vgm_colors[index].name) == 0) {
         momentum_settings.rpc_color_fg.mode = ScreenColorModeRainbow;
-    } else if(strcmp("RgbMod", vgm_colors[index].name) == 0) {
+    } else if(strcmp("RGB 模式", vgm_colors[index].name) == 0) {
         momentum_settings.rpc_color_fg.mode = ScreenColorModeRgbBacklight;
     } else {
         momentum_settings.rpc_color_fg.mode = ScreenColorModeCustom;
@@ -67,11 +67,11 @@ static void momentum_app_scene_misc_vgm_background_changed(VariableItem* item) {
     variable_item_set_current_value_text(item, vgm_colors[index].name);
     momentum_settings.rpc_color_bg.rgb = vgm_colors[index].color;
 
-    if(strcmp("Default", vgm_colors[index].name) == 0) {
+    if(strcmp("默认", vgm_colors[index].name) == 0) {
         momentum_settings.rpc_color_bg.mode = ScreenColorModeDefault;
-    } else if(strcmp("Rainbow", vgm_colors[index].name) == 0) {
+    } else if(strcmp("彩虹", vgm_colors[index].name) == 0) {
         momentum_settings.rpc_color_bg.mode = ScreenColorModeRainbow;
-    } else if(strcmp("RgbMod", vgm_colors[index].name) == 0) {
+    } else if(strcmp("RGB 模式", vgm_colors[index].name) == 0) {
         momentum_settings.rpc_color_bg.mode = ScreenColorModeRgbBacklight;
     } else {
         momentum_settings.rpc_color_bg.mode = ScreenColorModeCustom;
@@ -88,7 +88,7 @@ void momentum_app_scene_misc_vgm_on_enter(void* context) {
 
     item = variable_item_list_add(
         var_item_list,
-        "Foreground",
+        "前景",
         vgm_colors_count,
         momentum_app_scene_misc_vgm_foreground_changed,
         app);
@@ -121,7 +121,7 @@ void momentum_app_scene_misc_vgm_on_enter(void* context) {
 
     item = variable_item_list_add(
         var_item_list,
-        "Background",
+        "背景",
         vgm_colors_count,
         momentum_app_scene_misc_vgm_background_changed,
         app);

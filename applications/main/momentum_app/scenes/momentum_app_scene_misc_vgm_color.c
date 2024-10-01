@@ -14,7 +14,7 @@ void momentum_app_scene_misc_vgm_color_on_enter(void* context) {
     MomentumApp* app = context;
     ByteInput* byte_input = app->byte_input;
 
-    byte_input_set_header_text(byte_input, "Set VGM Color (#RRGGBB)");
+    byte_input_set_header_text(byte_input, "设置 VGM 颜色 (#RRGGBB)");
 
     if(scene_manager_get_scene_state(app->scene_manager, MomentumAppSceneMiscVgmColor)) {
         app->vgm_color = momentum_settings.rpc_color_bg.rgb;

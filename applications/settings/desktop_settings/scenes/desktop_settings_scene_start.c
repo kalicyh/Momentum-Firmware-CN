@@ -15,23 +15,23 @@ typedef enum {
 
 #define AUTO_LOCK_DELAY_COUNT 9
 static const char* const auto_lock_delay_text[AUTO_LOCK_DELAY_COUNT] = {
-    "OFF",
-    "10s",
-    "15s",
-    "30s",
-    "60s",
-    "90s",
-    "2min",
-    "5min",
-    "10min",
+    "关闭",
+    "10秒",
+    "15秒",
+    "30秒",
+    "60秒",
+    "90秒",
+    "2分钟",
+    "5分钟",
+    "10分钟",
 };
 static const uint32_t auto_lock_delay_value[AUTO_LOCK_DELAY_COUNT] =
     {0, 10000, 15000, 30000, 60000, 90000, 120000, 300000, 600000};
 
 #define CLOCK_ENABLE_COUNT 2
 const char* const clock_enable_text[CLOCK_ENABLE_COUNT] = {
-    "OFF",
-    "ON",
+    "关闭",
+    "开启",
 };
 
 const uint32_t clock_enable_value[CLOCK_ENABLE_COUNT] = {0, 1};
@@ -61,7 +61,7 @@ static void desktop_settings_scene_start_auto_lock_pin_changed(VariableItem* ite
     DesktopSettingsApp* app = variable_item_get_context(item);
     uint8_t value = variable_item_get_current_value_index(item);
 
-    variable_item_set_current_value_text(item, value ? "ON" : "OFF");
+    variable_item_set_current_value_text(item, value ? "开启" : "关闭");
     app->settings.auto_lock_with_pin = value;
 }
 
@@ -72,15 +72,15 @@ void desktop_settings_scene_start_on_enter(void* context) {
     VariableItem* item;
     uint8_t value_index;
 
-    variable_item_list_add(variable_item_list, "PIN Setup", 1, NULL, NULL);
+    variable_item_list_add(variable_item_list, "PIN设置", 1, NULL, NULL);
 
-    variable_item_list_add(variable_item_list, "Keybinds Setup", 1, NULL, NULL);
+    variable_item_list_add(variable_item_list, "快捷键设置", 1, NULL, NULL);
 
-    variable_item_list_add(variable_item_list, "Reset Keybinds to Default", 1, NULL, NULL);
+    variable_item_list_add(variable_item_list, "重置快捷键为默认", 1, NULL, NULL);
 
     item = variable_item_list_add(
         variable_item_list,
-        "Auto Lock Time",
+        "自动锁定时间",
         AUTO_LOCK_DELAY_COUNT,
         desktop_settings_scene_start_auto_lock_delay_changed,
         app);
@@ -92,17 +92,17 @@ void desktop_settings_scene_start_on_enter(void* context) {
 
     item = variable_item_list_add(
         variable_item_list,
-        "Auto Lock Pin",
+        "自动锁定PIN",
         2,
         desktop_settings_scene_start_auto_lock_pin_changed,
         app);
 
     variable_item_set_current_value_index(item, app->settings.auto_lock_with_pin);
-    variable_item_set_current_value_text(item, app->settings.auto_lock_with_pin ? "ON" : "OFF");
+    variable_item_set_current_value_text(item, app->settings.auto_lock_with_pin ? "开启" : "关闭");
 
     item = variable_item_list_add(
         variable_item_list,
-        "Show Clock",
+        "显示时钟",
         CLOCK_ENABLE_COUNT,
         desktop_settings_scene_start_clock_enable_changed, //
         app);
