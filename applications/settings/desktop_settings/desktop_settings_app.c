@@ -17,7 +17,7 @@ const char* EXTRA_KEYBINDS[] = {
     "Lock Menu",
     "Lock Keypad",
     "Lock with PIN",
-    "Passport",
+    "护照",
     "Wipe Device",
 };
 const size_t EXTRA_KEYBINDS_COUNT = COUNT_OF(EXTRA_KEYBINDS);
