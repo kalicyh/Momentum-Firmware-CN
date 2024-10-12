@@ -27,30 +27,30 @@ void nfc_scene_start_on_enter(void* context) {
     // Reset detected protocols list
     nfc_detected_protocols_reset(nfc->detected_protocols);
 
-    submenu_add_item(submenu, "读取", SubmenuIndexRead, nfc_scene_start_submenu_callback, nfc);
+    submenu_add_item(submenu, "Read", SubmenuIndexRead, nfc_scene_start_submenu_callback, nfc);
     submenu_add_item(
         submenu,
-        "提取 MF 密钥",
+        "Extract MFC Keys",
         SubmenuIndexDetectReader,
         nfc_scene_start_submenu_callback,
         nfc);
-    submenu_add_item(submenu, "已保存", SubmenuIndexSaved, nfc_scene_start_submenu_callback, nfc);
+    submenu_add_item(submenu, "Saved", SubmenuIndexSaved, nfc_scene_start_submenu_callback, nfc);
     submenu_add_item(
-        submenu, "额外操作", SubmenuIndexExtraAction, nfc_scene_start_submenu_callback, nfc);
+        submenu, "Extra Actions", SubmenuIndexExtraAction, nfc_scene_start_submenu_callback, nfc);
     submenu_add_item(
-        submenu, "手动添加", SubmenuIndexAddManually, nfc_scene_start_submenu_callback, nfc);
+        submenu, "Add Manually", SubmenuIndexAddManually, nfc_scene_start_submenu_callback, nfc);
 
     submenu_add_lockable_item(
         submenu,
-        "调试",
+        "Debug",
         SubmenuIndexDebug,
         nfc_scene_start_submenu_callback,
         nfc,
         !furi_hal_rtc_is_flag_set(FuriHalRtcFlagDebug),
-        "启用\n"
-        "设置 >\n"
-        "系统 >\n"
-        "调试");
+        "Enable\n"
+        "Settings >\n"
+        "System >\n"
+        "Debug");
 
     submenu_set_selected_item(
         submenu, scene_manager_get_scene_state(nfc->scene_manager, NfcSceneStart));
