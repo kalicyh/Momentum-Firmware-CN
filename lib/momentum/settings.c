@@ -40,6 +40,7 @@ MomentumSettings momentum_settings = {
     .uart_nmea_channel = FuriHalSerialIdUsart, // pin 13,14
     .file_naming_prefix_after = false, // Before
     .spoof_color = FuriHalVersionColorUnknown, // Real
+    .spoof_status = false, // OFF
     .rpc_color_fg = {{ScreenColorModeDefault, {.value = 0x000000}}}, // Default Black
     .rpc_color_bg = {{ScreenColorModeDefault, {.value = 0xFF8200}}}, // Default Orange
 };
