@@ -110,6 +110,7 @@ static const struct {
     {setting_enum(uart_nmea_channel, FuriHalSerialIdMax)},
     {setting_bool(file_naming_prefix_after)},
     {setting_enum(spoof_color, FuriHalVersionColorCount)},
+    {setting_bool(spoof_status)},
     {setting_uint(rpc_color_fg, 0x000000, 0xFFFFFF)},
     {setting_uint(rpc_color_bg, 0x000000, 0xFFFFFF)},
 };
