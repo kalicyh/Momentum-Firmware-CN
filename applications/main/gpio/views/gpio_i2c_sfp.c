@@ -34,7 +34,7 @@ static void gpio_i2c_sfp_draw_callback(Canvas* canvas, void* _model) {
     char temp_str[280];
 
     canvas_set_font(canvas, FontSecondary);
-    elements_button_center(canvas, "Read");
+    elements_button_center(canvas, "读取");
     canvas_draw_str(canvas, 2, 63, "P15 SCL");
     canvas_draw_str(canvas, 92, 63, "P16 SDA");
 
