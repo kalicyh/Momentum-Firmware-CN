@@ -118,7 +118,7 @@ void subghz_view_transmitter_draw(Canvas* canvas, SubGhzViewTransmitterModel* mo
             58,
             62,
             (model->device_type == SubGhzRadioDeviceTypeInternal) ? "R: Int" : "R: Ext");
-        subghz_view_transmitter_button_right(canvas, "Send");
+        subghz_view_transmitter_button_right(canvas, "发送");
     }
 }
 
