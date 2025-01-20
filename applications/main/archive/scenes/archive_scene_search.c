@@ -21,7 +21,7 @@ void archive_scene_search_on_enter(void* context) {
 
     TextInput* text_input = archive->text_input;
     strlcpy(archive->text_store, "", MAX_NAME_LEN);
-    text_input_set_header_text(text_input, "Search for files:");
+    text_input_set_header_text(text_input, "搜索文件:");
 
     text_input_set_result_callback(
         text_input,
