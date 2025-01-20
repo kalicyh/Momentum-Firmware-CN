@@ -17,7 +17,7 @@ void bad_kb_scene_config_usb_vidpid_on_enter(void* context) {
         bad_kb->usb_vidpid_buf[0] = __REVSH(bad_kb->config.usb.vid);
         bad_kb->usb_vidpid_buf[1] = __REVSH(bad_kb->config.usb.pid);
     }
-    byte_input_set_header_text(byte_input, "Set USB VID:PID");
+    byte_input_set_header_text(byte_input, "设置 USB VID:PID");
 
     byte_input_set_result_callback(
         byte_input,

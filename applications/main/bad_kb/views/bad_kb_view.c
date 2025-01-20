@@ -28,7 +28,7 @@ static void bad_kb_draw_callback(Canvas* canvas, void* _model) {
 
     FuriString* disp_str = furi_string_alloc_set(
         state == BadKbStateInit ? "( . . . )" :
-        model->state.is_bt      ? "(BT) " :
+        model->state.is_bt      ? "(蓝牙) " :
                                   "(USB) ");
     furi_string_cat_str(disp_str, model->file_name);
     elements_string_fit_width(canvas, disp_str, 128 - 2);
@@ -36,7 +36,7 @@ static void bad_kb_draw_callback(Canvas* canvas, void* _model) {
     canvas_draw_str(canvas, 2, 8, furi_string_get_cstr(disp_str));
 
     if(strlen(model->layout) == 0) {
-        furi_string_set(disp_str, "(default)");
+        furi_string_set(disp_str, "(默认)");
     } else {
         furi_string_printf(disp_str, "(%s)", model->layout);
     }
@@ -56,40 +56,40 @@ static void bad_kb_draw_callback(Canvas* canvas, void* _model) {
 
     if((state == BadKbStateIdle) || (state == BadKbStateDone) ||
        (state == BadKbStateNotConnected)) {
-        elements_button_center(canvas, "Run");
-        elements_button_left(canvas, "Config");
+        elements_button_center(canvas, "运行");
+        elements_button_left(canvas, "配置");
     } else if((state == BadKbStateRunning) || (state == BadKbStateDelay)) {
-        elements_button_center(canvas, "Stop");
+        elements_button_center(canvas, "停止");
         if(!model->pause_wait) {
-            elements_button_right(canvas, "Pause");
+            elements_button_right(canvas, "暂停");
         }
     } else if(state == BadKbStatePaused) {
-        elements_button_center(canvas, "End");
-        elements_button_right(canvas, "Resume");
+        elements_button_center(canvas, "结束");
+        elements_button_right(canvas, "继续");
     } else if(state == BadKbStateWaitForBtn) {
-        elements_button_center(canvas, "Press to continue");
+        elements_button_center(canvas, "按键继续");
     } else if(state == BadKbStateWillRun) {
-        elements_button_center(canvas, "Cancel");
+        elements_button_center(canvas, "取消");
     }
 
     if(state == BadKbStateNotConnected) {
         canvas_draw_icon(canvas, 4, 26, &I_Clock_18x18);
         canvas_set_font(canvas, FontPrimary);
-        canvas_draw_str_aligned(canvas, 127, 31, AlignRight, AlignBottom, "Connect");
-        canvas_draw_str_aligned(canvas, 127, 43, AlignRight, AlignBottom, "to device");
+        canvas_draw_str_aligned(canvas, 127, 31, AlignRight, AlignBottom, "连接");
+        canvas_draw_str_aligned(canvas, 127, 43, AlignRight, AlignBottom, "到设备");
     } else if(state == BadKbStateWillRun) {
         canvas_draw_icon(canvas, 4, 26, &I_Clock_18x18);
         canvas_set_font(canvas, FontPrimary);
-        canvas_draw_str_aligned(canvas, 127, 31, AlignRight, AlignBottom, "Will run");
-        canvas_draw_str_aligned(canvas, 127, 43, AlignRight, AlignBottom, "on connect");
+        canvas_draw_str_aligned(canvas, 127, 31, AlignRight, AlignBottom, "将运行");
+        canvas_draw_str_aligned(canvas, 127, 43, AlignRight, AlignBottom, "连接时");
     } else if(state == BadKbStateFileError) {
         canvas_draw_icon(canvas, 4, 26, &I_Error_18x18);
         canvas_set_font(canvas, FontPrimary);
-        canvas_draw_str_aligned(canvas, 127, 31, AlignRight, AlignBottom, "File");
-        canvas_draw_str_aligned(canvas, 127, 43, AlignRight, AlignBottom, "ERROR");
+        canvas_draw_str_aligned(canvas, 127, 31, AlignRight, AlignBottom, "文件");
+        canvas_draw_str_aligned(canvas, 127, 43, AlignRight, AlignBottom, "错误");
     } else if(state == BadKbStateScriptError) {
         canvas_draw_icon(canvas, 4, 26, &I_Error_18x18);
-        furi_string_printf(disp_str, "line %zu", model->state.error_line);
+        furi_string_printf(disp_str, "行 %zu", model->state.error_line);
         canvas_draw_str_aligned(
             canvas, 127, 46, AlignRight, AlignBottom, furi_string_get_cstr(disp_str));
         furi_string_set_str(disp_str, model->state.error);
@@ -97,7 +97,7 @@ static void bad_kb_draw_callback(Canvas* canvas, void* _model) {
         canvas_draw_str_aligned(
             canvas, 127, 56, AlignRight, AlignBottom, furi_string_get_cstr(disp_str));
         canvas_set_font(canvas, FontPrimary);
-        canvas_draw_str_aligned(canvas, 127, 33, AlignRight, AlignBottom, "ERROR:");
+        canvas_draw_str_aligned(canvas, 127, 33, AlignRight, AlignBottom, "错误:");
     } else if(state == BadKbStateIdle) {
         canvas_draw_icon(canvas, 4, 26, &I_Smile_18x18);
         furi_string_printf(disp_str, "0/%zu", model->state.line_nb);
@@ -137,7 +137,7 @@ static void bad_kb_draw_callback(Canvas* canvas, void* _model) {
         }
         uint32_t delay = model->state.delay_remain / 10;
         if(delay) {
-            furi_string_printf(disp_str, "Delay %lus", delay);
+            furi_string_printf(disp_str, "延迟 %lus", delay);
             canvas_draw_str_aligned(
                 canvas, 4, 61, AlignLeft, AlignBottom, furi_string_get_cstr(disp_str));
         }
@@ -157,7 +157,7 @@ static void bad_kb_draw_callback(Canvas* canvas, void* _model) {
             canvas_draw_icon(canvas, 4, 23, &I_EviWaiting2_18x21);
         }
         if(state != BadKbStateWaitForBtn) {
-            canvas_draw_str_aligned(canvas, 4, 61, AlignLeft, AlignBottom, "Paused");
+            canvas_draw_str_aligned(canvas, 4, 61, AlignLeft, AlignBottom, "已暂停");
         }
         furi_string_printf(disp_str, "%zu/%zu", model->state.line_cur, model->state.line_nb);
         canvas_draw_str_aligned(
