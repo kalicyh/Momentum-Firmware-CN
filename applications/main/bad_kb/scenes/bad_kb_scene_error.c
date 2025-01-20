@@ -24,7 +24,7 @@ void bad_kb_scene_error_on_enter(void* context) {
             FontSecondary,
             "No SD card or\napp data found.\nThis app will not\nwork without\nrequired files.");
         widget_add_button_element(
-            app->widget, GuiButtonTypeLeft, "Back", bad_kb_scene_error_event_callback, app);
+            app->widget, GuiButtonTypeLeft, "返回", bad_kb_scene_error_event_callback, app);
     }
 
     view_dispatcher_switch_to_view(app->view_dispatcher, BadKbAppViewWidget);

@@ -40,8 +40,8 @@ static void draw_battery(Canvas* canvas, BatteryInfoModel* data, int x, int y) {
 
     // Set text
     if(current > 0) {
-        snprintf(emote, sizeof(emote), "%s", "Yummy!");
-        snprintf(header, sizeof(header), "%s", "Charging at");
+        snprintf(emote, sizeof(emote), "%s", "好吃!");
+        snprintf(header, sizeof(header), "%s", "正在充电");
         snprintf(
             value,
             sizeof(value),
@@ -55,8 +55,8 @@ static void draw_battery(Canvas* canvas, BatteryInfoModel* data, int x, int y) {
             emote,
             sizeof(emote),
             "%s",
-            current < HIGH_DRAIN_CURRENT_THRESHOLD ? "Oh no!" : "Om-nom-nom!");
-        snprintf(header, sizeof(header), "%s", "Consumption is");
+            current < HIGH_DRAIN_CURRENT_THRESHOLD ? "糟糕!" : "好吃好吃!");
+        snprintf(header, sizeof(header), "%s", "消耗为");
         snprintf(
             value,
             sizeof(value),
@@ -65,9 +65,8 @@ static void draw_battery(Canvas* canvas, BatteryInfoModel* data, int x, int y) {
             current < HIGH_DRAIN_CURRENT_THRESHOLD ? "mA!" : "mA");
     } else if(data->vbus_voltage > 0) {
         if(data->charge_voltage_limit < 4.2f) {
-            // Non-default battery charging limit, mention it
-            snprintf(emote, sizeof(emote), "Charged!");
-            snprintf(header, sizeof(header), "Limited to");
+            snprintf(emote, sizeof(emote), "已充满!");
+            snprintf(header, sizeof(header), "限制为");
             snprintf(
                 value,
                 sizeof(value),
@@ -75,10 +74,10 @@ static void draw_battery(Canvas* canvas, BatteryInfoModel* data, int x, int y) {
                 (uint32_t)(data->charge_voltage_limit),
                 (uint32_t)(data->charge_voltage_limit * 10) % 10);
         } else {
-            snprintf(header, sizeof(header), "Charged!");
+            snprintf(header, sizeof(header), "已充满!");
         }
     } else {
-        snprintf(header, sizeof(header), "Napping...");
+        snprintf(header, sizeof(header), "小憩中...");
         snprintf(value, sizeof(value), "(~%ld mA)", ABS(current));
     }
 
@@ -141,8 +140,8 @@ static void battery_info_draw_callback(Canvas* canvas, void* context) {
     draw_stat(canvas, 104, h, &I_Health_16x16, health);
 
     if(model->alt) {
-        elements_button_left(canvas, "Back");
-        elements_button_right(canvas, "Next");
+        elements_button_left(canvas, "返回");
+        elements_button_right(canvas, "下一页");
         char uptime[15];
         uint32_t sec = furi_get_tick() / furi_kernel_get_tick_frequency();
         snprintf(

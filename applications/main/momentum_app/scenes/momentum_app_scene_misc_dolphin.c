@@ -122,7 +122,7 @@ void momentum_app_scene_misc_dolphin_on_enter(void* context) {
     snprintf(level_str, sizeof(level_str), "%u", level);
     item = variable_item_list_add(
         var_item_list,
-        "Dolphin Level",
+        "Dolphin 等级",
         DOLPHIN_LEVEL_COUNT + 1,
         momentum_app_scene_misc_dolphin_dolphin_level_changed,
         app);
@@ -134,7 +134,7 @@ void momentum_app_scene_misc_dolphin_on_enter(void* context) {
     // uin8_t index too small for all levels, use 3 fake items to
     // show buttons and change values in callback
     item = variable_item_list_add(
-        var_item_list, "Dolphin XP", 3, momentum_app_scene_misc_dolphin_dolphin_xp_changed, app);
+        var_item_list, "Dolphin 经验值", 3, momentum_app_scene_misc_dolphin_dolphin_xp_changed, app);
     variable_item_set_current_value_index(
         item,
         app->dolphin_xp == 0              ? 0 :
@@ -146,7 +146,7 @@ void momentum_app_scene_misc_dolphin_on_enter(void* context) {
     snprintf(angry_str, sizeof(angry_str), "%lu", app->dolphin_angry);
     item = variable_item_list_add(
         var_item_list,
-        "Dolphin Angry",
+        "Dolphin 愤怒程度",
         BUTTHURT_MAX + 1,
         momentum_app_scene_misc_dolphin_dolphin_angry_changed,
         app);
@@ -155,14 +155,13 @@ void momentum_app_scene_misc_dolphin_on_enter(void* context) {
     variable_item_set_locked(
         item,
         settings.happy_mode,
-        "Settings >\n"
-        "Desktop >\n"
-        "Happy Mode\n"
-        "is enabled!");
+        "设置>桌面\n"
+        "开心模式\n"
+        "已启用！");
 
     item = variable_item_list_add(
         var_item_list,
-        "Butthurt Timer",
+        "受伤计时器",
         COUNT_OF(butthurt_timer_names),
         momentum_app_scene_misc_dolphin_butthurt_timer_changed,
         app);
@@ -173,10 +172,9 @@ void momentum_app_scene_misc_dolphin_on_enter(void* context) {
     variable_item_set_locked(
         item,
         settings.happy_mode,
-        "Settings >\n"
-        "Desktop >\n"
-        "Happy Mode\n"
-        "is enabled!");
+        "设置>桌面\n"
+        "开心模式\n"
+        "已启用！");
 
     variable_item_list_set_enter_callback(
         var_item_list, momentum_app_scene_misc_dolphin_var_item_list_callback, app);

@@ -24,28 +24,28 @@ void infrared_scene_universal_on_enter(void* context) {
 
     submenu_add_item(
         submenu,
-        "TVs",
+        "电视",
         SubmenuIndexUniversalTV,
         infrared_scene_universal_submenu_callback,
         context);
 
     submenu_add_item(
         submenu,
-        "Projectors",
+        "投影仪",
         SubmenuIndexUniversalProjector,
         infrared_scene_universal_submenu_callback,
         context);
 
     submenu_add_item(
         submenu,
-        "Audio",
+        "音频",
         SubmenuIndexUniversalAudio,
         infrared_scene_universal_submenu_callback,
         context);
 
     submenu_add_item(
         submenu,
-        "ACs",
+        "空调",
         SubmenuIndexUniversalAirConditioner,
         infrared_scene_universal_submenu_callback,
         context);
@@ -59,7 +59,7 @@ void infrared_scene_universal_on_enter(void* context) {
 
     submenu_add_item(
         submenu,
-        "Fans",
+        "风扇",
         SubmenuIndexUniversalFan,
         infrared_scene_universal_submenu_callback,
         context);
@@ -73,14 +73,14 @@ void infrared_scene_universal_on_enter(void* context) {
 
     submenu_add_item(
         submenu,
-        "Monitors",
+        "显示器",
         SubmenuIndexUniversalMonitor,
         infrared_scene_universal_submenu_callback,
         context);
 
     submenu_add_item(
         submenu,
-        "Digital Signs",
+        "数字标牌",
         SubmenuIndexUniversalDigitalSign,
         infrared_scene_universal_submenu_callback,
         context);

@@ -14,7 +14,7 @@ void momentum_app_scene_misc_screen_color_on_enter(void* context) {
     MomentumApp* app = context;
     ByteInput* byte_input = app->byte_input;
 
-    byte_input_set_header_text(byte_input, "Set LCD Color (#RRGGBB)");
+    byte_input_set_header_text(byte_input, "设置 LCD 颜色 (#RRGGBB)");
 
     rgb_backlight_get_color(
         scene_manager_get_scene_state(app->scene_manager, MomentumAppSceneMiscScreenColor),

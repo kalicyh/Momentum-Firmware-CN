@@ -20,13 +20,13 @@ static void desktop_settings_view_pin_setup_howto_draw(Canvas* canvas, void* mod
     UNUSED(model);
 
     canvas_draw_icon(canvas, 16, 18, &I_Pin_attention_dpad_29x29);
-    elements_button_right(canvas, "Next");
+    elements_button_right(canvas, "下一步");
 
     canvas_set_font(canvas, FontPrimary);
-    elements_multiline_text_aligned(canvas, 64, 0, AlignCenter, AlignTop, "Setting Up PIN");
+    elements_multiline_text_aligned(canvas, 64, 0, AlignCenter, AlignTop, "设置PIN码");
 
     canvas_set_font(canvas, FontSecondary);
-    elements_multiline_text(canvas, 58, 24, "Prepare to use\narrows as\nPIN symbols");
+    elements_multiline_text(canvas, 58, 24, "准备使用\n箭头作为\nPIN符号");
 }
 
 static bool desktop_settings_view_pin_setup_howto_input(InputEvent* event, void* context) {

@@ -16,21 +16,21 @@ void subghz_scene_saved_menu_on_enter(void* context) {
     SubGhz* subghz = context;
     submenu_add_item(
         subghz->submenu,
-        "Emulate",
+        "模拟",
         SubmenuIndexEmulate,
         subghz_scene_saved_menu_submenu_callback,
         subghz);
 
     submenu_add_item(
         subghz->submenu,
-        "Rename",
+        "重命名",
         SubmenuIndexEdit,
         subghz_scene_saved_menu_submenu_callback,
         subghz);
 
     submenu_add_item(
         subghz->submenu,
-        "Delete",
+        "删除",
         SubmenuIndexDelete,
         subghz_scene_saved_menu_submenu_callback,
         subghz);
@@ -39,7 +39,7 @@ void subghz_scene_saved_menu_on_enter(void* context) {
        !isnanf(subghz_txrx_get_longitude(subghz->txrx)) || subghz->gps) {
         submenu_add_item(
             subghz->submenu,
-            "Geographic info",
+            "地理信息",
             SubmenuIndexGeo,
             subghz_scene_saved_menu_submenu_callback,
             subghz);

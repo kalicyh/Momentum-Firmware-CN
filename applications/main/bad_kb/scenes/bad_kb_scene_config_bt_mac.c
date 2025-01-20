@@ -15,7 +15,7 @@ void bad_kb_scene_config_bt_mac_on_enter(void* context) {
         bad_kb->set_bt_id ? bad_kb->id_config.ble.mac : bad_kb->config.ble.mac,
         sizeof(bad_kb->bt_mac_buf));
     reverse_mac_addr(bad_kb->bt_mac_buf);
-    byte_input_set_header_text(byte_input, "Set BT MAC address");
+    byte_input_set_header_text(byte_input, "设置蓝牙 MAC 地址");
 
     byte_input_set_result_callback(
         byte_input,
