@@ -1,216 +1,230 @@
 <p align="center">
-  <img src=".github/assets/logo.png" alt="Momentum Firmware">
-  <h2 align="center">for Flipper Zero</h2>
+  <img src=".github/assets/logo.png" alt="Momentum 固件">
+  <h2 align="center">用于 Flipper Zero</h2>
 </p>
 
 <h2 align="center">
-  <a href="#Install">Install</a> | <a href="#list-of-changes">Features</a> | <a href="https://discord.gg/momentum">Discord</a> | <a href="#%EF%B8%8F-support">Donate</a>
+  <a href="#%E5%AE%89%E8%A3%85%E6%96%B9%E6%B3%95">安装</a> | <a href="#%E5%8F%98%E6%9B%B4%E5%88%97%E8%A1%A8">功能</a> | <a href="https://discord.gg/momentum">Discord</a>
 </h2>
 
-This custom firmware is based on the [Official Firmware](https://github.com/flipperdevices/flipperzero-firmware), and includes most of the awesome features from [Unleashed](https://github.com/DarkFlippers/unleashed-firmware). It is a direct continuation of the Xtreme firmware, built by the same (and only) developers who made that project special.
+<img src="https://github.com/user-attachments/assets/2b66b346-0af1-4f6b-bf83-4f5acc48896b" align="right" height="280vh"/>
+
+本项目基于`Momentum-Firmware`，添加个人所需的定制化需求。
+
+ - 为复刻设备提供开关切换去除弹窗
+ - 添加ikun资源动画
+ - 添加更多特斯拉subghz数据
+ - 添加更多性玩具subghz数据
+ - 细节汉化进行中...
+
+如果你愿意PR加快项目进度，或者有什么翻译不好的地方给我提出意见，谢谢
+
+注意！！！！ 默认进入会没有字体，请参考[汉化方法](./汉化方法.md)进行操作！！！
+
+QQ交流群：716547787
+
+
+
+
+## Momentum-Firmware
+
+该自定义固件基于[官方固件](https://github.com/flipperdevices/flipperzero-firmware)开发，并包括了[Unleashed](https://github.com/DarkFlippers/unleashed-firmware)的许多强大功能。它是 Xtreme 固件的直接延续，由同一开发团队打造。
 
 -----
 <br>
-<h2 align="center">Modus Operandi:</h2>
+<h2 align="center">操作模式：</h2>
 
-The goal of this firmware is to constantly push the bounds of what is possible with Flipper Zero, driving the innovation of many new groundbreaking features, while maintaining the easiest and most customizable user experience of any firmware. Fixing bugs promptly and ensuring a stable and compatible system is also of our utmost importance.
+该固件的目标是不断突破 Flipper Zero 的可能性，推动许多新颖功能的创新，同时保持最简单和最可自定义的用户体验。及时修复错误，确保系统的稳定性和兼容性也是我们的首要任务。
 <br><br>
-- <h4>Feature-rich: We include all third-party features and apps as long as they fulfill a useful purpose and they work correctly, aswell as implement ourselves many new exciting functionalities.</h4>
+- <h4>功能丰富：我们集成了所有有用且运行正常的第三方功能和应用程序，并自行实现了许多令人兴奋的新功能。</h4>
 
-- <h4>Stable: We ensure the most stable experience possible by having an actual understanding of what's going on, and proactively making all tweaks and additions backwards-, and inter-, compatible.</h4>
+- <h4>稳定性：我们确保提供最稳定的体验，深入了解系统的运行状况，并积极进行向后和跨版本兼容的所有调整和新增功能。</h4>
 
-- <h4>Customizable: You can tweak just about everything you see: add/remove apps from the menu, change the animations, replace icon graphics, change your Flipper's name, change how the main menu looks, setup different keybinds like never before, and so much more. All on-device, with no complicated configuration.</h4>
+- <h4>可定制性：几乎可以调整所有内容：从菜单中添加/删除应用程序、更改动画、替换图标、修改 Flipper 的名称、调整主菜单外观、设置不同的按键绑定等，所有操作都可以在设备上轻松完成，无需复杂配置。</h4>
 <br><br>
-Note that mentioned below are only a few of our staple additions to the firmware. For a full list check [down here](https://github.com/Next-Flip/Momentum-Firmware#List-of-Changes).
+请注意，以下仅列出了我们固件中的一些核心功能，查看完整列表请参考[这里](https://github.com/Next-Flip/Momentum-Firmware#List-of-Changes)。
 
 -----
 <br>
-<h2 align="center">Momentum Settings:</h2>
+<h2 align="center">Momentum 设置：</h2>
 
-We offer a powerful and easy-to-use application tailor-made for our firmware, that lets you configure everything you could dream of, and more:
+我们提供了一个强大且易于使用的应用程序，专为我们的固件定制，可让你配置所有你能想到的内容，甚至更多：
 
 <img src=".github/assets/settings.png" align="left" height="160vh"/>
 <img align="left" height="180vh" width="10" src="https://upload.wikimedia.org/wikipedia/commons/3/3d/1_120_transparent.png">
 
-- <ins><b>Interface:</b></ins> Tweak every part of your Flipper, from the desktop animations, to the main menu, lockscreen behavior, file browser, etc.
+- <ins><b>界面：</b></ins> 调整 Flipper 的各个部分，从桌面动画到主菜单、锁屏行为、文件浏览器等。
 
-- <ins><b>Protocols:</b></ins> Configure SubGhz settings, add/remove custom frequencies, extend SubGhz frequencies to 281-361, 378-481, 749-962 MHz and setup which GPIO pins are used by different external modules.
+- <ins><b>协议：</b></ins> 配置 SubGhz 设置，添加/移除自定义频率，扩展 SubGhz 频率范围至 281-361 MHz、378-481 MHz、749-962 MHz，并设置不同外部模块使用的 GPIO 引脚。
 
-- <ins><b>Misc:</b></ins> Everything else that doesn't fit the previous categories. Change your Flipper's name, XP level, screen options, and configure the <a href="https://github.com/Z3BRO/Flipper-Zero-RGB-Backlight">RGB backlight</a>.
+- <ins><b>杂项：</b></ins> 所有不属于前两类的其他设置。更改 Flipper 的名称、XP 等级、屏幕选项，配置<a href="https://github.com/Z3BRO/Flipper-Zero-RGB-Backlight">RGB 背光</a>。
 
 <br>
 
 -----
 <br>
-<h2 align="center">Animations / Asset Packs:</h2>
+<h2 align="center">动画/资源包：</h2>
 
-We created our own improved Animation / Asset system that lets you create and cycle through your own `Asset Packs` with only a few button presses, allowing you to easily load custom Animations, Icons and Fonts like never before. Think of it as a Theme system that's never been easier.
+我们创建了自己的改进版动画/资源系统，允许你通过几个按钮轻松切换和加载自定义动画、图标和字体。可以将其视为一个前所未有的简化主题系统。
 
 <img src=".github/assets/packs-folder.png" align="left" width="200px"/>
-You can easily create your own pack, or find some community-made ones on <b><a href="https://momentum-fw.dev/asset-packs">our website</a> or on Discord</b>. Check <a href="https://github.com/Next-Flip/Momentum-Firmware/blob/dev/documentation/file_formats/AssetPacks.md">here</a> for a tutorial on creating your own. Essentially, each <code>Asset Pack</code> can configure its own <code>Anims</code>, <code>Icons</code> & <code>Fonts</code>.
+你可以轻松创建自己的资源包，或在 <b><a href="https://momentum-fw.dev/asset-packs">我们的网站</a>或 Discord 上找到社区制作的资源包</b>。关于如何创建自己的资源包，请参考<a href="https://github.com/Next-Flip/Momentum-Firmware/blob/dev/documentation/file_formats/AssetPacks.md">这里</a>的教程。基本上，每个<code>资源包</code>可以配置自己的<code>动画</code>、<code>图标</code>和<code>字体</code>。
 
 <br clear="left"/>
 
 <br>
 
 <img src=".github/assets/packs-select.png" align="left" width="200px"/>
-Once you have some asset packs, upload them to your Flipper in <code>SD/asset_packs</code> (if you did this right you should see <code>SD/asset_packs/PackName/Anims</code> and/or <code>SD/asset_packs/PackName/Icons</code>). Alternatively, install directly using the website.
-
+一旦你有了一些资源包，将它们上传到 Flipper 的 <code>SD/asset_packs</code> 目录下（如果操作正确，你应该会看到 <code>SD/asset_packs/PackName/Anims</code> 和/或 <code>SD/asset_packs/PackName/Icons</code>）。或者直接通过网站安装。
 
 <br clear="left"/>
 
 <br>
 
 <img src=".github/assets/packs-done.png" align="left" width="200px"/>
-After installing the packs to Flipper, hit the <code>Arrow Up</code> button on the main menu and go to <code>Momentum Settings > Interface > Graphics</code>. Here choose which asset pack you want and tweak the other settings how you prefer, then exit the app to reboot and enjoy your fully customized Flipper!
+将资源包安装到 Flipper 后，按下主菜单上的 <code>向上箭头</code> 按钮，进入 <code>Momentum 设置 > 界面 > 图形</code>。在这里选择你想要的资源包，并根据喜好调整其他设置，退出应用程序以重新启动并享受完全自定义的 Flipper！
 
 <br clear="left"/>
 
 -----
 <br>
-<h2 align="center">Bad Keyboard:</h2>
+<h2 align="center">Bad 键盘：</h2>
 
 <img src=".github/assets/badkb.png" align="left" width="250px"/>
-BadUSB is a great app, but it lacks Bluetooth connectivity. Bad-KB allows you to toggle between USB and Bluetooth mode for your attacks.
+BadUSB 是一个很棒的应用程序，但它缺少蓝牙连接功能。Bad-KB 允许你在 USB 和蓝牙模式之间切换。
 
-In Bluetooth mode it allows you to spoof the display name and MAC address of the device to whatever you want. Showing up as a portable speaker or a wireless keyboard is easily doable, allowing you to get the attention of your target without needing a cable at hand.
+在蓝牙模式下，你可以将设备的显示名称和 MAC 地址伪装成任何你想要的名称。伪装成便携音箱或无线键盘非常容易，这样你无需手头有线就能引起目标的注意。
 
-In USB mode it also enables additional functionality to spoof the manufacturer and product names, as well as vendor and product IDs (VID/PID).
+在 USB 模式下，它还可以伪造制造商和产品名称，以及供应商和产品 ID (VID/PID)。
 
 -----
 <br>
-<h2 align="center">List of changes:</h2>
+<h2 align="center">变更列表：</h2>
 
-There are too many to name them all, this is a **non-comprehensive** list of the **most notable from an end-user perspective**. For a more detailed list, you can read through the [**changelogs**](https://github.com/Next-Flip/Momentum-Firmware/releases) and commits/code. Also, you can find a **feature comparison with other firmwares** on [our website](https://momentum-fw.dev/#features).
+变更内容太多，无法一一列举。以下是从最终用户角度来看**最显著的**变化的**非详尽**列表。要查看更详细的内容，你可以阅读[**更新日志**](https://github.com/Next-Flip/Momentum-Firmware/releases)和提交/代码。你也可以在[我们的网站](https://momentum-fw.dev/#features)上找到与其他固件的**功能对比**。
 
-Note that this repo is always updated with the great work from our friends at [Unleashed](https://github.com/DarkFlippers/unleashed-firmware) and the latest changes from [OFW](https://github.com/flipperdevices/flipperzero-firmware). Below are mentioned only **our** changes that we can actually be credited for, so make sure to check their fantastic additions aswell. And a huge thank you to both teams!
+请注意，该仓库始终会更新我们朋友们在[Unleashed](https://github.com/DarkFlippers/unleashed-firmware)和[OFW](https://github.com/flipperdevices/flipperzero-firmware)中的杰出工作。下面仅提及了我们可以归功于自己的更改，务必查看他们的精彩功能，并向这两个团队致以衷心的感谢！
 
 ```txt
-[Added]
+[新增]
 
-- Momentum App (Easy configuration of features and behavior of the firmware)
-- Asset Packs (Unparalleled theming and customization)
-- More UI customization, redesigns and optimizations
-- Bad-Keyboard App
-- BLE Spam App
-- FindMy Flipper App
-- NFC Maker App
-- Wardriver App
-- File Search across SD Card
-- Additional NFC parsers and protocols
-- Subdriving (saving GPS coordinates for Sub-GHz)
-- Easy spoofing (Name, MAC address, Serial number)
-- Video Game Module color configuration right from Flipper
-- Enhanced RGB Backlight modes (Full customization & Rainbow mode)
-- File management on device (Cut, Copy, Paste, Show, New Dir, etc.)
-- Remember Infrared GPIO settings and add IR Blaster support in apps
-- Advanced Security measures (Lock on Boot, reset on false pins, etc.)
-- Disk Image management (Mount and view image contents, open in Mass Storage)
-- Extended JavaScript API (Support for UsbDisk/Mass Storage, File operations)
+- Momentum 应用程序（简易配置固件功能和行为）
+- 资源包（无与伦比的主题和自定义）
+- 更多 UI 自定义、重新设计和优化
+- Bad 键盘应用程序
+- BLE 垃圾邮件应用程序
+- 查找我的 Flipper 应用程序
+- NFC 制作应用程序
+- Wardriver 应用程序
+- SD 卡文件搜索
+- 其他 NFC 解析器和协议
+- Subdriving（保存 Sub-GHz 的 GPS 坐标）
+- 轻松伪装（名称、MAC 地址、序列号）
+- 视频游戏模块颜色配置（直接在 Flipper 上进行）
+- 增强的 RGB 背光模式（完全自定义和彩虹模式）
+- 设备上的文件管理（剪切、复制、粘贴、显示、新建目录等）
+- 记住红外 GPIO 设置，并在应用程序中添加红外发射器支持
+- 高级安全措施（启动时锁定，错误 PIN 重置等）
+- 磁盘映像管理（挂载和查看映像内容，在大容量存储中打开）
+- 扩展 JavaScript API（支持 UsbDisk/大容量存储，文件操作）
 ```
 ```txt
-[Updated]
+[更新]
 
-- Enhanced WiFi support for easiest setup ever
-- Extended keyboard with cursor movement and symbols
-- File Browser with Sorting, More supported File Types
-- Advanced and optimized Level System (Up to 30 levels)
-- Desktop Keybind system for full key and press/hold remapping
-- Storage backend with instant rename and virtual mounting for disk images
-- Weather Station, POCSAG, TPMS protocols and more integrated into Sub-GHz
-- Expanded Sub-GHz App (Duplicate detection & Ignore, Autosave, History improvements)
-- Improved Error Messages (Showing source file paths)
+- 增强的 WiFi 支持，提供最简单的设置体验
+- 带有光标移动和符号的扩展键盘
+- 带有排序功能的文件浏览器，支持更多文件类型
+- 高级优化的等级系统（最高可达 30 级）
+- 桌面键绑定系统，支持完全的按键和长按映射
+- 存储后端，提供即时重命名和磁盘映像虚拟挂载
+- 气象站、POCSAG、TPMS 协议等集成到 Sub-GHz 中
+- 扩展的 Sub-GHz 应用程序（重复检测和忽略，自动保存，历史改进）
+- 改进的错误消息（显示源文件路径）
 ```
 ```txt
-[Removed]
+[移除]
 
-- Unused Dummy Mode
-- Broken or Superfluous apps
+- 未使用的虚拟模式
+- 损坏或多余的应用程序
 ```
 
 ----
 <br>
-<h2 align="center">Install:</h2>
+<h2 align="center">安装方法:</h2>
 <br>
 
-There are 4 methods to install Momentum, we recommend you use the **Web Updater**, but choose whichever one you prefer:
+我们提供了 4 种安装 Momentum 的方法，推荐使用 **Web Updater**，但可以选择任何一种你喜欢的方式：
 
 <br>
 
 > <details><summary><code>Web Updater (Chrome)</code></summary><ul>
->   <li>Make sure qFlipper is closed</li>
->   <li>Open the <a href="https://momentum-fw.dev/update">Web Updater</a></li>
->   <li>Click <code>Connect</code> and select your Flipper from the list</li>
->   <li>Click <code>Flash</code> and wait for the update to complete</li>
+>   <li>确保 qFlipper 已关闭</li>
+>   <li>打开 <a href="https://momentum-fw.dev/update">Web Updater</a></li>
+>   <li>点击 <code>Connect</code> 并从列表中选择你的 Flipper</li>
+>   <li>点击 <code>Flash</code> 并等待更新完成</li>
 > </ul></details>
 
-> <details><summary><code>Flipper Lab/App (chrome/mobile)</code></summary><ul>
->   <li>(Desktop) Make sure qFlipper is closed</li>
->   <li>(Mobile) Make sure you have the <a href="https://docs.flipper.net/mobile-app">Flipper Mobile App</a> installed and paired</li>
->   <li>Open the <a href="https://github.com/Next-Flip/Momentum-Firmware/releases/latest">latest release page</a></li>
->   <li>Click the <code>☁️ Flipper Lab/App (chrome/mobile)</code> link</li>
->   <li>(Desktop) Click <code>Connect</code> and select your Flipper from the list</li>
->   <li>(Desktop) Click <code>Install</code> and wait for the update to complete</li>
->   <li>(Mobile) Accept the prompt to open the link in the Flipper Mobile App</li>
->   <li>(Mobile) Confirm to proceed with the install and wait for the update to complete</li>
+> <details><summary><code>Flipper Lab/App (Chrome/移动端)</code></summary><ul>
+>   <li>(桌面端) 确保 qFlipper 已关闭</li>
+>   <li>(移动端) 确保你已经安装并配对了 <a href="https://docs.flipper.net/mobile-app">Flipper Mobile App</a></li>
+>   <li>打开 <a href="https://github.com/Next-Flip/Momentum-Firmware/releases/latest">最新发布页面</a></li>
+>   <li>点击 <code>☁️ Flipper Lab/App (Chrome/移动端)</code> 链接</li>
+>   <li>(桌面端) 点击 <code>Connect</code> 并从列表中选择你的 Flipper</li>
+>   <li>(桌面端) 点击 <code>Install</code> 并等待更新完成</li>
+>   <li>(移动端) 接受提示打开 Flipper Mobile App 中的链接</li>
+>   <li>(移动端) 确认继续安装并等待更新完成</li>
 > </ul></details>
 
 > <details><summary><code>qFlipper Package (.tgz)</code></summary><ul>
->   <li>Download the qFlipper package (.tgz) from the <a href="https://github.com/Next-Flip/Momentum-Firmware/releases/latest">latest release page</a></li>
->   <li>Make sure the <code>WebUpdater</code> and <code>lab.flipper.net</code> are closed</li>
->   <li>Open <a href="https://flipperzero.one/update">qFlipper</a> and connect your Flipper</li>
->   <li>Click <code>Install from file</code></li>
->   <li>Select the .tgz you downloaded and wait for the update to complete</li>
+>   <li>从 <a href="https://github.com/Next-Flip/Momentum-Firmware/releases/latest">最新发布页面</a> 下载 qFlipper 包 (.tgz)</li>
+>   <li>确保 <code>WebUpdater</code> 和 <code>lab.flipper.net</code> 已关闭</li>
+>   <li>打开 <a href="https://flipperzero.one/update">qFlipper</a> 并连接你的 Flipper</li>
+>   <li>点击 <code>Install from file</code></li>
+>   <li>选择你下载的 .tgz 文件并等待更新完成</li>
 > </ul></details>
 
 > <details><summary><code>Zipped Archive (.zip)</code></summary><ul>
->   <li>Download the zipped archive (.zip) from the <a href="https://github.com/Next-Flip/Momentum-Firmware/releases/latest">latest release page</a></li>
->   <li>Extract the archive. This is now your new Firmware folder</li>
->   <li>Open <a href="https://flipperzero.one/update">qFlipper</a>, head to <code>SD/update</code> and simply move the firmware folder there</li>
->   <li>On the Flipper, hit the <code>Arrow Down</code> button, this will get you to the file menu. In there simply search for your updates folder</li>
->   <li>Inside that folder, select the Firmware you just moved onto it, and run the file thats simply called <code>Update</code></li>
+>   <li>从 <a href="https://github.com/Next-Flip/Momentum-Firmware/releases/latest">最新发布页面</a> 下载压缩文件 (.zip)</li>
+>   <li>解压文件夹，这将成为你的新固件文件夹</li>
+>   <li>打开 <a href="https://flipperzero.one/update">qFlipper</a>，进入 <code>SD/update</code> 并将固件文件夹移动到该位置</li>
+>   <li>在 Flipper 上，按 <code>Arrow Down</code> 按钮，进入文件菜单。在该菜单中找到更新文件夹</li>
+>   <li>在文件夹内，选择刚刚移动的固件，运行名为 <code>Update</code> 的文件</li>
 > </ul></details>
 
 <br>
 
 ----
 <br>
-<h2 align="center">Build it yourself:</h2>
+<h2 align="center">自行构建:</h2>
 
 ```bash
-To download the repository:
+下载仓库:
 $ git clone --recursive --jobs 8 https://github.com/Next-Flip/Momentum-Firmware.git
 $ cd Momentum-Firmware/
 
-To flash directly to the Flipper (Needs to be connected via USB, qFlipper closed)
+直接刷写到 Flipper（需要通过 USB 连接，qFlipper 已关闭）
 $ ./fbt flash_usb_full
 
-To compile a TGZ package
+编译一个 TGZ 包
 $ ./fbt updater_package
 
-To build and launch a single app:
+构建并启动单个应用程序:
 $ ./fbt launch APPSRC=your_appid
 ```
 
 ----
-<h2 align="center">Stargazers over time</h2>
+<h2 align="center">Stargazers 随时间变化</h2>
 
 [![Stargazers over time](https://starchart.cc/Next-Flip/Momentum-Firmware.svg)](https://starchart.cc/Next-Flip/Momentum-Firmware)
 
 <!-- ----
-<h2 align="center">Contributors</h2>
+<h2 align="center">贡献者</h2>
 
 [![Contributors]()](https://github.com/Next-Flip/Momentum-Firmware/graphs/contributors) -->
 
 
 
-## ❤️ Support
-If you enjoy the firmware please __**spread the word!**__ And if you really love it, maybe consider donating to the team? :D
+## ❤️ 支持
+如果你喜欢这款固件，请 __**广而告之！**__
 
-> **[Ko-fi](https://ko-fi.com/willyjl)**: One-off or Recurring, No signup required
-
-> **[PayPal](https://paypal.me/willyjl1)**: One-off, Signup required
-
-> **BTC**: `1EnCi1HF8Jw6m2dWSUwHLbCRbVBCQSyDKm`
-
-**Thank you <3**
+**感谢支持 <3**
