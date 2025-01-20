@@ -44,10 +44,10 @@ void desktop_settings_scene_pin_setup_on_enter(void* context) {
     desktop_view_pin_input_set_context(app->pin_input_view, app);
     desktop_view_pin_input_set_back_callback(app->pin_input_view, pin_setup_back_callback);
     desktop_view_pin_input_set_done_callback(app->pin_input_view, pin_setup_done_callback);
-    desktop_view_pin_input_set_label_button(app->pin_input_view, "OK");
+    desktop_view_pin_input_set_label_button(app->pin_input_view, "确定");
     desktop_view_pin_input_set_label_primary(app->pin_input_view, 0, 0, NULL);
     desktop_view_pin_input_set_label_secondary(
-        app->pin_input_view, 0, 8, "Enter from 4 to 10 arrows:");
+        app->pin_input_view, 0, 8, "输入4到10个箭头：");
     desktop_view_pin_input_reset_pin(app->pin_input_view);
     desktop_view_pin_input_unlock_input(app->pin_input_view);
     view_dispatcher_switch_to_view(app->view_dispatcher, DesktopSettingsAppViewIdPinInput);
@@ -60,10 +60,10 @@ bool desktop_settings_scene_pin_setup_on_event(void* context, SceneManagerEvent 
     if(event.type == SceneManagerEventTypeCustom) {
         switch(event.event) {
         case DesktopSettingsCustomEvent1stPinEntered:
-            desktop_view_pin_input_set_label_button(app->pin_input_view, "OK");
+            desktop_view_pin_input_set_label_button(app->pin_input_view, "确定");
             desktop_view_pin_input_set_label_primary(app->pin_input_view, 0, 0, NULL);
             desktop_view_pin_input_set_label_secondary(
-                app->pin_input_view, 0, 8, "Confirm your PIN:");
+                app->pin_input_view, 0, 8, "确认您的PIN码：");
             desktop_view_pin_input_reset_pin(app->pin_input_view);
             desktop_view_pin_input_unlock_input(app->pin_input_view);
             consumed = true;

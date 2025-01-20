@@ -20,38 +20,39 @@ void storage_settings_scene_sd_info_on_enter(void* context) {
 
     if(sd_status != FSE_OK) {
         dialog_ex_set_icon(dialog_ex, 83, 22, &I_WarningDolphinFlip_45x42);
-        dialog_ex_set_header(dialog_ex, "SD Card Not Mounted", 64, 3, AlignCenter, AlignTop);
+        dialog_ex_set_header(dialog_ex, "SD卡未安装", 64, 3, AlignCenter, AlignTop);
         dialog_ex_set_text(
-            dialog_ex, "Try to reinsert\nor format SD\ncard.", 3, 19, AlignLeft, AlignTop);
-        dialog_ex_set_center_button_text(dialog_ex, "Ok");
+            dialog_ex, "请尝试重新插入\n或格式化 SD\n卡。", 3, 19, AlignLeft, AlignTop);
+        dialog_ex_set_center_button_text(dialog_ex, "确定");
     } else {
         furi_string_printf(
             app->text_string,
-            "Label: %s\nType: %s\n",
+            "标签: %s\n类型: %s\n",
             sd_info.label,
             sd_api_get_fs_type_text(sd_info.fs_type));
 
         if(sd_info.kb_total < 1024) {
-            furi_string_cat_printf(app->text_string, "Total: %lu KiB\n", sd_info.kb_total);
+            furi_string_cat_printf(app->text_string, "总计: %lu KiB\n", sd_info.kb_total);
         } else if(sd_info.kb_total < 1024 * 1024) {
             furi_string_cat_printf(
-                app->text_string, "Total: %.2f MiB\n", (double)sd_info.kb_total / 1024);
+                app->text_string, "总计: %.2f MiB\n", (double)sd_info.kb_total / 1024);
         } else {
             furi_string_cat_printf(
-                app->text_string, "Total: %.2f GiB\n", (double)sd_info.kb_total / (1024 * 1024));
+                app->text_string, "总计: %.2f GiB\n", (double)sd_info.kb_total / (1024 * 1024));
         }
 
         if(sd_info.kb_free < 1024) {
-            furi_string_cat_printf(app->text_string, "Free: %lu KiB", sd_info.kb_free);
+            furi_string_cat_printf(app->text_string, "剩余: %lu KiB", sd_info.kb_free);
         } else if(sd_info.kb_free < 1024 * 1024) {
             furi_string_cat_printf(
-                app->text_string, "Free: %.2f MiB", (double)sd_info.kb_free / 1024);
+                app->text_string, "剩余: %.2f MiB", (double)sd_info.kb_free / 1024);
         } else {
             furi_string_cat_printf(
-                app->text_string, "Free: %.2f GiB", (double)sd_info.kb_free / (1024 * 1024));
+                app->text_string, "剩余: %.2f GiB", (double)sd_info.kb_free / (1024 * 1024));
         }
         furi_string_cat_printf(
-            app->text_string, "  (%.2f%%)\n", (double)sd_info.kb_free * 100 / sd_info.kb_total);
+            app->text_string,
+            "  (%.2f%%)\n", (double)sd_info.kb_free * 100 / sd_info.kb_total);
 
         furi_string_cat_printf(
             app->text_string,

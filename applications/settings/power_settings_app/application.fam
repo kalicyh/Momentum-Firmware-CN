@@ -1,6 +1,6 @@
 App(
     appid="power_settings",
-    name="Power",
+    name="电源",
     apptype=FlipperAppType.SETTINGS,
     entry_point="power_settings_app",
     requires=[

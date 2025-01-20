@@ -27,12 +27,12 @@ static void desktop_settings_view_pin_setup_howto2_draw(Canvas* canvas, void* mo
         0,
         AlignCenter,
         AlignTop,
-        "Forgotten PIN can only be\n"
-        "reset with entire device.\n"
-        "Read docs: How to reset PIN.");
+        "忘记 PIN 码只能通过\n"
+        "重置整个设备来恢复。\n"
+        "请阅读文档：如何重置 PIN。");
 
-    elements_button_right(canvas, "OK");
-    elements_button_left(canvas, "Cancel");
+    elements_button_right(canvas, "确定");
+    elements_button_left(canvas, "取消");
 }
 
 static bool desktop_settings_view_pin_setup_howto2_input(InputEvent* event, void* context) {
