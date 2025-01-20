@@ -17,7 +17,7 @@ void momentum_app_scene_interface_graphics_pack_on_enter(void* context) {
     Submenu* submenu = app->submenu;
 
     submenu_add_item(
-        submenu, "Default", 0, momentum_app_scene_interface_graphics_pack_submenu_callback, app);
+        submenu, "默认", 0, momentum_app_scene_interface_graphics_pack_submenu_callback, app);
 
     for(size_t i = 0; i < CharList_size(app->asset_pack_names); i++) {
         submenu_add_item(
@@ -28,7 +28,7 @@ void momentum_app_scene_interface_graphics_pack_on_enter(void* context) {
             app);
     }
 
-    submenu_set_header(submenu, "Choose Asset Pack:");
+    submenu_set_header(submenu, "选择资源包：");
 
     submenu_set_selected_item(submenu, app->asset_pack_index);
 

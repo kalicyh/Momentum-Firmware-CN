@@ -47,7 +47,7 @@ class ElfManifestV1:
             "<hI32s?32s",
             self.stack_size,
             self.app_version,
-            bytes(self.name.encode("ascii")),
+            bytes(self.name.encode("UTF-8")),
             bool(self.icon),
             self.icon,
         )

@@ -99,6 +99,7 @@ typedef struct {
     FuriHalSerialId uart_nmea_channel;
     bool file_naming_prefix_after;
     FuriHalVersionColor spoof_color;
+    bool spoof_status;
     ScreenFrameColor rpc_color_fg;
     ScreenFrameColor rpc_color_bg;
 } MomentumSettings;
