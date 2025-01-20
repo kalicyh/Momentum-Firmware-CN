@@ -1,0 +1,200 @@
+From 1a72432b84cd72d1aa94bf486e7cf868ad27a3f3 Mon Sep 17 00:00:00 2001
+From: kalicyh <34980061+kaliCYH@users.noreply.github.com>
+Date: Tue, 21 Jan 2025 01:25:17 +0800
+Subject: [PATCH 08/16] =?UTF-8?q?=F0=9F=A6=84=20refactor(APP):=20gpio?=
+ =?UTF-8?q?=E6=B1=89=E5=8C=96?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ applications/main/gpio/scenes/gpio_scene_start.c   | 14 +++++++-------
+ .../main/gpio/scenes/gpio_scene_usb_uart.c         |  6 +++---
+ .../gpio/scenes/gpio_scene_usb_uart_close_rpc.c    |  4 ++--
+ .../main/gpio/scenes/gpio_scene_usb_uart_config.c  | 10 +++++-----
+ applications/main/gpio/views/gpio_i2c_scanner.c    |  4 ++--
+ applications/main/gpio/views/gpio_i2c_sfp.c        |  2 +-
+ applications/main/gpio/views/gpio_test.c           |  4 ++--
+ 7 files changed, 22 insertions(+), 22 deletions(-)
+
+diff --git a/applications/main/gpio/scenes/gpio_scene_start.c b/applications/main/gpio/scenes/gpio_scene_start.c
+index a3ec8559f..6f24c24ff 100644
+--- a/applications/main/gpio/scenes/gpio_scene_start.c
++++ b/applications/main/gpio/scenes/gpio_scene_start.c
+@@ -21,8 +21,8 @@ enum GpioOtg {
+ };
+ 
+ const char* const gpio_otg_text[GpioOtgSettingsNum] = {
+-    "OFF",
+-    "ON",
++    "关闭",
++    "开启",
+ };
+ 
+ static void gpio_scene_start_var_list_enter_callback(void* context, uint32_t index) {
+@@ -59,18 +59,18 @@ void gpio_scene_start_on_enter(void* context) {
+     variable_item_list_set_enter_callback(
+         var_item_list, gpio_scene_start_var_list_enter_callback, app);
+ 
+-    variable_item_list_add(var_item_list, "USB-UART Bridge", 0, NULL, NULL);
++    variable_item_list_add(var_item_list, "USB-UART 桥接", 0, NULL, NULL);
+ 
+-    variable_item_list_add(var_item_list, "GPIO Manual Control", 0, NULL, NULL);
++    variable_item_list_add(var_item_list, "GPIO 手动控制", 0, NULL, NULL);
+ 
+     item = variable_item_list_add(
+         var_item_list,
+-        "5V on GPIO",
++        "GPIO 供电 5V",
+         GpioOtgSettingsNum,
+         gpio_scene_start_var_list_change_callback,
+         app);
+     if(furi_hal_power_is_charging()) {
+-        variable_item_set_locked(item, true, "Unplug USB!");
++        variable_item_set_locked(item, true, "请拔掉 USB！");
+     } else if(furi_hal_power_is_otg_enabled()) {
+         variable_item_set_current_value_index(item, GpioOtgOn);
+         variable_item_set_current_value_text(item, gpio_otg_text[GpioOtgOn]);
+@@ -79,7 +79,7 @@ void gpio_scene_start_on_enter(void* context) {
+         variable_item_set_current_value_text(item, gpio_otg_text[GpioOtgOff]);
+     }
+ 
+-    variable_item_list_add(var_item_list, "I2C-Scanner", 0, NULL, NULL);
++    variable_item_list_add(var_item_list, "I2C-扫描器", 0, NULL, NULL);
+     variable_item_list_add(var_item_list, "I2C-SFP", 0, NULL, NULL);
+ 
+     variable_item_list_set_selected_item(
+diff --git a/applications/main/gpio/scenes/gpio_scene_usb_uart.c b/applications/main/gpio/scenes/gpio_scene_usb_uart.c
+index e3e7e8c24..68e6c78cb 100644
+--- a/applications/main/gpio/scenes/gpio_scene_usb_uart.c
++++ b/applications/main/gpio/scenes/gpio_scene_usb_uart.c
+@@ -54,9 +54,9 @@ bool gpio_scene_usb_uart_on_event(void* context, SceneManagerEvent event) {
+     } else if(event.type == SceneManagerEventTypeBack) {
+         DialogEx* dialog = app->dialog;
+         dialog_ex_set_context(dialog, app);
+-        dialog_ex_set_left_button_text(dialog, "Exit");
+-        dialog_ex_set_right_button_text(dialog, "Stay");
+-        dialog_ex_set_header(dialog, "Exit USB-UART?", 22, 12, AlignLeft, AlignTop);
++        dialog_ex_set_left_button_text(dialog, "退出");
++        dialog_ex_set_right_button_text(dialog, "停留");
++        dialog_ex_set_header(dialog, "退出 USB-UART？", 22, 12, AlignLeft, AlignTop);
+         dialog_ex_set_result_callback(dialog, gpio_scene_usb_uart_dialog_callback);
+         view_dispatcher_switch_to_view(app->view_dispatcher, GpioAppViewExitConfirm);
+         return true;
+diff --git a/applications/main/gpio/scenes/gpio_scene_usb_uart_close_rpc.c b/applications/main/gpio/scenes/gpio_scene_usb_uart_close_rpc.c
+index 59ba101f6..c834fdd64 100644
+--- a/applications/main/gpio/scenes/gpio_scene_usb_uart_close_rpc.c
++++ b/applications/main/gpio/scenes/gpio_scene_usb_uart_close_rpc.c
+@@ -6,7 +6,7 @@ void gpio_scene_usb_uart_close_rpc_on_enter(void* context) {
+ 
+     widget_add_icon_element(app->widget, 78, 0, &I_ActiveConnection_50x64);
+     widget_add_string_multiline_element(
+-        app->widget, 3, 2, AlignLeft, AlignTop, FontPrimary, "Connection\nIs Active!");
++        app->widget, 3, 2, AlignLeft, AlignTop, FontPrimary, "连接\n处于活动状态!");
+     widget_add_string_multiline_element(
+         app->widget,
+         3,
+@@ -14,7 +14,7 @@ void gpio_scene_usb_uart_close_rpc_on_enter(void* context) {
+         AlignLeft,
+         AlignTop,
+         FontSecondary,
+-        "Disconnect from\nPC or phone to\nuse this function.");
++        "断开与\nPC或手机的连接\n以使用此功能。");
+ 
+     view_dispatcher_switch_to_view(app->view_dispatcher, GpioAppViewUsbUartCloseRpc);
+ }
+diff --git a/applications/main/gpio/scenes/gpio_scene_usb_uart_config.c b/applications/main/gpio/scenes/gpio_scene_usb_uart_config.c
+index f8b142c63..307458625 100644
+--- a/applications/main/gpio/scenes/gpio_scene_usb_uart_config.c
++++ b/applications/main/gpio/scenes/gpio_scene_usb_uart_config.c
+@@ -137,13 +137,13 @@ void gpio_scene_usb_uart_cfg_on_enter(void* context) {
+     VariableItem* item;
+     char br_text[8];
+ 
+-    item = variable_item_list_add(var_item_list, "USB Channel", 2, line_vcp_cb, app);
++    item = variable_item_list_add(var_item_list, "USB 通道", 2, line_vcp_cb, app);
+     variable_item_set_current_value_index(item, app->usb_uart_cfg->vcp_ch);
+     variable_item_set_current_value_text(item, vcp_ch[app->usb_uart_cfg->vcp_ch]);
+ 
+     item = variable_item_list_add(
+         var_item_list,
+-        "Baudrate",
++        "波特率",
+         sizeof(baudrate_list) / sizeof(baudrate_list[0]) + 1,
+         line_baudrate_cb,
+         app);
+@@ -156,19 +156,19 @@ void gpio_scene_usb_uart_cfg_on_enter(void* context) {
+             item, baudrate_mode[app->usb_uart_cfg->baudrate_mode]);
+     }
+ 
+-    item = variable_item_list_add(var_item_list, "UART Pins", 2, line_port_cb, app);
++    item = variable_item_list_add(var_item_list, "UART 引脚", 2, line_port_cb, app);
+     variable_item_set_current_value_index(item, app->usb_uart_cfg->uart_ch);
+     variable_item_set_current_value_text(item, uart_ch[app->usb_uart_cfg->uart_ch]);
+ 
+     item = variable_item_list_add(
+-        var_item_list, "RTS/DTR Pins", COUNT_OF(flow_pins), line_flow_cb, app);
++        var_item_list, "RTS/DTR 引脚", COUNT_OF(flow_pins), line_flow_cb, app);
+     variable_item_set_current_value_index(item, app->usb_uart_cfg->flow_pins);
+     variable_item_set_current_value_text(item, flow_pins[app->usb_uart_cfg->flow_pins]);
+     app->var_item_flow = item;
+     line_ensure_flow_invariant(app);
+ 
+     item = variable_item_list_add(
+-        var_item_list, "DE/RE Pin", COUNT_OF(software_de_re), line_software_de_re_cb, app);
++        var_item_list, "DE/RE 引脚", COUNT_OF(software_de_re), line_software_de_re_cb, app);
+     variable_item_set_current_value_index(item, app->usb_uart_cfg->software_de_re);
+     variable_item_set_current_value_text(item, software_de_re[app->usb_uart_cfg->software_de_re]);
+ 
+diff --git a/applications/main/gpio/views/gpio_i2c_scanner.c b/applications/main/gpio/views/gpio_i2c_scanner.c
+index fc9ed78a7..dcda75b3d 100644
+--- a/applications/main/gpio/views/gpio_i2c_scanner.c
++++ b/applications/main/gpio/views/gpio_i2c_scanner.c
+@@ -21,12 +21,12 @@ static void gpio_i2c_scanner_draw_callback(Canvas* canvas, void* _model) {
+     GpioI2CScannerModel* model = _model;
+ 
+     char temp_str[25];
+-    elements_button_center(canvas, "Start scan");
++    elements_button_center(canvas, "开始扫描");
+     canvas_draw_line(canvas, 2, 10, 125, 10);
+     canvas_draw_line(canvas, 2, 52, 125, 52);
+ 
+     canvas_set_font(canvas, FontPrimary);
+-    canvas_draw_str(canvas, 2, 9, "I2C-Scanner");
++    canvas_draw_str(canvas, 2, 9, "I2C-扫描器");
+     canvas_draw_str(canvas, 3, 25, "SDA:");
+     canvas_draw_str(canvas, 3, 42, "SCL:");
+ 
+diff --git a/applications/main/gpio/views/gpio_i2c_sfp.c b/applications/main/gpio/views/gpio_i2c_sfp.c
+index c8e14ce7a..c43f90024 100644
+--- a/applications/main/gpio/views/gpio_i2c_sfp.c
++++ b/applications/main/gpio/views/gpio_i2c_sfp.c
+@@ -34,7 +34,7 @@ static void gpio_i2c_sfp_draw_callback(Canvas* canvas, void* _model) {
+     char temp_str[280];
+ 
+     canvas_set_font(canvas, FontSecondary);
+-    elements_button_center(canvas, "Read");
++    elements_button_center(canvas, "读取");
+     canvas_draw_str(canvas, 2, 63, "P15 SCL");
+     canvas_draw_str(canvas, 92, 63, "P16 SDA");
+ 
+diff --git a/applications/main/gpio/views/gpio_test.c b/applications/main/gpio/views/gpio_test.c
+index c154a7275..a3e0c6d74 100644
+--- a/applications/main/gpio/views/gpio_test.c
++++ b/applications/main/gpio/views/gpio_test.c
+@@ -21,10 +21,10 @@ static bool gpio_test_process_ok(GpioTest* gpio_test, InputEvent* event);
+ static void gpio_test_draw_callback(Canvas* canvas, void* _model) {
+     GpioTestModel* model = _model;
+     canvas_set_font(canvas, FontPrimary);
+-    elements_multiline_text_aligned(canvas, 64, 2, AlignCenter, AlignTop, "GPIO Output Mode Test");
++    elements_multiline_text_aligned(canvas, 64, 2, AlignCenter, AlignTop, "GPIO 输出模式测试");
+     canvas_set_font(canvas, FontSecondary);
+     elements_multiline_text_aligned(
+-        canvas, 64, 16, AlignCenter, AlignTop, "Press < or > to change pin");
++        canvas, 64, 16, AlignCenter, AlignTop, "按 < 或 > 更改引脚");
+     elements_multiline_text_aligned(
+         canvas,
+         64,
+-- 
+2.39.5 (Apple Git-154)
+

@@ -1,0 +1,260 @@
+From 52b3be7b2613ce83c4c8b3e9ad8ce53aa61e3b91 Mon Sep 17 00:00:00 2001
+From: kalicyh <34980061+kaliCYH@users.noreply.github.com>
+Date: Tue, 21 Jan 2025 01:27:17 +0800
+Subject: [PATCH 11/16] =?UTF-8?q?=F0=9F=A6=84=20refactor(APP):=20rfid=20?=
+ =?UTF-8?q?=E6=B1=89=E5=8C=96?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ .../scenes/lfrfid_scene_enter_password.c      |  2 +-
+ .../scenes/lfrfid_scene_extra_actions.c       | 26 +++++++++----------
+ .../lfrfid/scenes/lfrfid_scene_raw_name.c     |  2 +-
+ .../scenes/lfrfid_scene_read_key_menu.c       |  6 ++---
+ .../lfrfid/scenes/lfrfid_scene_save_data.c    |  2 +-
+ .../lfrfid/scenes/lfrfid_scene_save_name.c    |  2 +-
+ .../scenes/lfrfid_scene_saved_key_menu.c      | 14 +++++-----
+ .../main/lfrfid/scenes/lfrfid_scene_start.c   |  8 +++---
+ .../main/lfrfid/views/lfrfid_view_read.c      |  8 +++---
+ 9 files changed, 35 insertions(+), 35 deletions(-)
+
+diff --git a/applications/main/lfrfid/scenes/lfrfid_scene_enter_password.c b/applications/main/lfrfid/scenes/lfrfid_scene_enter_password.c
+index d387122eb..d611909a5 100644
+--- a/applications/main/lfrfid/scenes/lfrfid_scene_enter_password.c
++++ b/applications/main/lfrfid/scenes/lfrfid_scene_enter_password.c
+@@ -20,7 +20,7 @@ void lfrfid_scene_enter_password_on_enter(void* context) {
+         bit_lib_num_to_bytes_be(pass, 4, app->password);
+     }
+ 
+-    byte_input_set_header_text(byte_input, "Enter the password in hex");
++    byte_input_set_header_text(byte_input, "请输入密码（十六进制）");
+ 
+     byte_input_set_result_callback(
+         byte_input, lfrfid_text_input_callback, NULL, app, app->password, 4);
+diff --git a/applications/main/lfrfid/scenes/lfrfid_scene_extra_actions.c b/applications/main/lfrfid/scenes/lfrfid_scene_extra_actions.c
+index 563f92409..8387b2e8f 100644
+--- a/applications/main/lfrfid/scenes/lfrfid_scene_extra_actions.c
++++ b/applications/main/lfrfid/scenes/lfrfid_scene_extra_actions.c
+@@ -21,45 +21,45 @@ void lfrfid_scene_extra_actions_on_enter(void* context) {
+ 
+     submenu_add_item(
+         submenu,
+-        "Read ASK (FDX,Regular)",
++        "读取 ASK (FDX,常规)",
+         SubmenuIndexASK,
+         lfrfid_scene_extra_actions_submenu_callback,
+         app);
+     submenu_add_item(
+         submenu,
+-        "Read PSK (Indala)",
++        "读取 PSK (Indala)",
+         SubmenuIndexPSK,
+         lfrfid_scene_extra_actions_submenu_callback,
+         app);
+     submenu_add_item(
+         submenu,
+-        "Clear T5577 Password",
++        "清除 T5577 密码",
+         SubmenuIndexClearT5577,
+         lfrfid_scene_extra_actions_submenu_callback,
+         app);
+ 
+     submenu_add_lockable_item(
+         submenu,
+-        "Read RAW RFID data",
++        "读取 RAW RFID 数据",
+         SubmenuIndexRAW,
+         lfrfid_scene_extra_actions_submenu_callback,
+         app,
+         !furi_hal_rtc_is_flag_set(FuriHalRtcFlagDebug),
+-        "Enable\n"
+-        "Settings >\n"
+-        "System >\n"
+-        "Debug");
++        "启用\n"
++        "设置 >\n"
++        "系统 >\n"
++        "调试");
+     submenu_add_lockable_item(
+         submenu,
+-        "Emulate RAW RFID data",
++        "仿真 RAW RFID 数据",
+         SubmenuIndexRAWEmulate,
+         lfrfid_scene_extra_actions_submenu_callback,
+         app,
+         !furi_hal_rtc_is_flag_set(FuriHalRtcFlagDebug),
+-        "Enable\n"
+-        "Settings >\n"
+-        "System >\n"
+-        "Debug");
++        "启用\n"
++        "设置 >\n"
++        "系统 >\n"
++        "调试");
+ 
+     submenu_set_selected_item(
+         submenu, scene_manager_get_scene_state(app->scene_manager, LfRfidSceneExtraActions));
+diff --git a/applications/main/lfrfid/scenes/lfrfid_scene_raw_name.c b/applications/main/lfrfid/scenes/lfrfid_scene_raw_name.c
+index 945b8fd8f..4f0d2745c 100644
+--- a/applications/main/lfrfid/scenes/lfrfid_scene_raw_name.c
++++ b/applications/main/lfrfid/scenes/lfrfid_scene_raw_name.c
+@@ -13,7 +13,7 @@ void lfrfid_scene_raw_name_on_enter(void* context) {
+         lfrfid_text_store_set(app, "%s", key_name);
+     }
+ 
+-    text_input_set_header_text(text_input, "Name the raw file");
++    text_input_set_header_text(text_input, "命名原始文件");
+ 
+     text_input_set_result_callback(
+         text_input,
+diff --git a/applications/main/lfrfid/scenes/lfrfid_scene_read_key_menu.c b/applications/main/lfrfid/scenes/lfrfid_scene_read_key_menu.c
+index 22b083c76..5f131d4b9 100644
+--- a/applications/main/lfrfid/scenes/lfrfid_scene_read_key_menu.c
++++ b/applications/main/lfrfid/scenes/lfrfid_scene_read_key_menu.c
+@@ -18,11 +18,11 @@ void lfrfid_scene_read_key_menu_on_enter(void* context) {
+     Submenu* submenu = app->submenu;
+ 
+     submenu_add_item(
+-        submenu, "Save", SubmenuIndexSave, lfrfid_scene_read_key_menu_submenu_callback, app);
++        submenu, "保存", SubmenuIndexSave, lfrfid_scene_read_key_menu_submenu_callback, app);
+     submenu_add_item(
+-        submenu, "Emulate", SubmenuIndexEmulate, lfrfid_scene_read_key_menu_submenu_callback, app);
++        submenu, "模拟", SubmenuIndexEmulate, lfrfid_scene_read_key_menu_submenu_callback, app);
+     submenu_add_item(
+-        submenu, "Write", SubmenuIndexWrite, lfrfid_scene_read_key_menu_submenu_callback, app);
++        submenu, "写入", SubmenuIndexWrite, lfrfid_scene_read_key_menu_submenu_callback, app);
+ 
+     submenu_set_selected_item(
+         submenu, scene_manager_get_scene_state(app->scene_manager, LfRfidSceneReadKeyMenu));
+diff --git a/applications/main/lfrfid/scenes/lfrfid_scene_save_data.c b/applications/main/lfrfid/scenes/lfrfid_scene_save_data.c
+index 20c8a10df..dd074e447 100644
+--- a/applications/main/lfrfid/scenes/lfrfid_scene_save_data.c
++++ b/applications/main/lfrfid/scenes/lfrfid_scene_save_data.c
+@@ -13,7 +13,7 @@ void lfrfid_scene_save_data_on_enter(void* context) {
+         protocol_dict_get_data(app->dict, app->protocol_id, app->new_key_data, size);
+     }
+ 
+-    byte_input_set_header_text(byte_input, "Enter the data in hex");
++    byte_input_set_header_text(byte_input, "以十六进制输入数据");
+ 
+     byte_input_set_result_callback(
+         byte_input, lfrfid_text_input_callback, NULL, app, app->new_key_data, size);
+diff --git a/applications/main/lfrfid/scenes/lfrfid_scene_save_name.c b/applications/main/lfrfid/scenes/lfrfid_scene_save_name.c
+index 2f223ae87..bb60f4a2f 100644
+--- a/applications/main/lfrfid/scenes/lfrfid_scene_save_name.c
++++ b/applications/main/lfrfid/scenes/lfrfid_scene_save_name.c
+@@ -27,7 +27,7 @@ void lfrfid_scene_save_name_on_enter(void* context) {
+         path_extract_dirname(furi_string_get_cstr(app->file_path), folder_path);
+     }
+ 
+-    text_input_set_header_text(text_input, "Name the card");
++    text_input_set_header_text(text_input, "为卡片命名");
+     text_input_set_result_callback(
+         text_input,
+         lfrfid_text_input_callback,
+diff --git a/applications/main/lfrfid/scenes/lfrfid_scene_saved_key_menu.c b/applications/main/lfrfid/scenes/lfrfid_scene_saved_key_menu.c
+index 06c835bfb..53ea24a72 100644
+--- a/applications/main/lfrfid/scenes/lfrfid_scene_saved_key_menu.c
++++ b/applications/main/lfrfid/scenes/lfrfid_scene_saved_key_menu.c
+@@ -22,23 +22,23 @@ void lfrfid_scene_saved_key_menu_on_enter(void* context) {
+     Submenu* submenu = app->submenu;
+ 
+     submenu_add_item(
+-        submenu, "Emulate", SubmenuIndexEmulate, lfrfid_scene_saved_key_menu_submenu_callback, app);
++        submenu, "模拟", SubmenuIndexEmulate, lfrfid_scene_saved_key_menu_submenu_callback, app);
+     submenu_add_item(
+-        submenu, "Write", SubmenuIndexWrite, lfrfid_scene_saved_key_menu_submenu_callback, app);
++        submenu, "写入", SubmenuIndexWrite, lfrfid_scene_saved_key_menu_submenu_callback, app);
+     submenu_add_item(
+         submenu,
+-        "Write and set password",
++        "写入并设置密码",
+         SubmenuIndexWriteAndSetPass,
+         lfrfid_scene_saved_key_menu_submenu_callback,
+         app);
+     submenu_add_item(
+-        submenu, "Edit", SubmenuIndexEdit, lfrfid_scene_saved_key_menu_submenu_callback, app);
++        submenu, "编辑", SubmenuIndexEdit, lfrfid_scene_saved_key_menu_submenu_callback, app);
+     submenu_add_item(
+-        submenu, "Rename", SubmenuIndexRename, lfrfid_scene_saved_key_menu_submenu_callback, app);
++        submenu, "重命名", SubmenuIndexRename, lfrfid_scene_saved_key_menu_submenu_callback, app);
+     submenu_add_item(
+-        submenu, "Delete", SubmenuIndexDelete, lfrfid_scene_saved_key_menu_submenu_callback, app);
++        submenu, "删除", SubmenuIndexDelete, lfrfid_scene_saved_key_menu_submenu_callback, app);
+     submenu_add_item(
+-        submenu, "Info", SubmenuIndexInfo, lfrfid_scene_saved_key_menu_submenu_callback, app);
++        submenu, "信息", SubmenuIndexInfo, lfrfid_scene_saved_key_menu_submenu_callback, app);
+ 
+     submenu_set_selected_item(
+         submenu, scene_manager_get_scene_state(app->scene_manager, LfRfidSceneSavedKeyMenu));
+diff --git a/applications/main/lfrfid/scenes/lfrfid_scene_start.c b/applications/main/lfrfid/scenes/lfrfid_scene_start.c
+index 5d0e6112a..50cf22d1f 100644
+--- a/applications/main/lfrfid/scenes/lfrfid_scene_start.c
++++ b/applications/main/lfrfid/scenes/lfrfid_scene_start.c
+@@ -12,18 +12,18 @@ void lfrfid_scene_start_on_enter(void* context) {
+     Submenu* submenu = app->submenu;
+ 
+     submenu_add_item(
+-        submenu, "Read", LfRfidMenuIndexRead, lfrfid_scene_start_submenu_callback, app);
++        submenu, "读取", LfRfidMenuIndexRead, lfrfid_scene_start_submenu_callback, app);
+     submenu_add_item(
+-        submenu, "Saved", LfRfidMenuIndexSaved, lfrfid_scene_start_submenu_callback, app);
++        submenu, "已保存", LfRfidMenuIndexSaved, lfrfid_scene_start_submenu_callback, app);
+     submenu_add_item(
+         submenu,
+-        "Add Manually",
++        "手动添加",
+         LfRfidMenuIndexAddManually,
+         lfrfid_scene_start_submenu_callback,
+         app);
+     submenu_add_item(
+         submenu,
+-        "Extra Actions",
++        "其他操作",
+         LfRfidMenuIndexExtraActions,
+         lfrfid_scene_start_submenu_callback,
+         app);
+diff --git a/applications/main/lfrfid/views/lfrfid_view_read.c b/applications/main/lfrfid/views/lfrfid_view_read.c
+index a1c859af9..c8ce5cb0b 100644
+--- a/applications/main/lfrfid/views/lfrfid_view_read.c
++++ b/applications/main/lfrfid/views/lfrfid_view_read.c
+@@ -22,7 +22,7 @@ static void lfrfid_view_read_draw_callback(Canvas* canvas, void* _model) {
+     canvas_set_font(canvas, FontPrimary);
+ 
+     if(model->read_mode == LfRfidReadAsk) {
+-        canvas_draw_str(canvas, 70, 16, "Reading 1/2");
++        canvas_draw_str(canvas, 70, 16, "读取 1/2");
+ 
+         canvas_draw_str(canvas, 77, 29, "ASK");
+         canvas_draw_icon(canvas, 70, 22, &I_ButtonRight_4x7);
+@@ -31,7 +31,7 @@ static void lfrfid_view_read_draw_callback(Canvas* canvas, void* _model) {
+         canvas_set_font(canvas, FontSecondary);
+         canvas_draw_str(canvas, 77, 43, "PSK");
+     } else if(model->read_mode == LfRfidReadPsk) {
+-        canvas_draw_str(canvas, 70, 16, "Reading 2/2");
++        canvas_draw_str(canvas, 70, 16, "读取 2/2");
+ 
+         canvas_draw_str(canvas, 77, 43, "PSK");
+         canvas_draw_icon(canvas, 70, 36, &I_ButtonRight_4x7);
+@@ -40,7 +40,7 @@ static void lfrfid_view_read_draw_callback(Canvas* canvas, void* _model) {
+         canvas_set_font(canvas, FontSecondary);
+         canvas_draw_str(canvas, 77, 29, "ASK");
+     } else {
+-        canvas_draw_str(canvas, 72, 16, "Reading");
++        canvas_draw_str(canvas, 72, 16, "读取");
+ 
+         if(model->read_mode == LfRfidReadAskOnly) {
+             canvas_draw_str(canvas, 77, 35, "ASK");
+@@ -51,7 +51,7 @@ static void lfrfid_view_read_draw_callback(Canvas* canvas, void* _model) {
+     }
+ 
+     canvas_set_font(canvas, FontSecondary);
+-    canvas_draw_str(canvas, 61, 56, "Don't move card");
++    canvas_draw_str(canvas, 61, 56, "请勿移动卡片");
+ }
+ 
+ void lfrfid_view_read_enter(void* context) {
+-- 
+2.39.5 (Apple Git-154)
+

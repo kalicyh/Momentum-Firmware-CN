@@ -1,0 +1,86 @@
+From 36451ad910883634521280c479de05842718fa7f Mon Sep 17 00:00:00 2001
+From: kalicyh <34980061+kaliCYH@users.noreply.github.com>
+Date: Tue, 21 Jan 2025 01:25:51 +0800
+Subject: [PATCH 09/16] =?UTF-8?q?=F0=9F=A6=84=20refactor(APP):=20ibutton?=
+ =?UTF-8?q?=E6=B1=89=E5=8C=96?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ .../main/ibutton/scenes/ibutton_scene_add_value.c  |  2 +-
+ .../ibutton/scenes/ibutton_scene_saved_key_menu.c  | 14 +++++++-------
+ .../main/ibutton/scenes/ibutton_scene_start.c      |  6 +++---
+ 3 files changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/applications/main/ibutton/scenes/ibutton_scene_add_value.c b/applications/main/ibutton/scenes/ibutton_scene_add_value.c
+index 9815e5281..8130dcb22 100644
+--- a/applications/main/ibutton/scenes/ibutton_scene_add_value.c
++++ b/applications/main/ibutton/scenes/ibutton_scene_add_value.c
+@@ -12,7 +12,7 @@ static void ibutton_scene_add_type_byte_changed_callback(void* context) {
+ 
+ void ibutton_scene_add_value_on_enter(void* context) {
+     iButton* ibutton = context;
+-    byte_input_set_header_text(ibutton->byte_input, "Enter the key");
++    byte_input_set_header_text(ibutton->byte_input, "输入密钥");
+ 
+     iButtonEditableData editable_data;
+     ibutton_protocols_get_editable_data(ibutton->protocols, ibutton->key, &editable_data);
+diff --git a/applications/main/ibutton/scenes/ibutton_scene_saved_key_menu.c b/applications/main/ibutton/scenes/ibutton_scene_saved_key_menu.c
+index 6727c5458..0ab850757 100644
+--- a/applications/main/ibutton/scenes/ibutton_scene_saved_key_menu.c
++++ b/applications/main/ibutton/scenes/ibutton_scene_saved_key_menu.c
+@@ -18,26 +18,26 @@ void ibutton_scene_saved_key_menu_on_enter(void* context) {
+     const uint32_t features = ibutton_protocols_get_features(
+         ibutton->protocols, ibutton_key_get_protocol_id(ibutton->key));
+ 
+-    submenu_add_item(submenu, "Emulate", SubmenuIndexEmulate, ibutton_submenu_callback, ibutton);
++    submenu_add_item(submenu, "仿真", SubmenuIndexEmulate, ibutton_submenu_callback, ibutton);
+ 
+     if(features & iButtonProtocolFeatureWriteId) {
+         submenu_add_item(
+-            submenu, "Write ID", SubmenuIndexWriteId, ibutton_submenu_callback, ibutton);
++            submenu, "写入 ID", SubmenuIndexWriteId, ibutton_submenu_callback, ibutton);
+     }
+ 
+     if(features & iButtonProtocolFeatureWriteCopy) {
+         submenu_add_item(
+             submenu,
+-            "Full Write on Same Type",
++            "同类型完全写入",
+             SubmenuIndexWriteCopy,
+             ibutton_submenu_callback,
+             ibutton);
+     }
+ 
+-    submenu_add_item(submenu, "Edit", SubmenuIndexEdit, ibutton_submenu_callback, ibutton);
+-    submenu_add_item(submenu, "Rename", SubmenuIndexRename, ibutton_submenu_callback, ibutton);
+-    submenu_add_item(submenu, "Delete", SubmenuIndexDelete, ibutton_submenu_callback, ibutton);
+-    submenu_add_item(submenu, "Info", SubmenuIndexInfo, ibutton_submenu_callback, ibutton);
++    submenu_add_item(submenu, "编辑", SubmenuIndexEdit, ibutton_submenu_callback, ibutton);
++    submenu_add_item(submenu, "重命名", SubmenuIndexRename, ibutton_submenu_callback, ibutton);
++    submenu_add_item(submenu, "删除", SubmenuIndexDelete, ibutton_submenu_callback, ibutton);
++    submenu_add_item(submenu, "信息", SubmenuIndexInfo, ibutton_submenu_callback, ibutton);
+ 
+     submenu_set_selected_item(
+         submenu, scene_manager_get_scene_state(ibutton->scene_manager, iButtonSceneSavedKeyMenu));
+diff --git a/applications/main/ibutton/scenes/ibutton_scene_start.c b/applications/main/ibutton/scenes/ibutton_scene_start.c
+index 63a4cf869..957f9fbb7 100644
+--- a/applications/main/ibutton/scenes/ibutton_scene_start.c
++++ b/applications/main/ibutton/scenes/ibutton_scene_start.c
+@@ -14,9 +14,9 @@ void ibutton_scene_start_on_enter(void* context) {
+ 
+     ibutton_reset_key(ibutton);
+ 
+-    submenu_add_item(submenu, "Read", SubmenuIndexRead, ibutton_submenu_callback, ibutton);
+-    submenu_add_item(submenu, "Saved", SubmenuIndexSaved, ibutton_submenu_callback, ibutton);
+-    submenu_add_item(submenu, "Add Manually", SubmenuIndexAdd, ibutton_submenu_callback, ibutton);
++    submenu_add_item(submenu, "读取", SubmenuIndexRead, ibutton_submenu_callback, ibutton);
++    submenu_add_item(submenu, "已保存", SubmenuIndexSaved, ibutton_submenu_callback, ibutton);
++    submenu_add_item(submenu, "手动添加", SubmenuIndexAdd, ibutton_submenu_callback, ibutton);
+ 
+     submenu_set_selected_item(
+         submenu, scene_manager_get_scene_state(ibutton->scene_manager, iButtonSceneStart));
+-- 
+2.39.5 (Apple Git-154)
+

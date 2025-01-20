@@ -1,0 +1,182 @@
+From 388db490e84c6d3dc1eaa28916697c889ff54d30 Mon Sep 17 00:00:00 2001
+From: kalicyh <34980061+kaliCYH@users.noreply.github.com>
+Date: Tue, 21 Jan 2025 01:23:15 +0800
+Subject: [PATCH 06/16] =?UTF-8?q?=F0=9F=A6=84=20refactor(APP):=20archive?=
+ =?UTF-8?q?=E6=B1=89=E5=8C=96?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ .../archive/scenes/archive_scene_delete.c     |  4 +--
+ .../archive/scenes/archive_scene_new_dir.c    |  2 +-
+ .../archive/scenes/archive_scene_rename.c     |  2 +-
+ .../archive/scenes/archive_scene_search.c     |  2 +-
+ .../main/archive/views/archive_browser_view.c | 28 +++++++++----------
+ 5 files changed, 19 insertions(+), 19 deletions(-)
+
+diff --git a/applications/main/archive/scenes/archive_scene_delete.c b/applications/main/archive/scenes/archive_scene_delete.c
+index 217e4a490..c7828ed6d 100644
+--- a/applications/main/archive/scenes/archive_scene_delete.c
++++ b/applications/main/archive/scenes/archive_scene_delete.c
+@@ -17,9 +17,9 @@ void archive_scene_delete_on_enter(void* context) {
+     ArchiveApp* app = (ArchiveApp*)context;
+ 
+     widget_add_button_element(
+-        app->widget, GuiButtonTypeLeft, "Cancel", archive_scene_delete_widget_callback, app);
++        app->widget, GuiButtonTypeLeft, "取消", archive_scene_delete_widget_callback, app);
+     widget_add_button_element(
+-        app->widget, GuiButtonTypeRight, "Delete", archive_scene_delete_widget_callback, app);
++        app->widget, GuiButtonTypeRight, "删除", archive_scene_delete_widget_callback, app);
+ 
+     FuriString* filename;
+     filename = furi_string_alloc();
+diff --git a/applications/main/archive/scenes/archive_scene_new_dir.c b/applications/main/archive/scenes/archive_scene_new_dir.c
+index ba8226d5b..aa62351ef 100644
+--- a/applications/main/archive/scenes/archive_scene_new_dir.c
++++ b/applications/main/archive/scenes/archive_scene_new_dir.c
+@@ -21,7 +21,7 @@ void archive_scene_new_dir_on_enter(void* context) {
+     TextInput* text_input = archive->text_input;
+ 
+     archive->text_store[0] = '\0';
+-    text_input_set_header_text(text_input, "New directory:");
++    text_input_set_header_text(text_input, "新建文件夹:");
+ 
+     text_input_set_result_callback(
+         text_input,
+diff --git a/applications/main/archive/scenes/archive_scene_rename.c b/applications/main/archive/scenes/archive_scene_rename.c
+index 053bc74f5..21c9574f7 100644
+--- a/applications/main/archive/scenes/archive_scene_rename.c
++++ b/applications/main/archive/scenes/archive_scene_rename.c
+@@ -36,7 +36,7 @@ void archive_scene_rename_on_enter(void* context) {
+         path_extract_basename(furi_string_get_cstr(current->path), path_name);
+     }
+     strlcpy(archive->text_store, furi_string_get_cstr(path_name), MAX_NAME_LEN);
+-    text_input_set_header_text(text_input, is_file ? "Rename file:" : "Rename directory:");
++    text_input_set_header_text(text_input, is_file ? "重命名文件:" : "重命名目录:");
+ 
+     // Get current folder (for file) or previous folder (for folder) for validator
+     path_extract_dirname(furi_string_get_cstr(current->path), path_folder);
+diff --git a/applications/main/archive/scenes/archive_scene_search.c b/applications/main/archive/scenes/archive_scene_search.c
+index 637bee39e..5f47db947 100644
+--- a/applications/main/archive/scenes/archive_scene_search.c
++++ b/applications/main/archive/scenes/archive_scene_search.c
+@@ -21,7 +21,7 @@ void archive_scene_search_on_enter(void* context) {
+ 
+     TextInput* text_input = archive->text_input;
+     strlcpy(archive->text_store, "", MAX_NAME_LEN);
+-    text_input_set_header_text(text_input, "Search for files:");
++    text_input_set_header_text(text_input, "搜索文件:");
+ 
+     text_input_set_result_callback(
+         text_input,
+diff --git a/applications/main/archive/views/archive_browser_view.c b/applications/main/archive/views/archive_browser_view.c
+index 658ae1a92..ae425b52f 100644
+--- a/applications/main/archive/views/archive_browser_view.c
++++ b/applications/main/archive/views/archive_browser_view.c
+@@ -124,33 +124,33 @@ static void render_item_menu(Canvas* canvas, ArchiveBrowserViewModel* model) {
+                 if(model->clipboard != NULL) {
+                     archive_menu_add_item(
+                         menu_array_push_raw(model->context_menu),
+-                        "Paste",
++                        "粘贴",
+                         ArchiveBrowserEventFileMenuPaste);
+                 } else if(selected) {
+                     archive_menu_add_item(
+                         menu_array_push_raw(model->context_menu),
+-                        "Cut",
++                        "剪切",
+                         ArchiveBrowserEventFileMenuCut);
+                     archive_menu_add_item(
+                         menu_array_push_raw(model->context_menu),
+-                        "Copy",
++                        "复制",
+                         ArchiveBrowserEventFileMenuCopy);
+                 }
+                 archive_menu_add_item(
+                     menu_array_push_raw(model->context_menu),
+-                    "New Dir",
++                    "新建目录",
+                     ArchiveBrowserEventFileMenuNewDir);
+             }
+             if(selected) {
+                 if(!selected->is_app) {
+                     archive_menu_add_item(
+                         menu_array_push_raw(model->context_menu),
+-                        "Rename",
++                        "重命名",
+                         ArchiveBrowserEventFileMenuRename);
+                 }
+                 archive_menu_add_item(
+                     menu_array_push_raw(model->context_menu),
+-                    "Delete",
++                    "删除",
+                     ArchiveBrowserEventFileMenuDelete);
+             }
+         } else if(selected) {
+@@ -158,30 +158,30 @@ static void render_item_menu(Canvas* canvas, ArchiveBrowserViewModel* model) {
+                 if(selected->type != ArchiveFileTypeFolder) {
+                     archive_menu_add_item(
+                         menu_array_push_raw(model->context_menu),
+-                        "Run In App",
++                        "在应用中运行",
+                         ArchiveBrowserEventFileMenuRun);
+                 }
+                 archive_menu_add_item(
+                     menu_array_push_raw(model->context_menu),
+-                    (selected->fav || favorites) ? "Unfavorite" : "Favorite",
++                    (selected->fav || favorites) ? "取消收藏" : "收藏",
+                     ArchiveBrowserEventFileMenuFavorite);
+             }
+             if(!selected->is_app) {
+                 archive_menu_add_item(
+                     menu_array_push_raw(model->context_menu),
+-                    "Info",
++                    "信息",
+                     ArchiveBrowserEventFileMenuInfo);
+                 if(selected->type != ArchiveFileTypeFolder) {
+                     archive_menu_add_item(
+                         menu_array_push_raw(model->context_menu),
+-                        selected->type == ArchiveFileTypeDiskImage ? "Mount" : "Show",
++                        selected->type == ArchiveFileTypeDiskImage ? "挂载" : "显示",
+                         ArchiveBrowserEventFileMenuShow);
+                 }
+             }
+             if(favorites) {
+                 archive_menu_add_item(
+                     menu_array_push_raw(model->context_menu),
+-                    "Move",
++                    "移动",
+                     ArchiveBrowserEventEnterFavMove);
+             }
+         }
+@@ -197,7 +197,7 @@ static void render_item_menu(Canvas* canvas, ArchiveBrowserViewModel* model) {
+     elements_slightly_rounded_frame(canvas, 71, 2, 57, calc_height + 4);
+ 
+     canvas_draw_str_aligned(
+-        canvas, 100, 11, AlignCenter, AlignBottom, model->menu_manage ? "Manage:" : "Actions:");
++        canvas, 100, 11, AlignCenter, AlignBottom, model->menu_manage ? "管理:" : "操作:");
+     if(model->menu_can_switch) {
+         if(model->menu_manage) {
+             canvas_draw_icon(canvas, 74, 4, &I_ButtonLeft_4x7);
+@@ -369,7 +369,7 @@ static void archive_render_status_bar(Canvas* canvas, ArchiveBrowserViewModel* m
+         canvas_draw_line(canvas, 92, 1, 92, 11);
+         canvas_draw_line(canvas, 70, 11, 92, 11);
+         canvas_draw_str_aligned(
+-            canvas, 81, 9, AlignCenter, AlignBottom, model->clipboard_copy ? "Copy" : "Cut");
++            canvas, 81, 9, AlignCenter, AlignBottom, model->clipboard_copy ? "复制" : "剪切");
+     }
+ 
+     canvas_draw_rframe(canvas, 107, 0, 21, 13, 1);
+@@ -403,7 +403,7 @@ static void archive_view_render(Canvas* canvas, void* mdl) {
+         draw_list(canvas, model);
+     } else {
+         canvas_draw_str_aligned(
+-            canvas, GUI_DISPLAY_WIDTH / 2, 40, AlignCenter, AlignCenter, "Empty");
++            canvas, GUI_DISPLAY_WIDTH / 2, 40, AlignCenter, AlignCenter, "空");
+         if(model->menu) {
+             render_item_menu(canvas, model);
+         }
+-- 
+2.39.5 (Apple Git-154)
+

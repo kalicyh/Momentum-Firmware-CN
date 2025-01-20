@@ -1,0 +1,110 @@
+From 506392a56cc7fe958b4cf16ec44b5dc7ef27f7fb Mon Sep 17 00:00:00 2001
+From: kalicyh <34980061+kaliCYH@users.noreply.github.com>
+Date: Tue, 21 Jan 2025 01:05:42 +0800
+Subject: [PATCH 02/16] =?UTF-8?q?=F0=9F=90=8E=20ci(workflows):=20=E6=B7=BB?=
+ =?UTF-8?q?=E5=8A=A0=E8=87=AA=E5=8A=A8=E5=8C=96=E7=BC=96=E8=AF=91?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ .github/workflows/Build_Release.yml | 87 +++++++++++++++++++++++++++++
+ 1 file changed, 87 insertions(+)
+ create mode 100644 .github/workflows/Build_Release.yml
+
+diff --git a/.github/workflows/Build_Release.yml b/.github/workflows/Build_Release.yml
+new file mode 100644
+index 000000000..66610d1a8
+--- /dev/null
++++ b/.github/workflows/Build_Release.yml
+@@ -0,0 +1,87 @@
++name: "Build And Release"
++
++on:
++  push:
++    tags:
++      - "*"
++
++concurrency:
++  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
++  cancel-in-progress: true
++
++env:
++  DEFAULT_TARGET: f7
++  FBT_GIT_SUBMODULE_SHALLOW: 1
++
++jobs:
++  build:
++    permissions:
++      issues: write
++      pull-requests: write
++    runs-on: ubuntu-latest
++    strategy:
++      fail-fast: false
++      matrix:
++        target: [f7]
++    steps:
++      - name: "Checkout code"
++        uses: actions/checkout@v4
++        with:
++          fetch-depth: 1
++          ref: ${{ github.event.pull_request.head.sha }}
++
++      - name: "Get commit details"
++        id: names
++        run: |
++          BUILD_TYPE='DEBUG=0 COMPACT=1'
++          if [[ ${{ github.event_name }} == 'pull_request' ]]; then
++            TYPE="pull"
++          elif [[ "${{ github.ref }}" == "refs/tags/"* ]]; then
++            TYPE="tag"
++          else
++            TYPE="other"
++          fi
++          python3 scripts/get_env.py "--event_file=${{ github.event_path }}" "--type=$TYPE" || cat "${{ github.event_path }}"
++          echo "event_type=$TYPE" >> $GITHUB_OUTPUT
++          echo "FBT_BUILD_TYPE=$BUILD_TYPE" >> $GITHUB_ENV
++          echo "TARGET=${{ matrix.target }}" >> $GITHUB_ENV
++          echo "TARGET_HW=$(echo "${{ matrix.target }}" | sed 's/f//')" >> $GITHUB_ENV
++
++      # - name: "Check API versions for consistency between targets"
++      #   run: |
++      #     set -e
++      #     N_API_HEADER_SIGNATURES=`ls -1 targets/f*/api_symbols.csv | xargs -I {} sh -c "head -n2 {} | md5sum" | sort -u | wc -l`
++      #     if [ $N_API_HEADER_SIGNATURES != 1 ] ; then
++      #       echo API versions aren\'t matching for available targets. Please update!
++      #       echo API versions are:
++      #       head -n2 targets/f*/api_symbols.csv
++      #       exit 1
++      #     fi
++
++      - name: "Build the firmware and apps"
++        id: build-fw
++        run: |
++          ./fbt TARGET_HW=$TARGET_HW $FBT_BUILD_TYPE updater_package
++          echo "firmware_api=$(./fbt TARGET_HW=$TARGET_HW get_apiversion)" >> $GITHUB_OUTPUT
++
++      - name: "Check for uncommitted changes"
++        run: |
++          git diff --exit-code
++
++      - name: "Upload artifacts to GitHub"
++        uses: actions/upload-artifact@v3
++        with:
++          path: |
++            dist/${{ env.TARGET }}-*/flipper-z-${{ env.TARGET }}-update-*
++            dist/${{ env.TARGET }}-*/flipper-z-${{ env.TARGET }}-sdk-*
++
++      - name: "Release"
++        uses: ncipollo/release-action@v1
++        with:
++          tag: ${{ github.ref_name }}
++          draft: false
++          allowUpdates: true
++          artifacts: |
++            dist/${{ env.TARGET }}-*/flipper-z-${{ env.TARGET }}-update-*
++            dist/${{ env.TARGET }}-*/flipper-z-${{ env.TARGET }}-sdk-*
++          token: ${{ secrets.TOKEN }}
+-- 
+2.39.5 (Apple Git-154)
+

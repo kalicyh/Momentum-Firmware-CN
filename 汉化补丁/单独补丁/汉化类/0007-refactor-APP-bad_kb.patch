@@ -1,0 +1,282 @@
+From e56575dbb81b59b4c52bc5e92c8793a7607f9407 Mon Sep 17 00:00:00 2001
+From: kalicyh <34980061+kaliCYH@users.noreply.github.com>
+Date: Tue, 21 Jan 2025 01:24:28 +0800
+Subject: [PATCH 07/16] =?UTF-8?q?=F0=9F=A6=84=20refactor(APP):=20bad=5Fkb?=
+ =?UTF-8?q?=E6=B1=89=E5=8C=96?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ .../main/bad_kb/scenes/bad_kb_scene_config.c  | 40 +++++++++----------
+ .../scenes/bad_kb_scene_config_bt_name.c      |  2 +-
+ .../scenes/bad_kb_scene_config_usb_name.c     |  4 +-
+ .../scenes/bad_kb_scene_config_usb_vidpid.c   |  2 +-
+ .../main/bad_kb/scenes/bad_kb_scene_error.c   |  2 +-
+ applications/main/bad_kb/views/bad_kb_view.c  | 40 +++++++++----------
+ 6 files changed, 45 insertions(+), 45 deletions(-)
+
+diff --git a/applications/main/bad_kb/scenes/bad_kb_scene_config.c b/applications/main/bad_kb/scenes/bad_kb_scene_config.c
+index b92f361a7..e13432c35 100644
+--- a/applications/main/bad_kb/scenes/bad_kb_scene_config.c
++++ b/applications/main/bad_kb/scenes/bad_kb_scene_config.c
+@@ -23,7 +23,7 @@ enum VarItemListIndexUsb {
+ void bad_kb_scene_config_connection_callback(VariableItem* item) {
+     BadKbApp* bad_kb = variable_item_get_context(item);
+     bad_kb->is_bt = variable_item_get_current_value_index(item);
+-    variable_item_set_current_value_text(item, bad_kb->is_bt ? "BT" : "USB");
++    variable_item_set_current_value_text(item, bad_kb->is_bt ? "蓝牙" : "USB");
+     view_dispatcher_send_custom_event(bad_kb->view_dispatcher, VarItemListIndexConnection);
+ }
+ 
+@@ -36,14 +36,14 @@ void bad_kb_scene_config_bt_remember_callback(VariableItem* item) {
+     if(bad_kb->set_bt_id) {
+         bad_kb->id_config.ble.bonding = value;
+     }
+-    variable_item_set_current_value_text(item, value ? "ON" : "OFF");
++    variable_item_set_current_value_text(item, value ? "开" : "关");
+     view_dispatcher_send_custom_event(bad_kb->view_dispatcher, VarItemListIndexBtRemember);
+ }
+ 
+ const char* const bt_pairing_names[GapPairingCount] = {
+-    "YesNo",
+-    "PIN Type",
+-    "PIN Y/N",
++    "是/否",
++    "PIN类型",
++    "PIN 是/否",
+ };
+ void bad_kb_scene_config_bt_pairing_callback(VariableItem* item) {
+     BadKbApp* bad_kb = variable_item_get_context(item);
+@@ -68,49 +68,49 @@ void bad_kb_scene_config_on_enter(void* context) {
+     VariableItemList* var_item_list = bad_kb->var_item_list;
+     VariableItem* item;
+ 
+-    item = variable_item_list_add(var_item_list, "Keyboard layout", 0, NULL, bad_kb);
++    item = variable_item_list_add(var_item_list, "键盘布局", 0, NULL, bad_kb);
+ 
+     item = variable_item_list_add(
+-        var_item_list, "Connection", 2, bad_kb_scene_config_connection_callback, bad_kb);
++        var_item_list, "连接方式", 2, bad_kb_scene_config_connection_callback, bad_kb);
+     variable_item_set_current_value_index(item, bad_kb->is_bt);
+-    variable_item_set_current_value_text(item, bad_kb->is_bt ? "BT" : "USB");
++    variable_item_set_current_value_text(item, bad_kb->is_bt ? "蓝牙" : "USB");
+ 
+     if(bad_kb->is_bt) {
+         BadKbConfig* cfg = bad_kb->set_bt_id ? &bad_kb->id_config : &bad_kb->config;
+ 
+         item = variable_item_list_add(
+-            var_item_list, "BT Remember", 2, bad_kb_scene_config_bt_remember_callback, bad_kb);
++            var_item_list, "记住蓝牙", 2, bad_kb_scene_config_bt_remember_callback, bad_kb);
+         variable_item_set_current_value_index(item, cfg->ble.bonding);
+-        variable_item_set_current_value_text(item, cfg->ble.bonding ? "ON" : "OFF");
++        variable_item_set_current_value_text(item, cfg->ble.bonding ? "开" : "关");
+ 
+         item = variable_item_list_add(
+             var_item_list,
+-            "BT Pairing",
++            "蓝牙配对",
+             GapPairingCount,
+             bad_kb_scene_config_bt_pairing_callback,
+             bad_kb);
+         variable_item_set_current_value_index(item, cfg->ble.pairing);
+         variable_item_set_current_value_text(item, bt_pairing_names[cfg->ble.pairing]);
+ 
+-        item = variable_item_list_add(var_item_list, "BT Device Name", 0, NULL, bad_kb);
++        item = variable_item_list_add(var_item_list, "蓝牙设备名称", 0, NULL, bad_kb);
+ 
+-        item = variable_item_list_add(var_item_list, "BT MAC Address", 0, NULL, bad_kb);
++        item = variable_item_list_add(var_item_list, "蓝牙 MAC 地址", 0, NULL, bad_kb);
+         if(cfg->ble.bonding) {
+-            variable_item_set_locked(item, true, "Remember\nmust be Off!");
++            variable_item_set_locked(item, true, "记住\n必须关闭！");
+         }
+ 
+-        item = variable_item_list_add(var_item_list, "Randomize BT MAC", 0, NULL, bad_kb);
++        item = variable_item_list_add(var_item_list, "随机化蓝牙 MAC", 0, NULL, bad_kb);
+         if(cfg->ble.bonding) {
+-            variable_item_set_locked(item, true, "Remember\nmust be Off!");
++            variable_item_set_locked(item, true, "记住\n必须关闭！");
+         }
+     } else {
+-        item = variable_item_list_add(var_item_list, "USB Manufacturer", 0, NULL, bad_kb);
++        item = variable_item_list_add(var_item_list, "USB 制造商", 0, NULL, bad_kb);
+ 
+-        item = variable_item_list_add(var_item_list, "USB Product Name", 0, NULL, bad_kb);
++        item = variable_item_list_add(var_item_list, "USB 产品名称", 0, NULL, bad_kb);
+ 
+-        item = variable_item_list_add(var_item_list, "USB VID and PID", 0, NULL, bad_kb);
++        item = variable_item_list_add(var_item_list, "USB VID 和 PID", 0, NULL, bad_kb);
+ 
+-        item = variable_item_list_add(var_item_list, "Randomize USB VID:PID", 0, NULL, bad_kb);
++        item = variable_item_list_add(var_item_list, "随机化 USB VID:PID", 0, NULL, bad_kb);
+     }
+ 
+     variable_item_list_set_enter_callback(
+diff --git a/applications/main/bad_kb/scenes/bad_kb_scene_config_bt_name.c b/applications/main/bad_kb/scenes/bad_kb_scene_config_bt_name.c
+index 67a92c6bf..c31f37c36 100644
+--- a/applications/main/bad_kb/scenes/bad_kb_scene_config_bt_name.c
++++ b/applications/main/bad_kb/scenes/bad_kb_scene_config_bt_name.c
+@@ -14,7 +14,7 @@ void bad_kb_scene_config_bt_name_on_enter(void* context) {
+         bad_kb->bt_name_buf,
+         bad_kb->set_bt_id ? bad_kb->id_config.ble.name : bad_kb->config.ble.name,
+         sizeof(bad_kb->bt_name_buf));
+-    text_input_set_header_text(text_input, "Set BT device name");
++    text_input_set_header_text(text_input, "设置蓝牙设备名称");
+ 
+     text_input_set_result_callback(
+         text_input,
+diff --git a/applications/main/bad_kb/scenes/bad_kb_scene_config_usb_name.c b/applications/main/bad_kb/scenes/bad_kb_scene_config_usb_name.c
+index 0cd9da1c8..ce54f94a4 100644
+--- a/applications/main/bad_kb/scenes/bad_kb_scene_config_usb_name.c
++++ b/applications/main/bad_kb/scenes/bad_kb_scene_config_usb_name.c
+@@ -15,13 +15,13 @@ void bad_kb_scene_config_usb_name_on_enter(void* context) {
+             bad_kb->usb_name_buf,
+             bad_kb->set_usb_id ? bad_kb->id_config.usb.manuf : bad_kb->config.usb.manuf,
+             sizeof(bad_kb->usb_name_buf));
+-        text_input_set_header_text(text_input, "Set USB manufacturer name");
++        text_input_set_header_text(text_input, "设置USB制造商名称");
+     } else {
+         strlcpy(
+             bad_kb->usb_name_buf,
+             bad_kb->set_usb_id ? bad_kb->id_config.usb.product : bad_kb->config.usb.product,
+             sizeof(bad_kb->usb_name_buf));
+-        text_input_set_header_text(text_input, "Set USB product name");
++        text_input_set_header_text(text_input, "设置USB产品名称");
+     }
+ 
+     text_input_set_result_callback(
+diff --git a/applications/main/bad_kb/scenes/bad_kb_scene_config_usb_vidpid.c b/applications/main/bad_kb/scenes/bad_kb_scene_config_usb_vidpid.c
+index 43b131465..678b690b8 100644
+--- a/applications/main/bad_kb/scenes/bad_kb_scene_config_usb_vidpid.c
++++ b/applications/main/bad_kb/scenes/bad_kb_scene_config_usb_vidpid.c
+@@ -17,7 +17,7 @@ void bad_kb_scene_config_usb_vidpid_on_enter(void* context) {
+         bad_kb->usb_vidpid_buf[0] = __REVSH(bad_kb->config.usb.vid);
+         bad_kb->usb_vidpid_buf[1] = __REVSH(bad_kb->config.usb.pid);
+     }
+-    byte_input_set_header_text(byte_input, "Set USB VID:PID");
++    byte_input_set_header_text(byte_input, "设置 USB VID:PID");
+ 
+     byte_input_set_result_callback(
+         byte_input,
+diff --git a/applications/main/bad_kb/scenes/bad_kb_scene_error.c b/applications/main/bad_kb/scenes/bad_kb_scene_error.c
+index b0edac36c..868593db2 100644
+--- a/applications/main/bad_kb/scenes/bad_kb_scene_error.c
++++ b/applications/main/bad_kb/scenes/bad_kb_scene_error.c
+@@ -24,7 +24,7 @@ void bad_kb_scene_error_on_enter(void* context) {
+             FontSecondary,
+             "No SD card or\napp data found.\nThis app will not\nwork without\nrequired files.");
+         widget_add_button_element(
+-            app->widget, GuiButtonTypeLeft, "Back", bad_kb_scene_error_event_callback, app);
++            app->widget, GuiButtonTypeLeft, "返回", bad_kb_scene_error_event_callback, app);
+     }
+ 
+     view_dispatcher_switch_to_view(app->view_dispatcher, BadKbAppViewWidget);
+diff --git a/applications/main/bad_kb/views/bad_kb_view.c b/applications/main/bad_kb/views/bad_kb_view.c
+index 72064190a..f4dabd980 100644
+--- a/applications/main/bad_kb/views/bad_kb_view.c
++++ b/applications/main/bad_kb/views/bad_kb_view.c
+@@ -28,7 +28,7 @@ static void bad_kb_draw_callback(Canvas* canvas, void* _model) {
+ 
+     FuriString* disp_str = furi_string_alloc_set(
+         state == BadKbStateInit ? "( . . . )" :
+-        model->state.is_bt      ? "(BT) " :
++        model->state.is_bt      ? "(蓝牙) " :
+                                   "(USB) ");
+     furi_string_cat_str(disp_str, model->file_name);
+     elements_string_fit_width(canvas, disp_str, 128 - 2);
+@@ -36,7 +36,7 @@ static void bad_kb_draw_callback(Canvas* canvas, void* _model) {
+     canvas_draw_str(canvas, 2, 8, furi_string_get_cstr(disp_str));
+ 
+     if(strlen(model->layout) == 0) {
+-        furi_string_set(disp_str, "(default)");
++        furi_string_set(disp_str, "(默认)");
+     } else {
+         furi_string_printf(disp_str, "(%s)", model->layout);
+     }
+@@ -56,40 +56,40 @@ static void bad_kb_draw_callback(Canvas* canvas, void* _model) {
+ 
+     if((state == BadKbStateIdle) || (state == BadKbStateDone) ||
+        (state == BadKbStateNotConnected)) {
+-        elements_button_center(canvas, "Run");
+-        elements_button_left(canvas, "Config");
++        elements_button_center(canvas, "运行");
++        elements_button_left(canvas, "配置");
+     } else if((state == BadKbStateRunning) || (state == BadKbStateDelay)) {
+-        elements_button_center(canvas, "Stop");
++        elements_button_center(canvas, "停止");
+         if(!model->pause_wait) {
+-            elements_button_right(canvas, "Pause");
++            elements_button_right(canvas, "暂停");
+         }
+     } else if(state == BadKbStatePaused) {
+-        elements_button_center(canvas, "End");
+-        elements_button_right(canvas, "Resume");
++        elements_button_center(canvas, "结束");
++        elements_button_right(canvas, "继续");
+     } else if(state == BadKbStateWaitForBtn) {
+-        elements_button_center(canvas, "Press to continue");
++        elements_button_center(canvas, "按键继续");
+     } else if(state == BadKbStateWillRun) {
+-        elements_button_center(canvas, "Cancel");
++        elements_button_center(canvas, "取消");
+     }
+ 
+     if(state == BadKbStateNotConnected) {
+         canvas_draw_icon(canvas, 4, 26, &I_Clock_18x18);
+         canvas_set_font(canvas, FontPrimary);
+-        canvas_draw_str_aligned(canvas, 127, 31, AlignRight, AlignBottom, "Connect");
+-        canvas_draw_str_aligned(canvas, 127, 43, AlignRight, AlignBottom, "to device");
++        canvas_draw_str_aligned(canvas, 127, 31, AlignRight, AlignBottom, "连接");
++        canvas_draw_str_aligned(canvas, 127, 43, AlignRight, AlignBottom, "到设备");
+     } else if(state == BadKbStateWillRun) {
+         canvas_draw_icon(canvas, 4, 26, &I_Clock_18x18);
+         canvas_set_font(canvas, FontPrimary);
+-        canvas_draw_str_aligned(canvas, 127, 31, AlignRight, AlignBottom, "Will run");
+-        canvas_draw_str_aligned(canvas, 127, 43, AlignRight, AlignBottom, "on connect");
++        canvas_draw_str_aligned(canvas, 127, 31, AlignRight, AlignBottom, "将运行");
++        canvas_draw_str_aligned(canvas, 127, 43, AlignRight, AlignBottom, "连接时");
+     } else if(state == BadKbStateFileError) {
+         canvas_draw_icon(canvas, 4, 26, &I_Error_18x18);
+         canvas_set_font(canvas, FontPrimary);
+-        canvas_draw_str_aligned(canvas, 127, 31, AlignRight, AlignBottom, "File");
+-        canvas_draw_str_aligned(canvas, 127, 43, AlignRight, AlignBottom, "ERROR");
++        canvas_draw_str_aligned(canvas, 127, 31, AlignRight, AlignBottom, "文件");
++        canvas_draw_str_aligned(canvas, 127, 43, AlignRight, AlignBottom, "错误");
+     } else if(state == BadKbStateScriptError) {
+         canvas_draw_icon(canvas, 4, 26, &I_Error_18x18);
+-        furi_string_printf(disp_str, "line %zu", model->state.error_line);
++        furi_string_printf(disp_str, "行 %zu", model->state.error_line);
+         canvas_draw_str_aligned(
+             canvas, 127, 46, AlignRight, AlignBottom, furi_string_get_cstr(disp_str));
+         furi_string_set_str(disp_str, model->state.error);
+@@ -97,7 +97,7 @@ static void bad_kb_draw_callback(Canvas* canvas, void* _model) {
+         canvas_draw_str_aligned(
+             canvas, 127, 56, AlignRight, AlignBottom, furi_string_get_cstr(disp_str));
+         canvas_set_font(canvas, FontPrimary);
+-        canvas_draw_str_aligned(canvas, 127, 33, AlignRight, AlignBottom, "ERROR:");
++        canvas_draw_str_aligned(canvas, 127, 33, AlignRight, AlignBottom, "错误:");
+     } else if(state == BadKbStateIdle) {
+         canvas_draw_icon(canvas, 4, 26, &I_Smile_18x18);
+         furi_string_printf(disp_str, "0/%zu", model->state.line_nb);
+@@ -137,7 +137,7 @@ static void bad_kb_draw_callback(Canvas* canvas, void* _model) {
+         }
+         uint32_t delay = model->state.delay_remain / 10;
+         if(delay) {
+-            furi_string_printf(disp_str, "Delay %lus", delay);
++            furi_string_printf(disp_str, "延迟 %lus", delay);
+             canvas_draw_str_aligned(
+                 canvas, 4, 61, AlignLeft, AlignBottom, furi_string_get_cstr(disp_str));
+         }
+@@ -157,7 +157,7 @@ static void bad_kb_draw_callback(Canvas* canvas, void* _model) {
+             canvas_draw_icon(canvas, 4, 23, &I_EviWaiting2_18x21);
+         }
+         if(state != BadKbStateWaitForBtn) {
+-            canvas_draw_str_aligned(canvas, 4, 61, AlignLeft, AlignBottom, "Paused");
++            canvas_draw_str_aligned(canvas, 4, 61, AlignLeft, AlignBottom, "已暂停");
+         }
+         furi_string_printf(disp_str, "%zu/%zu", model->state.line_cur, model->state.line_nb);
+         canvas_draw_str_aligned(
+-- 
+2.39.5 (Apple Git-154)
+

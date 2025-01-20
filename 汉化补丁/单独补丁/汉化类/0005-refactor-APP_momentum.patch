@@ -1,0 +1,1278 @@
+From b2ac15f16afd147b6337114ff1c2e4d0764241e8 Mon Sep 17 00:00:00 2001
+From: kalicyh <34980061+kaliCYH@users.noreply.github.com>
+Date: Tue, 21 Jan 2025 01:22:09 +0800
+Subject: [PATCH 05/16] =?UTF-8?q?=F0=9F=A6=84=20refactor(APP=5Fmomentum):?=
+ =?UTF-8?q?=20=E6=B1=89=E5=8C=96=20=E5=A2=9E=E5=8A=A0=E5=A4=8D=E5=88=BB?=
+ =?UTF-8?q?=E9=80=89=E9=A1=B9?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ applications/main/momentum_app/momentum_app.c | 15 ++-
+ .../scenes/momentum_app_scene_interface.c     | 10 +-
+ .../momentum_app_scene_interface_graphics.c   | 44 ++++-----
+ ...mentum_app_scene_interface_graphics_pack.c |  4 +-
+ .../momentum_app_scene_interface_mainmenu.c   | 22 ++---
+ ...omentum_app_scene_interface_mainmenu_add.c |  6 +-
+ ...entum_app_scene_interface_mainmenu_reset.c |  2 +-
+ .../momentum_app_scene_interface_statusbar.c  | 26 +++---
+ .../scenes/momentum_app_scene_misc.c          | 12 +--
+ .../scenes/momentum_app_scene_misc_dolphin.c  | 22 ++---
+ .../momentum_app_scene_misc_dolphin_xp.c      |  2 +-
+ .../scenes/momentum_app_scene_misc_screen.c   | 92 +++++++++----------
+ .../momentum_app_scene_misc_screen_color.c    |  2 +-
+ .../scenes/momentum_app_scene_misc_spoof.c    | 31 +++++--
+ .../momentum_app_scene_misc_spoof_name.c      |  4 +-
+ .../scenes/momentum_app_scene_misc_vgm.c      | 60 ++++++------
+ .../momentum_app_scene_misc_vgm_color.c       |  2 +-
+ .../scenes/momentum_app_scene_protocols.c     | 22 ++---
+ .../momentum_app_scene_protocols_freqs.c      | 10 +-
+ .../momentum_app_scene_protocols_freqs_add.c  |  2 +-
+ ...omentum_app_scene_protocols_freqs_hopper.c |  8 +-
+ ...omentum_app_scene_protocols_freqs_static.c |  8 +-
+ .../scenes/momentum_app_scene_start.c         |  6 +-
+ lib/momentum/settings.c                       |  2 +
+ lib/momentum/settings.h                       |  1 +
+ scripts/fbt/elfmanifest.py                    |  2 +-
+ targets/f7/furi_hal/furi_hal_crypto.c         |  4 +
+ 27 files changed, 222 insertions(+), 199 deletions(-)
+
+diff --git a/applications/main/momentum_app/momentum_app.c b/applications/main/momentum_app/momentum_app.c
+index 9b929ab70..cd07d24bf 100644
+--- a/applications/main/momentum_app/momentum_app.c
++++ b/applications/main/momentum_app/momentum_app.c
+@@ -16,7 +16,7 @@ bool momentum_app_apply(MomentumApp* app) {
+     if(app->save_mainmenu_apps) {
+         Stream* stream = file_stream_alloc(app->storage);
+         if(file_stream_open(stream, MAINMENU_APPS_PATH, FSAM_READ_WRITE, FSOM_CREATE_ALWAYS)) {
+-            stream_write_format(stream, "MenuAppList Version %u\n", 1);
++            stream_write_format(stream, "菜单应用列表 版本 %u\n", 1);
+             for(size_t i = 0; i < CharList_size(app->mainmenu_app_exes); i++) {
+                 stream_write_format(stream, "%s\n", *CharList_get(app->mainmenu_app_exes, i));
+             }
+@@ -70,9 +70,8 @@ bool momentum_app_apply(MomentumApp* app) {
+         do {
+             if(!flipper_format_file_open_always(file, "/ext/subghz/assets/extend_range.txt"))
+                 break;
+-            if(!flipper_format_write_header_cstr(file, "Flipper SubGhz Setting File", 1)) break;
+-            if(!flipper_format_write_comment_cstr(
+-                   file, "Whether to allow extended ranges that can break your flipper"))
++            if(!flipper_format_write_header_cstr(file, "Flipper SubGhz 设置文件", 1)) break;
++            if(!flipper_format_write_comment_cstr(file, "是否允许扩展范围，可能会损坏你的设备"))
+                 break;
+             if(!flipper_format_write_bool(
+                    file, "use_ext_range_at_own_risk", &app->subghz_extend, 1))
+@@ -123,8 +122,8 @@ bool momentum_app_apply(MomentumApp* app) {
+     if(app->show_slideshow) {
+         callback_reboot(NULL);
+     } else if(app->require_reboot) {
+-        popup_set_header(app->popup, "Rebooting...", 64, 26, AlignCenter, AlignCenter);
+-        popup_set_text(app->popup, "Applying changes...", 64, 40, AlignCenter, AlignCenter);
++        popup_set_header(app->popup, "正在重启...", 64, 26, AlignCenter, AlignCenter);
++        popup_set_text(app->popup, "正在应用更改...", 64, 40, AlignCenter, AlignCenter);
+         popup_set_callback(app->popup, callback_reboot);
+         popup_set_context(app->popup, app);
+         popup_set_timeout(app->popup, 1000);
+@@ -133,8 +132,8 @@ bool momentum_app_apply(MomentumApp* app) {
+         return true;
+     } else if(app->apply_pack) {
+         asset_packs_free();
+-        popup_set_header(app->popup, "Reloading...", 64, 26, AlignCenter, AlignCenter);
+-        popup_set_text(app->popup, "Applying asset pack...", 64, 40, AlignCenter, AlignCenter);
++        popup_set_header(app->popup, "正在重新加载...", 64, 26, AlignCenter, AlignCenter);
++        popup_set_text(app->popup, "正在应用资源包...", 64, 40, AlignCenter, AlignCenter);
+         popup_set_callback(app->popup, NULL);
+         popup_set_context(app->popup, NULL);
+         popup_set_timeout(app->popup, 0);
+diff --git a/applications/main/momentum_app/scenes/momentum_app_scene_interface.c b/applications/main/momentum_app/scenes/momentum_app_scene_interface.c
+index c6877ab48..97cba6d04 100644
+--- a/applications/main/momentum_app/scenes/momentum_app_scene_interface.c
++++ b/applications/main/momentum_app/scenes/momentum_app_scene_interface.c
+@@ -18,19 +18,19 @@ void momentum_app_scene_interface_on_enter(void* context) {
+     VariableItemList* var_item_list = app->var_item_list;
+     VariableItem* item;
+ 
+-    item = variable_item_list_add(var_item_list, "Graphics", 0, NULL, app);
++    item = variable_item_list_add(var_item_list, "图形", 0, NULL, app);
+     variable_item_set_current_value_text(item, ">");
+ 
+-    item = variable_item_list_add(var_item_list, "Mainmenu", 0, NULL, app);
++    item = variable_item_list_add(var_item_list, "主菜单", 0, NULL, app);
+     variable_item_set_current_value_text(item, ">");
+ 
+-    item = variable_item_list_add(var_item_list, "Lockscreen", 0, NULL, app);
++    item = variable_item_list_add(var_item_list, "锁屏", 0, NULL, app);
+     variable_item_set_current_value_text(item, ">");
+ 
+-    item = variable_item_list_add(var_item_list, "Statusbar", 0, NULL, app);
++    item = variable_item_list_add(var_item_list, "状态栏", 0, NULL, app);
+     variable_item_set_current_value_text(item, ">");
+ 
+-    item = variable_item_list_add(var_item_list, "File Browser", 0, NULL, app);
++    item = variable_item_list_add(var_item_list, "文件浏览器", 0, NULL, app);
+     variable_item_set_current_value_text(item, ">");
+ 
+     variable_item_list_set_enter_callback(
+diff --git a/applications/main/momentum_app/scenes/momentum_app_scene_interface_graphics.c b/applications/main/momentum_app/scenes/momentum_app_scene_interface_graphics.c
+index b3b781ec3..c69dc87bc 100644
+--- a/applications/main/momentum_app/scenes/momentum_app_scene_interface_graphics.c
++++ b/applications/main/momentum_app/scenes/momentum_app_scene_interface_graphics.c
+@@ -16,7 +16,7 @@ static void momentum_app_scene_interface_graphics_asset_pack_changed(VariableIte
+     MomentumApp* app = variable_item_get_context(item);
+     uint8_t index = variable_item_get_current_value_index(item);
+     variable_item_set_current_value_text(
+-        item, index == 0 ? "Default" : *CharList_get(app->asset_pack_names, index - 1));
++        item, index == 0 ? "默认" : *CharList_get(app->asset_pack_names, index - 1));
+     strlcpy(
+         momentum_settings.asset_pack,
+         index == 0 ? "" : *CharList_get(app->asset_pack_names, index - 1),
+@@ -63,21 +63,21 @@ static void momentum_app_scene_interface_graphics_anim_speed_changed(VariableIte
+ }
+ 
+ const char* const cycle_anims_names[] = {
+-    "OFF",
++    "关闭",
+     "Meta.txt",
+-    "15 S",
+-    "30 S",
+-    "1 M",
+-    "2 M",
+-    "5 M",
+-    "10 M",
+-    "15 M",
+-    "30 M",
+-    "1 H",
+-    "2 H",
+-    "6 H",
+-    "12 H",
+-    "24 H",
++    "15 秒",
++    "30 秒",
++    "1 分钟",
++    "2 分钟",
++    "5 分钟",
++    "10 分钟",
++    "15 分钟",
++    "30 分钟",
++    "1 小时",
++    "2 小时",
++    "6 小时",
++    "12 小时",
++    "24 小时",
+ };
+ const int32_t cycle_anims_values[COUNT_OF(cycle_anims_names)] = {
+     -1,
+@@ -107,7 +107,7 @@ static void momentum_app_scene_interface_graphics_cycle_anims_changed(VariableIt
+ static void momentum_app_scene_interface_graphics_unlock_anims_changed(VariableItem* item) {
+     MomentumApp* app = variable_item_get_context(item);
+     bool value = variable_item_get_current_value_index(item);
+-    variable_item_set_current_value_text(item, value ? "ON" : "OFF");
++    variable_item_set_current_value_text(item, value ? "开启" : "关闭");
+     momentum_settings.unlock_anims = value;
+     app->save_settings = true;
+ }
+@@ -120,7 +120,7 @@ void momentum_app_scene_interface_graphics_on_enter(void* context) {
+ 
+     item = variable_item_list_add(
+         var_item_list,
+-        "Asset Pack",
++        "资源包",
+         CharList_size(app->asset_pack_names) + 1,
+         momentum_app_scene_interface_graphics_asset_pack_changed,
+         app);
+@@ -128,12 +128,12 @@ void momentum_app_scene_interface_graphics_on_enter(void* context) {
+     variable_item_set_current_value_text(
+         item,
+         app->asset_pack_index == 0 ?
+-            "Default" :
++            "默认" :
+             *CharList_get(app->asset_pack_names, app->asset_pack_index - 1));
+ 
+     item = variable_item_list_add(
+         var_item_list,
+-        "Anim Speed",
++        "动画速度",
+         COUNT_OF(anim_speed_names),
+         momentum_app_scene_interface_graphics_anim_speed_changed,
+         app);
+@@ -144,7 +144,7 @@ void momentum_app_scene_interface_graphics_on_enter(void* context) {
+ 
+     item = variable_item_list_add(
+         var_item_list,
+-        "Cycle Anims",
++        "循环动画",
+         COUNT_OF(cycle_anims_names),
+         momentum_app_scene_interface_graphics_cycle_anims_changed,
+         app);
+@@ -155,12 +155,12 @@ void momentum_app_scene_interface_graphics_on_enter(void* context) {
+ 
+     item = variable_item_list_add(
+         var_item_list,
+-        "Unlock Anims",
++        "解锁动画",
+         2,
+         momentum_app_scene_interface_graphics_unlock_anims_changed,
+         app);
+     variable_item_set_current_value_index(item, momentum_settings.unlock_anims);
+-    variable_item_set_current_value_text(item, momentum_settings.unlock_anims ? "ON" : "OFF");
++    variable_item_set_current_value_text(item, momentum_settings.unlock_anims ? "开启" : "关闭");
+ 
+     variable_item_list_set_enter_callback(
+         var_item_list, momentum_app_scene_interface_graphics_var_item_list_callback, app);
+diff --git a/applications/main/momentum_app/scenes/momentum_app_scene_interface_graphics_pack.c b/applications/main/momentum_app/scenes/momentum_app_scene_interface_graphics_pack.c
+index a14aca398..7bd02cfb1 100644
+--- a/applications/main/momentum_app/scenes/momentum_app_scene_interface_graphics_pack.c
++++ b/applications/main/momentum_app/scenes/momentum_app_scene_interface_graphics_pack.c
+@@ -17,7 +17,7 @@ void momentum_app_scene_interface_graphics_pack_on_enter(void* context) {
+     Submenu* submenu = app->submenu;
+ 
+     submenu_add_item(
+-        submenu, "Default", 0, momentum_app_scene_interface_graphics_pack_submenu_callback, app);
++        submenu, "默认", 0, momentum_app_scene_interface_graphics_pack_submenu_callback, app);
+ 
+     for(size_t i = 0; i < CharList_size(app->asset_pack_names); i++) {
+         submenu_add_item(
+@@ -28,7 +28,7 @@ void momentum_app_scene_interface_graphics_pack_on_enter(void* context) {
+             app);
+     }
+ 
+-    submenu_set_header(submenu, "Choose Asset Pack:");
++    submenu_set_header(submenu, "选择资源包：");
+ 
+     submenu_set_selected_item(submenu, app->asset_pack_index);
+ 
+diff --git a/applications/main/momentum_app/scenes/momentum_app_scene_interface_mainmenu.c b/applications/main/momentum_app/scenes/momentum_app_scene_interface_mainmenu.c
+index afad8f7d2..c7f337fe1 100644
+--- a/applications/main/momentum_app/scenes/momentum_app_scene_interface_mainmenu.c
++++ b/applications/main/momentum_app/scenes/momentum_app_scene_interface_mainmenu.c
+@@ -15,13 +15,13 @@ void momentum_app_scene_interface_mainmenu_var_item_list_callback(void* context,
+ }
+ 
+ const char* const menu_style_names[MenuStyleCount] = {
+-    "List",
++    "列表",
+     "Wii",
+     "DSi",
+     "PS4",
+-    "Vertical",
++    "纵向",
+     "C64",
+-    "Compact",
++    "紧凑",
+     "MNTM",
+     "CoverFlow",
+ };
+@@ -73,14 +73,14 @@ void momentum_app_scene_interface_mainmenu_on_enter(void* context) {
+ 
+     item = variable_item_list_add(
+         var_item_list,
+-        "Menu Style",
++        "菜单样式",
+         MenuStyleCount,
+         momentum_app_scene_interface_mainmenu_menu_style_changed,
+         app);
+     variable_item_set_current_value_index(item, momentum_settings.menu_style);
+     variable_item_set_current_value_text(item, menu_style_names[momentum_settings.menu_style]);
+ 
+-    variable_item_list_add(var_item_list, "Reset Menu", 0, NULL, app);
++    variable_item_list_add(var_item_list, "重置菜单", 0, NULL, app);
+ 
+     size_t count = CharList_size(app->mainmenu_app_labels);
+     item = variable_item_list_add(
+@@ -94,19 +94,19 @@ void momentum_app_scene_interface_mainmenu_on_enter(void* context) {
+             item, *CharList_get(app->mainmenu_app_labels, app->mainmenu_app_index));
+     } else {
+         app->mainmenu_app_index = 0;
+-        variable_item_set_current_value_text(item, "None");
++        variable_item_set_current_value_text(item, "无");
+     }
+     variable_item_set_current_value_index(item, app->mainmenu_app_index);
+ 
+-    variable_item_list_add(var_item_list, "Add App", 0, NULL, app);
++    variable_item_list_add(var_item_list, "添加应用", 0, NULL, app);
+ 
+     item = variable_item_list_add(
+-        var_item_list, "Move App", 3, momentum_app_scene_interface_mainmenu_move_app_changed, app);
++        var_item_list, "移动应用", 3, momentum_app_scene_interface_mainmenu_move_app_changed, app);
+     variable_item_set_current_value_text(item, "");
+     variable_item_set_current_value_index(item, 1);
+-    variable_item_set_locked(item, count < 2, "Can't move\nwith less\nthan 2 apps!");
++    variable_item_set_locked(item, count < 2, "无法移动\n少于2个\n应用！");
+ 
+-    variable_item_list_add(var_item_list, "Remove App", 0, NULL, app);
++    variable_item_list_add(var_item_list, "移除应用", 0, NULL, app);
+ 
+     variable_item_list_set_enter_callback(
+         var_item_list, momentum_app_scene_interface_mainmenu_var_item_list_callback, app);
+@@ -154,7 +154,7 @@ bool momentum_app_scene_interface_mainmenu_on_event(void* context, SceneManagerE
+             } else {
+                 app->mainmenu_app_index = 0;
+                 variable_item_set_item_label(item, "App");
+-                variable_item_set_current_value_text(item, "None");
++                variable_item_set_current_value_text(item, "无");
+             }
+             variable_item_set_current_value_index(item, app->mainmenu_app_index);
+             variable_item_set_values_count(item, count);
+diff --git a/applications/main/momentum_app/scenes/momentum_app_scene_interface_mainmenu_add.c b/applications/main/momentum_app/scenes/momentum_app_scene_interface_mainmenu_add.c
+index 2bb63491c..dd37f39fd 100644
+--- a/applications/main/momentum_app/scenes/momentum_app_scene_interface_mainmenu_add.c
++++ b/applications/main/momentum_app/scenes/momentum_app_scene_interface_mainmenu_add.c
+@@ -68,18 +68,18 @@ void momentum_app_scene_interface_mainmenu_add_on_enter(void* context) {
+     MomentumApp* app = context;
+     Submenu* submenu = app->submenu;
+ 
+-    submenu_set_header(submenu, "Add Menu App:");
++    submenu_set_header(submenu, "添加菜单应用：");
+ 
+     submenu_add_item(
+         submenu,
+-        "Main App",
++        "主应用",
+         SubmenuIndexMainApp,
+         momentum_app_scene_interface_mainmenu_add_submenu_callback,
+         app);
+ 
+     submenu_add_item(
+         submenu,
+-        "External App",
++        "外部应用",
+         SubmenuIndexExternalApp,
+         momentum_app_scene_interface_mainmenu_add_submenu_callback,
+         app);
+diff --git a/applications/main/momentum_app/scenes/momentum_app_scene_interface_mainmenu_reset.c b/applications/main/momentum_app/scenes/momentum_app_scene_interface_mainmenu_reset.c
+index 8fd133ec0..80d1a4545 100644
+--- a/applications/main/momentum_app/scenes/momentum_app_scene_interface_mainmenu_reset.c
++++ b/applications/main/momentum_app/scenes/momentum_app_scene_interface_mainmenu_reset.c
+@@ -15,7 +15,7 @@ void momentum_app_scene_interface_mainmenu_reset_on_enter(void* context) {
+     dialog_ex_set_header(dialog_ex, "Reset Menu Apps?", 64, 10, AlignCenter, AlignCenter);
+     dialog_ex_set_text(dialog_ex, "Your edits will be lost!", 64, 32, AlignCenter, AlignCenter);
+     dialog_ex_set_left_button_text(dialog_ex, "Cancel");
+-    dialog_ex_set_right_button_text(dialog_ex, "Reset");
++    dialog_ex_set_right_button_text(dialog_ex, "重置");
+ 
+     dialog_ex_set_context(dialog_ex, app);
+     dialog_ex_set_result_callback(
+diff --git a/applications/main/momentum_app/scenes/momentum_app_scene_interface_statusbar.c b/applications/main/momentum_app/scenes/momentum_app_scene_interface_statusbar.c
+index 6035b12c6..202be37c8 100644
+--- a/applications/main/momentum_app/scenes/momentum_app_scene_interface_statusbar.c
++++ b/applications/main/momentum_app/scenes/momentum_app_scene_interface_statusbar.c
+@@ -33,7 +33,7 @@ static void momentum_app_scene_interface_statusbar_battery_icon_changed(Variable
+ static void momentum_app_scene_interface_statusbar_statusbar_clock_changed(VariableItem* item) {
+     MomentumApp* app = variable_item_get_context(item);
+     bool value = variable_item_get_current_value_index(item);
+-    variable_item_set_current_value_text(item, value ? "ON" : "OFF");
++    variable_item_set_current_value_text(item, value ? "开启" : "关闭");
+     app->desktop_settings.display_clock = value;
+     app->save_desktop = true;
+ }
+@@ -41,7 +41,7 @@ static void momentum_app_scene_interface_statusbar_statusbar_clock_changed(Varia
+ static void momentum_app_scene_interface_statusbar_status_icons_changed(VariableItem* item) {
+     MomentumApp* app = variable_item_get_context(item);
+     bool value = variable_item_get_current_value_index(item);
+-    variable_item_set_current_value_text(item, value ? "ON" : "OFF");
++    variable_item_set_current_value_text(item, value ? "开启" : "关闭");
+     momentum_settings.status_icons = value;
+     app->save_settings = true;
+ }
+@@ -49,7 +49,7 @@ static void momentum_app_scene_interface_statusbar_status_icons_changed(Variable
+ static void momentum_app_scene_interface_statusbar_bar_borders_changed(VariableItem* item) {
+     MomentumApp* app = variable_item_get_context(item);
+     bool value = variable_item_get_current_value_index(item);
+-    variable_item_set_current_value_text(item, value ? "ON" : "OFF");
++    variable_item_set_current_value_text(item, value ? "开启" : "关闭");
+     momentum_settings.bar_borders = value;
+     app->save_settings = true;
+ }
+@@ -57,7 +57,7 @@ static void momentum_app_scene_interface_statusbar_bar_borders_changed(VariableI
+ static void momentum_app_scene_interface_statusbar_bar_background_changed(VariableItem* item) {
+     MomentumApp* app = variable_item_get_context(item);
+     bool value = variable_item_get_current_value_index(item);
+-    variable_item_set_current_value_text(item, value ? "ON" : "OFF");
++    variable_item_set_current_value_text(item, value ? "开启" : "关闭");
+     momentum_settings.bar_background = value;
+     app->save_settings = true;
+ }
+@@ -69,7 +69,7 @@ void momentum_app_scene_interface_statusbar_on_enter(void* context) {
+ 
+     item = variable_item_list_add(
+         var_item_list,
+-        "Battery Icon",
++        "电池图标",
+         BatteryIconCount,
+         momentum_app_scene_interface_statusbar_battery_icon_changed,
+         app);
+@@ -78,39 +78,39 @@ void momentum_app_scene_interface_statusbar_on_enter(void* context) {
+ 
+     item = variable_item_list_add(
+         var_item_list,
+-        "Show Clock",
++        "显示时钟",
+         2,
+         momentum_app_scene_interface_statusbar_statusbar_clock_changed,
+         app);
+     variable_item_set_current_value_index(item, app->desktop_settings.display_clock);
+-    variable_item_set_current_value_text(item, app->desktop_settings.display_clock ? "ON" : "OFF");
++    variable_item_set_current_value_text(item, app->desktop_settings.display_clock ? "开启" : "关闭");
+ 
+     item = variable_item_list_add(
+         var_item_list,
+-        "Status Icons",
++        "状态图标",
+         2,
+         momentum_app_scene_interface_statusbar_status_icons_changed,
+         app);
+     variable_item_set_current_value_index(item, momentum_settings.status_icons);
+-    variable_item_set_current_value_text(item, momentum_settings.status_icons ? "ON" : "OFF");
++    variable_item_set_current_value_text(item, momentum_settings.status_icons ? "开启" : "关闭");
+ 
+     item = variable_item_list_add(
+         var_item_list,
+-        "Bar Borders",
++        "边框",
+         2,
+         momentum_app_scene_interface_statusbar_bar_borders_changed,
+         app);
+     variable_item_set_current_value_index(item, momentum_settings.bar_borders);
+-    variable_item_set_current_value_text(item, momentum_settings.bar_borders ? "ON" : "OFF");
++    variable_item_set_current_value_text(item, momentum_settings.bar_borders ? "开启" : "关闭");
+ 
+     item = variable_item_list_add(
+         var_item_list,
+-        "Bar Background",
++        "背景",
+         2,
+         momentum_app_scene_interface_statusbar_bar_background_changed,
+         app);
+     variable_item_set_current_value_index(item, momentum_settings.bar_background);
+-    variable_item_set_current_value_text(item, momentum_settings.bar_background ? "ON" : "OFF");
++    variable_item_set_current_value_text(item, momentum_settings.bar_background ? "开启" : "关闭");
+ 
+     variable_item_list_set_enter_callback(
+         var_item_list, momentum_app_scene_interface_statusbar_var_item_list_callback, app);
+diff --git a/applications/main/momentum_app/scenes/momentum_app_scene_misc.c b/applications/main/momentum_app/scenes/momentum_app_scene_misc.c
+index ca66861f8..bd2722861 100644
+--- a/applications/main/momentum_app/scenes/momentum_app_scene_misc.c
++++ b/applications/main/momentum_app/scenes/momentum_app_scene_misc.c
+@@ -31,16 +31,16 @@ void momentum_app_scene_misc_on_enter(void* context) {
+     VariableItem* item;
+     uint8_t value_index;
+ 
+-    item = variable_item_list_add(var_item_list, "Screen", 0, NULL, app);
++    item = variable_item_list_add(var_item_list, "屏幕", 0, NULL, app);
+     variable_item_set_current_value_text(item, ">");
+ 
+-    item = variable_item_list_add(var_item_list, "Dolphin", 0, NULL, app);
++    item = variable_item_list_add(var_item_list, "海豚", 0, NULL, app);
+     variable_item_set_current_value_text(item, ">");
+ 
+-    item = variable_item_list_add(var_item_list, "Spoofing Options", 0, NULL, app);
++    item = variable_item_list_add(var_item_list, "伪装选项", 0, NULL, app);
+     variable_item_set_current_value_text(item, ">");
+ 
+-    item = variable_item_list_add(var_item_list, "VGM Options", 0, NULL, app);
++    item = variable_item_list_add(var_item_list, "VGM选项", 0, NULL, app);
+     variable_item_set_current_value_text(item, ">");
+ 
+     char cap_str[6];
+@@ -48,14 +48,14 @@ void momentum_app_scene_misc_on_enter(void* context) {
+     snprintf(cap_str, sizeof(cap_str), "%lu%%", (uint32_t)value_index * CHARGE_CAP_INTV);
+     item = variable_item_list_add(
+         var_item_list,
+-        "Charge Cap",
++        "充电上限",
+         100 / CHARGE_CAP_INTV,
+         momentum_app_scene_misc_charge_cap_changed,
+         app);
+     variable_item_set_current_value_index(item, value_index - 1);
+     variable_item_set_current_value_text(item, cap_str);
+ 
+-    variable_item_list_add(var_item_list, "Show Momentum Intro", 0, NULL, app);
++    variable_item_list_add(var_item_list, "显示固件介绍", 0, NULL, app);
+ 
+     variable_item_list_set_enter_callback(
+         var_item_list, momentum_app_scene_misc_var_item_list_callback, app);
+diff --git a/applications/main/momentum_app/scenes/momentum_app_scene_misc_dolphin.c b/applications/main/momentum_app/scenes/momentum_app_scene_misc_dolphin.c
+index 131205ab4..60cd4920a 100644
+--- a/applications/main/momentum_app/scenes/momentum_app_scene_misc_dolphin.c
++++ b/applications/main/momentum_app/scenes/momentum_app_scene_misc_dolphin.c
+@@ -122,7 +122,7 @@ void momentum_app_scene_misc_dolphin_on_enter(void* context) {
+     snprintf(level_str, sizeof(level_str), "%u", level);
+     item = variable_item_list_add(
+         var_item_list,
+-        "Dolphin Level",
++        "Dolphin 等级",
+         DOLPHIN_LEVEL_COUNT + 1,
+         momentum_app_scene_misc_dolphin_dolphin_level_changed,
+         app);
+@@ -134,7 +134,7 @@ void momentum_app_scene_misc_dolphin_on_enter(void* context) {
+     // uin8_t index too small for all levels, use 3 fake items to
+     // show buttons and change values in callback
+     item = variable_item_list_add(
+-        var_item_list, "Dolphin XP", 3, momentum_app_scene_misc_dolphin_dolphin_xp_changed, app);
++        var_item_list, "Dolphin 经验值", 3, momentum_app_scene_misc_dolphin_dolphin_xp_changed, app);
+     variable_item_set_current_value_index(
+         item,
+         app->dolphin_xp == 0              ? 0 :
+@@ -146,7 +146,7 @@ void momentum_app_scene_misc_dolphin_on_enter(void* context) {
+     snprintf(angry_str, sizeof(angry_str), "%lu", app->dolphin_angry);
+     item = variable_item_list_add(
+         var_item_list,
+-        "Dolphin Angry",
++        "Dolphin 愤怒程度",
+         BUTTHURT_MAX + 1,
+         momentum_app_scene_misc_dolphin_dolphin_angry_changed,
+         app);
+@@ -155,14 +155,13 @@ void momentum_app_scene_misc_dolphin_on_enter(void* context) {
+     variable_item_set_locked(
+         item,
+         settings.happy_mode,
+-        "Settings >\n"
+-        "Desktop >\n"
+-        "Happy Mode\n"
+-        "is enabled!");
++        "设置>桌面\n"
++        "开心模式\n"
++        "已启用！");
+ 
+     item = variable_item_list_add(
+         var_item_list,
+-        "Butthurt Timer",
++        "受伤计时器",
+         COUNT_OF(butthurt_timer_names),
+         momentum_app_scene_misc_dolphin_butthurt_timer_changed,
+         app);
+@@ -173,10 +172,9 @@ void momentum_app_scene_misc_dolphin_on_enter(void* context) {
+     variable_item_set_locked(
+         item,
+         settings.happy_mode,
+-        "Settings >\n"
+-        "Desktop >\n"
+-        "Happy Mode\n"
+-        "is enabled!");
++        "设置>桌面\n"
++        "开心模式\n"
++        "已启用！");
+ 
+     variable_item_list_set_enter_callback(
+         var_item_list, momentum_app_scene_misc_dolphin_var_item_list_callback, app);
+diff --git a/applications/main/momentum_app/scenes/momentum_app_scene_misc_dolphin_xp.c b/applications/main/momentum_app/scenes/momentum_app_scene_misc_dolphin_xp.c
+index 0b931d9e4..dafe1abc8 100644
+--- a/applications/main/momentum_app/scenes/momentum_app_scene_misc_dolphin_xp.c
++++ b/applications/main/momentum_app/scenes/momentum_app_scene_misc_dolphin_xp.c
+@@ -16,7 +16,7 @@ void momentum_app_scene_misc_dolphin_xp_on_enter(void* context) {
+     MomentumApp* app = context;
+     NumberInput* number_input = app->number_input;
+ 
+-    number_input_set_header_text(number_input, "Enter Dolphin XP value");
++    number_input_set_header_text(number_input, "请输入 Dolphin 经验值");
+ 
+     number_input_set_result_callback(
+         number_input,
+diff --git a/applications/main/momentum_app/scenes/momentum_app_scene_misc_screen.c b/applications/main/momentum_app/scenes/momentum_app_scene_misc_screen.c
+index 0f2e7def3..b4c9f7185 100644
+--- a/applications/main/momentum_app/scenes/momentum_app_scene_misc_screen.c
++++ b/applications/main/momentum_app/scenes/momentum_app_scene_misc_screen.c
+@@ -21,14 +21,14 @@ void momentum_app_scene_misc_screen_var_item_list_callback(void* context, uint32
+ static void momentum_app_scene_misc_screen_dark_mode_changed(VariableItem* item) {
+     MomentumApp* app = variable_item_get_context(item);
+     bool value = variable_item_get_current_value_index(item);
+-    variable_item_set_current_value_text(item, value ? "ON" : "OFF");
++    variable_item_set_current_value_text(item, value ? "开启" : "关闭");
+     momentum_settings.dark_mode = value;
+     app->save_settings = true;
+ }
+ 
+ static void momentum_app_scene_misc_screen_hand_orient_changed(VariableItem* item) {
+     bool value = variable_item_get_current_value_index(item);
+-    variable_item_set_current_value_text(item, value ? "ON" : "OFF");
++    variable_item_set_current_value_text(item, value ? "开启" : "关闭");
+     if(value) {
+         furi_hal_rtc_set_flag(FuriHalRtcFlagHandOrient);
+     } else {
+@@ -46,25 +46,25 @@ static const struct {
+     RgbColor color;
+ } lcd_colors[] = {
+     // clang-format off
+-    {"Off", {{0, 0, 0}}},
+-    {"Orange", {{255, 69, 0}}},
+-    {"Red", {{255, 0, 0}}},
+-    {"Maroon", {{128, 0, 0}}},
+-    {"Yellow", {{255, 255, 0}}},
+-    {"Olive", {{128, 128, 0}}},
+-    {"Lime", {{0, 255, 0}}},
+-    {"Green", {{0, 128, 0}}},
+-    {"Aqua", {{0, 255, 127}}},
+-    {"Cyan", {{0, 210, 210}}},
+-    {"Azure", {{0, 127, 255}}},
+-    {"Teal", {{0, 128, 128}}},
+-    {"Blue", {{0, 0, 255}}},
+-    {"Navy", {{0, 0, 128}}},
+-    {"Purple", {{128, 0, 128}}},
+-    {"Fuchsia", {{255, 0, 255}}},
+-    {"Pink", {{173, 31, 173}}},
+-    {"Brown", {{165, 42, 42}}},
+-    {"White", {{255, 192, 203}}},
++    {"关闭", {{0, 0, 0}}},
++    {"橙色", {{255, 69, 0}}},
++    {"红色", {{255, 0, 0}}},
++    {"深红", {{128, 0, 0}}},
++    {"黄色", {{255, 255, 0}}},
++    {"橄榄色", {{128, 128, 0}}},
++    {"青色", {{0, 255, 0}}},
++    {"绿色", {{0, 128, 0}}},
++    {"水绿色", {{0, 255, 127}}},
++    {"青色", {{0, 210, 210}}},
++    {"蔚蓝色", {{0, 127, 255}}},
++    {"青绿色", {{0, 128, 128}}},
++    {"蓝色", {{0, 0, 255}}},
++    {"海军蓝", {{0, 0, 128}}},
++    {"紫色", {{128, 0, 128}}},
++    {"洋红", {{255, 0, 255}}},
++    {"粉色", {{173, 31, 173}}},
++    {"棕色", {{165, 42, 42}}},
++    {"白色", {{255, 192, 203}}},
+     // clang-format on
+ };
+ static const size_t lcd_sz = COUNT_OF(lcd_colors);
+@@ -94,9 +94,9 @@ static const struct {
+ };
+ 
+ const char* const rainbow_lcd_names[RGBBacklightRainbowModeCount] = {
+-    "OFF",
+-    "Wave",
+-    "Static",
++    "关闭",
++    "波动",
++    "静态",
+ };
+ static void momentum_app_scene_misc_screen_rainbow_lcd_changed(VariableItem* item) {
+     MomentumApp* app = variable_item_get_context(item);
+@@ -173,25 +173,25 @@ void momentum_app_scene_misc_screen_on_enter(void* context) {
+     uint8_t value_index;
+ 
+     item = variable_item_list_add(
+-        var_item_list, "Dark Mode", 2, momentum_app_scene_misc_screen_dark_mode_changed, app);
++        var_item_list, "深色模式", 2, momentum_app_scene_misc_screen_dark_mode_changed, app);
+     variable_item_set_current_value_index(item, momentum_settings.dark_mode);
+-    variable_item_set_current_value_text(item, momentum_settings.dark_mode ? "ON" : "OFF");
++    variable_item_set_current_value_text(item, momentum_settings.dark_mode ? "开启" : "关闭");
+ 
+     item = variable_item_list_add(
+-        var_item_list, "Left Handed", 2, momentum_app_scene_misc_screen_hand_orient_changed, app);
++        var_item_list, "左手模式", 2, momentum_app_scene_misc_screen_hand_orient_changed, app);
+     value_index = furi_hal_rtc_is_flag_set(FuriHalRtcFlagHandOrient);
+     variable_item_set_current_value_index(item, value_index);
+-    variable_item_set_current_value_text(item, value_index ? "ON" : "OFF");
++    variable_item_set_current_value_text(item, value_index ? "开启" : "关闭");
+ 
+     item = variable_item_list_add(
+         var_item_list,
+-        "RGB Backlight",
++        "RGB 背光",
+         2,
+         momentum_app_scene_misc_screen_rgb_backlight_changed,
+         app);
+     value_index = momentum_settings.rgb_backlight;
+     variable_item_set_current_value_index(item, value_index);
+-    variable_item_set_current_value_text(item, value_index ? "ON" : "OFF");
++    variable_item_set_current_value_text(item, value_index ? "开启" : "关闭");
+ 
+     RgbColor color;
+     for(size_t i = 0; i < COUNT_OF(lcd_cols); i++) {
+@@ -214,23 +214,23 @@ void momentum_app_scene_misc_screen_on_enter(void* context) {
+             snprintf(str, sizeof(str), "%02X%02X%02X", color.r, color.g, color.b);
+             variable_item_set_current_value_text(item, str);
+         }
+-        variable_item_set_locked(item, !momentum_settings.rgb_backlight, "Needs RGB\nBacklight!");
++        variable_item_set_locked(item, !momentum_settings.rgb_backlight, "需要 RGB\n背光！");
+     }
+ 
+     item = variable_item_list_add(
+         var_item_list,
+-        "Rainbow LCD",
++        "彩虹 LCD",
+         RGBBacklightRainbowModeCount,
+         momentum_app_scene_misc_screen_rainbow_lcd_changed,
+         app);
+     value_index = rgb_backlight_get_rainbow_mode();
+     variable_item_set_current_value_index(item, value_index);
+     variable_item_set_current_value_text(item, rainbow_lcd_names[value_index]);
+-    variable_item_set_locked(item, !momentum_settings.rgb_backlight, "Needs RGB\nBacklight!");
++    variable_item_set_locked(item, !momentum_settings.rgb_backlight, "需要 RGB\n背光！");
+ 
+     item = variable_item_list_add(
+         var_item_list,
+-        "Rainbow Speed",
++        "彩虹速度",
+         25,
+         momentum_app_scene_misc_screen_rainbow_speed_changed,
+         app);
+@@ -239,11 +239,11 @@ void momentum_app_scene_misc_screen_on_enter(void* context) {
+     char speed_str[4];
+     snprintf(speed_str, sizeof(speed_str), "%d", value_index);
+     variable_item_set_current_value_text(item, speed_str);
+-    variable_item_set_locked(item, !momentum_settings.rgb_backlight, "Needs RGB\nBacklight!");
++    variable_item_set_locked(item, !momentum_settings.rgb_backlight, "需要 RGB\n背光！");
+ 
+     item = variable_item_list_add(
+         var_item_list,
+-        "Rainbow Interval",
++        "彩虹间隔",
+         COUNT_OF(rainbow_interval_values),
+         momentum_app_scene_misc_screen_rainbow_interval_changed,
+         app);
+@@ -253,11 +253,11 @@ void momentum_app_scene_misc_screen_on_enter(void* context) {
+         COUNT_OF(rainbow_interval_values));
+     variable_item_set_current_value_index(item, value_index);
+     variable_item_set_current_value_text(item, rainbow_interval_names[value_index]);
+-    variable_item_set_locked(item, !momentum_settings.rgb_backlight, "Needs RGB\nBacklight!");
++    variable_item_set_locked(item, !momentum_settings.rgb_backlight, "需要 RGB\n背光！");
+ 
+     item = variable_item_list_add(
+         var_item_list,
+-        "Rainbow Saturation",
++        "彩虹饱和度",
+         255,
+         momentum_app_scene_misc_screen_rainbow_saturation_changed,
+         app);
+@@ -266,7 +266,7 @@ void momentum_app_scene_misc_screen_on_enter(void* context) {
+     char saturation_str[4];
+     snprintf(saturation_str, sizeof(saturation_str), "%d", value_index);
+     variable_item_set_current_value_text(item, saturation_str);
+-    variable_item_set_locked(item, !momentum_settings.rgb_backlight, "Needs RGB\nBacklight!");
++    variable_item_set_locked(item, !momentum_settings.rgb_backlight, "需要 RGB\n背光！");
+ 
+     variable_item_list_set_enter_callback(
+         var_item_list, momentum_app_scene_misc_screen_var_item_list_callback, app);
+@@ -295,7 +295,7 @@ bool momentum_app_scene_misc_screen_on_event(void* context, SceneManagerEvent ev
+             if(value) {
+                 DialogMessage* msg = dialog_message_alloc();
+                 dialog_message_set_header(msg, "RGB Backlight", 64, 0, AlignCenter, AlignTop);
+-                dialog_message_set_buttons(msg, "No", NULL, "Yes");
++                dialog_message_set_buttons(msg, "No", NULL, "是");
+                 dialog_message_set_text(
+                     msg,
+                     "This option requires installing\na hardware modification!\nIs it installed?",
+@@ -319,29 +319,29 @@ bool momentum_app_scene_misc_screen_on_event(void* context, SceneManagerEvent ev
+                     variable_item_set_locked(
+                         variable_item_list_get(app->var_item_list, VarItemListIndexLcdColor0 + i),
+                         !value,
+-                        "Needs RGB\nBacklight!");
++                        "需要 RGB\n背光！");
+                 }
+                 variable_item_set_locked(
+                     variable_item_list_get(app->var_item_list, VarItemListIndexRainbowLcd),
+                     !value,
+-                    "Needs RGB\nBacklight!");
++                    "需要 RGB\n背光！");
+                 variable_item_set_locked(
+                     variable_item_list_get(app->var_item_list, VarItemListIndexRainbowSpeed),
+                     !value,
+-                    "Needs RGB\nBacklight!");
++                    "需要 RGB\n背光！");
+                 variable_item_set_locked(
+                     variable_item_list_get(app->var_item_list, VarItemListIndexRainbowInterval),
+                     !value,
+-                    "Needs RGB\nBacklight!");
++                    "需要 RGB\n背光！");
+                 variable_item_set_locked(
+                     variable_item_list_get(app->var_item_list, VarItemListIndexRainbowSaturation),
+                     !value,
+-                    "Needs RGB\nBacklight!");
++                    "需要 RGB\n背光！");
+             } else {
+                 value = !value;
+             }
+             variable_item_set_current_value_index(item, value);
+-            variable_item_set_current_value_text(item, value ? "ON" : "OFF");
++            variable_item_set_current_value_text(item, value ? "开启" : "关闭");
+             break;
+         }
+         case VarItemListIndexLcdColor0:
+diff --git a/applications/main/momentum_app/scenes/momentum_app_scene_misc_screen_color.c b/applications/main/momentum_app/scenes/momentum_app_scene_misc_screen_color.c
+index a62dfa888..48475398b 100644
+--- a/applications/main/momentum_app/scenes/momentum_app_scene_misc_screen_color.c
++++ b/applications/main/momentum_app/scenes/momentum_app_scene_misc_screen_color.c
+@@ -14,7 +14,7 @@ void momentum_app_scene_misc_screen_color_on_enter(void* context) {
+     MomentumApp* app = context;
+     ByteInput* byte_input = app->byte_input;
+ 
+-    byte_input_set_header_text(byte_input, "Set LCD Color (#RRGGBB)");
++    byte_input_set_header_text(byte_input, "设置 LCD 颜色 (#RRGGBB)");
+ 
+     rgb_backlight_get_color(
+         scene_manager_get_scene_state(app->scene_manager, MomentumAppSceneMiscScreenColor),
+diff --git a/applications/main/momentum_app/scenes/momentum_app_scene_misc_spoof.c b/applications/main/momentum_app/scenes/momentum_app_scene_misc_spoof.c
+index a9aea7efb..511bacae0 100644
+--- a/applications/main/momentum_app/scenes/momentum_app_scene_misc_spoof.c
++++ b/applications/main/momentum_app/scenes/momentum_app_scene_misc_spoof.c
+@@ -6,10 +6,10 @@ enum VarItemListIndex {
+ };
+ 
+ const char* const shell_color_names[FuriHalVersionColorCount] = {
+-    "Real",
+-    "Black",
+-    "White",
+-    "Transparent",
++    "真实",
++    "黑色",
++    "白色",
++    "透明",
+ };
+ static void momentum_app_scene_misc_spoof_shell_color_changed(VariableItem* item) {
+     MomentumApp* app = variable_item_get_context(item);
+@@ -20,6 +20,16 @@ static void momentum_app_scene_misc_spoof_shell_color_changed(VariableItem* item
+     app->require_reboot = true;
+ }
+ 
++// 设备状态变更回调
++static void momentum_app_scene_misc_device_status_changed(VariableItem* item) {
++    MomentumApp* app = variable_item_get_context(item);
++    bool value = variable_item_get_current_value_index(item);
++    variable_item_set_current_value_text(item, value ? "复刻版" : "正版");
++    momentum_settings.spoof_status = value;
++    app->save_settings = true;
++    app->require_reboot = true;
++}
++
+ void momentum_app_scene_misc_spoof_var_item_list_callback(void* context, uint32_t index) {
+     MomentumApp* app = context;
+     view_dispatcher_send_custom_event(app->view_dispatcher, index);
+@@ -30,18 +40,27 @@ void momentum_app_scene_misc_spoof_on_enter(void* context) {
+     VariableItemList* var_item_list = app->var_item_list;
+     VariableItem* item;
+ 
+-    item = variable_item_list_add(var_item_list, "Flipper Name", 0, NULL, app);
++    item = variable_item_list_add(var_item_list, "Flipper 名称", 0, NULL, app);
+     variable_item_set_current_value_text(item, app->device_name);
+ 
+     item = variable_item_list_add(
+         var_item_list,
+-        "Shell Color",
++        "外壳颜色",
+         FuriHalVersionColorCount,
+         momentum_app_scene_misc_spoof_shell_color_changed,
+         app);
+     variable_item_set_current_value_index(item, momentum_settings.spoof_color);
+     variable_item_set_current_value_text(item, shell_color_names[momentum_settings.spoof_color]);
+ 
++    item = variable_item_list_add(
++        var_item_list,
++        "设备状态",
++        2,
++        momentum_app_scene_misc_device_status_changed,
++        app);
++    variable_item_set_current_value_index(item, momentum_settings.spoof_status);
++    variable_item_set_current_value_text(item, momentum_settings.spoof_status ? "复刻版" : "正版");
++
+     variable_item_list_set_enter_callback(
+         var_item_list, momentum_app_scene_misc_spoof_var_item_list_callback, app);
+ 
+diff --git a/applications/main/momentum_app/scenes/momentum_app_scene_misc_spoof_name.c b/applications/main/momentum_app/scenes/momentum_app_scene_misc_spoof_name.c
+index 1ba6aed7b..b8f9819cc 100644
+--- a/applications/main/momentum_app/scenes/momentum_app_scene_misc_spoof_name.c
++++ b/applications/main/momentum_app/scenes/momentum_app_scene_misc_spoof_name.c
+@@ -21,7 +21,7 @@ static bool momentum_app_scene_misc_spoof_name_validator(
+     for(; *text; ++text) {
+         const char c = *text;
+         if((c < '0' || c > '9') && (c < 'A' || c > 'Z') && (c < 'a' || c > 'z')) {
+-            furi_string_printf(error, "Please only\nenter letters\nand numbers!");
++            furi_string_printf(error, "请输入仅包含字母\n和数字的内容！");
+             return false;
+         }
+     }
+@@ -33,7 +33,7 @@ void momentum_app_scene_misc_spoof_name_on_enter(void* context) {
+     MomentumApp* app = context;
+     TextInput* text_input = app->text_input;
+ 
+-    text_input_set_header_text(text_input, "Leave empty for real name");
++    text_input_set_header_text(text_input, "留空以使用真实姓名");
+ 
+     text_input_set_validator(text_input, momentum_app_scene_misc_spoof_name_validator, NULL);
+ 
+diff --git a/applications/main/momentum_app/scenes/momentum_app_scene_misc_vgm.c b/applications/main/momentum_app/scenes/momentum_app_scene_misc_vgm.c
+index 7c41258b7..955f039cc 100644
+--- a/applications/main/momentum_app/scenes/momentum_app_scene_misc_vgm.c
++++ b/applications/main/momentum_app/scenes/momentum_app_scene_misc_vgm.c
+@@ -15,28 +15,28 @@ static const struct {
+     RgbColor color;
+ } vgm_colors[] = {
+     // clang-format off
+-    {"Default", {{0, 0, 0}}},
+-    {"Rainbow", {{0, 0, 0}}},
+-    {"RgbMod", {{0, 0, 0}}},
+-    {"Black", {{0, 0, 0}}},
+-    {"Orange", {{255, 130, 0}}},
+-    {"Red", {{255, 0, 0}}},
+-    {"Maroon", {{128, 0, 0}}},
+-    {"Yellow", {{255, 255, 0}}},
+-    {"Olive", {{128, 128, 0}}},
+-    {"Lime", {{0, 255, 0}}},
+-    {"Green", {{0, 128, 0}}},
+-    {"Aqua", {{0, 255, 127}}},
+-    {"Cyan", {{0, 210, 210}}},
+-    {"Azure", {{0, 127, 255}}},
+-    {"Teal", {{0, 128, 128}}},
+-    {"Blue", {{0, 0, 255}}},
+-    {"Navy", {{0, 0, 128}}},
+-    {"Purple", {{128, 0, 128}}},
+-    {"Fuchsia", {{255, 0, 255}}},
+-    {"Pink", {{173, 31, 173}}},
+-    {"Brown", {{165, 42, 42}}},
+-    {"White", {{255, 192, 203}}},
++    {"默认", {{0, 0, 0}}},
++    {"彩虹", {{0, 0, 0}}},
++    {"RGB 模式", {{0, 0, 0}}},
++    {"黑色", {{0, 0, 0}}},
++    {"橙色", {{255, 130, 0}}},
++    {"红色", {{255, 0, 0}}},
++    {"栗色", {{128, 0, 0}}},
++    {"黄色", {{255, 255, 0}}},
++    {"橄榄绿", {{128, 128, 0}}},
++    {"青柠绿", {{0, 255, 0}}},
++    {"绿色", {{0, 128, 0}}},
++    {"水绿", {{0, 255, 127}}},
++    {"青色", {{0, 210, 210}}},
++    {"蔚蓝", {{0, 127, 255}}},
++    {"深青色", {{0, 128, 128}}},
++    {"蓝色", {{0, 0, 255}}},
++    {"海军蓝", {{0, 0, 128}}},
++    {"紫色", {{128, 0, 128}}},
++    {"品红", {{255, 0, 255}}},
++    {"粉色", {{173, 31, 173}}},
++    {"棕色", {{165, 42, 42}}},
++    {"白色", {{255, 192, 203}}},
+     // clang-format on
+ };
+ 
+@@ -48,11 +48,11 @@ static void momentum_app_scene_misc_vgm_foreground_changed(VariableItem* item) {
+     variable_item_set_current_value_text(item, vgm_colors[index].name);
+     momentum_settings.rpc_color_fg.rgb = vgm_colors[index].color;
+ 
+-    if(strcmp("Default", vgm_colors[index].name) == 0) {
++    if(strcmp("默认", vgm_colors[index].name) == 0) {
+         momentum_settings.rpc_color_fg.mode = ScreenColorModeDefault;
+-    } else if(strcmp("Rainbow", vgm_colors[index].name) == 0) {
++    } else if(strcmp("彩虹", vgm_colors[index].name) == 0) {
+         momentum_settings.rpc_color_fg.mode = ScreenColorModeRainbow;
+-    } else if(strcmp("RgbMod", vgm_colors[index].name) == 0) {
++    } else if(strcmp("RGB 模式", vgm_colors[index].name) == 0) {
+         momentum_settings.rpc_color_fg.mode = ScreenColorModeRgbBacklight;
+     } else {
+         momentum_settings.rpc_color_fg.mode = ScreenColorModeCustom;
+@@ -67,11 +67,11 @@ static void momentum_app_scene_misc_vgm_background_changed(VariableItem* item) {
+     variable_item_set_current_value_text(item, vgm_colors[index].name);
+     momentum_settings.rpc_color_bg.rgb = vgm_colors[index].color;
+ 
+-    if(strcmp("Default", vgm_colors[index].name) == 0) {
++    if(strcmp("默认", vgm_colors[index].name) == 0) {
+         momentum_settings.rpc_color_bg.mode = ScreenColorModeDefault;
+-    } else if(strcmp("Rainbow", vgm_colors[index].name) == 0) {
++    } else if(strcmp("彩虹", vgm_colors[index].name) == 0) {
+         momentum_settings.rpc_color_bg.mode = ScreenColorModeRainbow;
+-    } else if(strcmp("RgbMod", vgm_colors[index].name) == 0) {
++    } else if(strcmp("RGB 模式", vgm_colors[index].name) == 0) {
+         momentum_settings.rpc_color_bg.mode = ScreenColorModeRgbBacklight;
+     } else {
+         momentum_settings.rpc_color_bg.mode = ScreenColorModeCustom;
+@@ -88,7 +88,7 @@ void momentum_app_scene_misc_vgm_on_enter(void* context) {
+ 
+     item = variable_item_list_add(
+         var_item_list,
+-        "Foreground",
++        "前景",
+         vgm_colors_count,
+         momentum_app_scene_misc_vgm_foreground_changed,
+         app);
+@@ -121,7 +121,7 @@ void momentum_app_scene_misc_vgm_on_enter(void* context) {
+ 
+     item = variable_item_list_add(
+         var_item_list,
+-        "Background",
++        "背景",
+         vgm_colors_count,
+         momentum_app_scene_misc_vgm_background_changed,
+         app);
+diff --git a/applications/main/momentum_app/scenes/momentum_app_scene_misc_vgm_color.c b/applications/main/momentum_app/scenes/momentum_app_scene_misc_vgm_color.c
+index 6ca50a7c6..59c3a1b36 100644
+--- a/applications/main/momentum_app/scenes/momentum_app_scene_misc_vgm_color.c
++++ b/applications/main/momentum_app/scenes/momentum_app_scene_misc_vgm_color.c
+@@ -14,7 +14,7 @@ void momentum_app_scene_misc_vgm_color_on_enter(void* context) {
+     MomentumApp* app = context;
+     ByteInput* byte_input = app->byte_input;
+ 
+-    byte_input_set_header_text(byte_input, "Set VGM Color (#RRGGBB)");
++    byte_input_set_header_text(byte_input, "设置 VGM 颜色 (#RRGGBB)");
+ 
+     if(scene_manager_get_scene_state(app->scene_manager, MomentumAppSceneMiscVgmColor)) {
+         app->vgm_color = momentum_settings.rpc_color_bg.rgb;
+diff --git a/applications/main/momentum_app/scenes/momentum_app_scene_protocols.c b/applications/main/momentum_app/scenes/momentum_app_scene_protocols.c
+index 51484b1f8..ab0b71e29 100644
+--- a/applications/main/momentum_app/scenes/momentum_app_scene_protocols.c
++++ b/applications/main/momentum_app/scenes/momentum_app_scene_protocols.c
+@@ -26,7 +26,7 @@ static void momentum_app_scene_protocols_subghz_extend_changed(VariableItem* ite
+ static void momentum_app_scene_protocols_file_naming_prefix_changed(VariableItem* item) {
+     MomentumApp* app = variable_item_get_context(item);
+     bool value = variable_item_get_current_value_index(item);
+-    variable_item_set_current_value_text(item, value ? "After" : "Before");
++    variable_item_set_current_value_text(item, value ? "之后" : "之前");
+     momentum_settings.file_naming_prefix_after = value;
+     app->save_settings = true;
+ }
+@@ -36,40 +36,40 @@ void momentum_app_scene_protocols_on_enter(void* context) {
+     VariableItemList* var_item_list = app->var_item_list;
+     VariableItem* item;
+ 
+-    item = variable_item_list_add(var_item_list, "SubGHz Freqs", 0, NULL, app);
++    item = variable_item_list_add(var_item_list, "SubGHz 频率", 0, NULL, app);
+     variable_item_set_current_value_text(item, ">");
+ 
+     item = variable_item_list_add(
+         var_item_list,
+-        "SubGHz Bypass Region Lock",
++        "绕过 SubGHz 区域锁定",
+         2,
+         momentum_app_scene_protocols_subghz_bypass_changed,
+         app);
+     variable_item_set_current_value_index(item, app->subghz_bypass);
+-    variable_item_set_current_value_text(item, app->subghz_bypass ? "ON" : "OFF");
++    variable_item_set_current_value_text(item, app->subghz_bypass ? "开" : "关");
+ 
+     item = variable_item_list_add(
+         var_item_list,
+-        "SubGHz Extend Freq Bands",
++        "扩展 SubGHz 频段",
+         2,
+         momentum_app_scene_protocols_subghz_extend_changed,
+         app);
+     variable_item_set_current_value_index(item, app->subghz_extend);
+-    variable_item_set_current_value_text(item, app->subghz_extend ? "ON" : "OFF");
+-    variable_item_set_locked(item, !app->subghz_bypass, "Must bypass\nregion lock\nfirst!");
++    variable_item_set_current_value_text(item, app->subghz_extend ? "开" : "关");
++    variable_item_set_locked(item, !app->subghz_bypass, "必须先绕过\n区域锁定！");
+ 
+-    item = variable_item_list_add(var_item_list, "GPIO Pins", 0, NULL, app);
++    item = variable_item_list_add(var_item_list, "GPIO 引脚", 0, NULL, app);
+     variable_item_set_current_value_text(item, ">");
+ 
+     item = variable_item_list_add(
+         var_item_list,
+-        "File Naming Prefix",
++        "文件命名前缀",
+         2,
+         momentum_app_scene_protocols_file_naming_prefix_changed,
+         app);
+     variable_item_set_current_value_index(item, momentum_settings.file_naming_prefix_after);
+     variable_item_set_current_value_text(
+-        item, momentum_settings.file_naming_prefix_after ? "After" : "Before");
++        item, momentum_settings.file_naming_prefix_after ? "之后" : "之前");
+ 
+     variable_item_list_set_enter_callback(
+         var_item_list, momentum_app_scene_protocols_var_item_list_callback, app);
+@@ -138,7 +138,7 @@ bool momentum_app_scene_protocols_on_event(void* context, SceneManagerEvent even
+                 value = !value;
+             }
+             variable_item_set_current_value_index(item, value);
+-            variable_item_set_current_value_text(item, value ? "ON" : "OFF");
++            variable_item_set_current_value_text(item, value ? "开启" : "关闭");
+             break;
+         }
+         case VarItemListIndexGpioPins:
+diff --git a/applications/main/momentum_app/scenes/momentum_app_scene_protocols_freqs.c b/applications/main/momentum_app/scenes/momentum_app_scene_protocols_freqs.c
+index c67e76ee0..a36b876b4 100644
+--- a/applications/main/momentum_app/scenes/momentum_app_scene_protocols_freqs.c
++++ b/applications/main/momentum_app/scenes/momentum_app_scene_protocols_freqs.c
+@@ -14,7 +14,7 @@ void momentum_app_scene_protocols_freqs_var_item_list_callback(void* context, ui
+ static void momentum_app_scene_protocols_freqs_use_defaults_changed(VariableItem* item) {
+     MomentumApp* app = variable_item_get_context(item);
+     bool value = variable_item_get_current_value_index(item);
+-    variable_item_set_current_value_text(item, value ? "ON" : "OFF");
++    variable_item_set_current_value_text(item, value ? "开启" : "关闭");
+     app->subghz_use_defaults = value;
+     app->save_subghz_freqs = true;
+ }
+@@ -26,17 +26,17 @@ void momentum_app_scene_protocols_freqs_on_enter(void* context) {
+ 
+     item = variable_item_list_add(
+         var_item_list,
+-        "Use Defaults",
++        "使用默认值",
+         2,
+         momentum_app_scene_protocols_freqs_use_defaults_changed,
+         app);
+     variable_item_set_current_value_index(item, app->subghz_use_defaults);
+-    variable_item_set_current_value_text(item, app->subghz_use_defaults ? "ON" : "OFF");
++    variable_item_set_current_value_text(item, app->subghz_use_defaults ? "开" : "关");
+ 
+-    item = variable_item_list_add(var_item_list, "Static Freqs", 0, NULL, app);
++    item = variable_item_list_add(var_item_list, "静态频率", 0, NULL, app);
+     variable_item_set_current_value_text(item, ">");
+ 
+-    item = variable_item_list_add(var_item_list, "Hopper Freqs", 0, NULL, app);
++    item = variable_item_list_add(var_item_list, "跳频频率", 0, NULL, app);
+     variable_item_set_current_value_text(item, ">");
+ 
+     variable_item_list_set_enter_callback(
+diff --git a/applications/main/momentum_app/scenes/momentum_app_scene_protocols_freqs_add.c b/applications/main/momentum_app/scenes/momentum_app_scene_protocols_freqs_add.c
+index 3bbe082da..55de4dd7a 100644
+--- a/applications/main/momentum_app/scenes/momentum_app_scene_protocols_freqs_add.c
++++ b/applications/main/momentum_app/scenes/momentum_app_scene_protocols_freqs_add.c
+@@ -29,7 +29,7 @@ void momentum_app_scene_protocols_freqs_add_on_enter(void* context) {
+     MomentumApp* app = context;
+     NumberInput* number_input = app->number_input;
+ 
+-    number_input_set_header_text(number_input, "Use kHz values, like 433920");
++    number_input_set_header_text(number_input, "请输入 kHz 值，例如 433920");
+ 
+     number_input_set_result_callback(
+         number_input,
+diff --git a/applications/main/momentum_app/scenes/momentum_app_scene_protocols_freqs_hopper.c b/applications/main/momentum_app/scenes/momentum_app_scene_protocols_freqs_hopper.c
+index 5ee2e5629..643fef45d 100644
+--- a/applications/main/momentum_app/scenes/momentum_app_scene_protocols_freqs_hopper.c
++++ b/applications/main/momentum_app/scenes/momentum_app_scene_protocols_freqs_hopper.c
+@@ -29,7 +29,7 @@ void momentum_app_scene_protocols_freqs_hopper_on_enter(void* context) {
+ 
+     item = variable_item_list_add(
+         var_item_list,
+-        "Hopper Freq",
++        "跳频频率",
+         FrequencyList_size(app->subghz_hopper_freqs),
+         momentum_app_scene_protocols_freqs_hopper_frequency_changed,
+         app);
+@@ -41,12 +41,12 @@ void momentum_app_scene_protocols_freqs_hopper_on_enter(void* context) {
+         snprintf(text, sizeof(text), "%lu.%02lu", value / 1000000, (value % 1000000) / 10000);
+         variable_item_set_current_value_text(item, text);
+     } else {
+-        variable_item_set_current_value_text(item, "None");
++        variable_item_set_current_value_text(item, "无");
+     }
+ 
+-    variable_item_list_add(var_item_list, "Remove Hopper Freq", 0, NULL, app);
++    variable_item_list_add(var_item_list, "移除跳频频率", 0, NULL, app);
+ 
+-    variable_item_list_add(var_item_list, "Add Hopper Freq", 0, NULL, app);
++    variable_item_list_add(var_item_list, "添加跳频频率", 0, NULL, app);
+ 
+     variable_item_list_set_enter_callback(
+         var_item_list, momentum_app_scene_protocols_freqs_hopper_var_item_list_callback, app);
+diff --git a/applications/main/momentum_app/scenes/momentum_app_scene_protocols_freqs_static.c b/applications/main/momentum_app/scenes/momentum_app_scene_protocols_freqs_static.c
+index f6e226238..c02fc553b 100644
+--- a/applications/main/momentum_app/scenes/momentum_app_scene_protocols_freqs_static.c
++++ b/applications/main/momentum_app/scenes/momentum_app_scene_protocols_freqs_static.c
+@@ -29,7 +29,7 @@ void momentum_app_scene_protocols_freqs_static_on_enter(void* context) {
+ 
+     item = variable_item_list_add(
+         var_item_list,
+-        "Static Freq",
++        "静态频率",
+         FrequencyList_size(app->subghz_static_freqs),
+         momentum_app_scene_protocols_freqs_static_frequency_changed,
+         app);
+@@ -41,12 +41,12 @@ void momentum_app_scene_protocols_freqs_static_on_enter(void* context) {
+         snprintf(text, sizeof(text), "%lu.%02lu", value / 1000000, (value % 1000000) / 10000);
+         variable_item_set_current_value_text(item, text);
+     } else {
+-        variable_item_set_current_value_text(item, "None");
++        variable_item_set_current_value_text(item, "无");
+     }
+ 
+-    variable_item_list_add(var_item_list, "Remove Static Freq", 0, NULL, app);
++    variable_item_list_add(var_item_list, "移除静态频率", 0, NULL, app);
+ 
+-    variable_item_list_add(var_item_list, "Add Static Freq", 0, NULL, app);
++    variable_item_list_add(var_item_list, "添加静态频率", 0, NULL, app);
+ 
+     variable_item_list_set_enter_callback(
+         var_item_list, momentum_app_scene_protocols_freqs_static_var_item_list_callback, app);
+diff --git a/applications/main/momentum_app/scenes/momentum_app_scene_start.c b/applications/main/momentum_app/scenes/momentum_app_scene_start.c
+index 0e97acd4d..a9febdbd8 100644
+--- a/applications/main/momentum_app/scenes/momentum_app_scene_start.c
++++ b/applications/main/momentum_app/scenes/momentum_app_scene_start.c
+@@ -16,13 +16,13 @@ void momentum_app_scene_start_on_enter(void* context) {
+     VariableItemList* var_item_list = app->var_item_list;
+     VariableItem* item;
+ 
+-    item = variable_item_list_add(var_item_list, "Interface", 0, NULL, app);
++    item = variable_item_list_add(var_item_list, "界面", 0, NULL, app);
+     variable_item_set_current_value_text(item, ">");
+ 
+-    item = variable_item_list_add(var_item_list, "Protocols", 0, NULL, app);
++    item = variable_item_list_add(var_item_list, "协议", 0, NULL, app);
+     variable_item_set_current_value_text(item, ">");
+ 
+-    item = variable_item_list_add(var_item_list, "Misc", 0, NULL, app);
++    item = variable_item_list_add(var_item_list, "杂项", 0, NULL, app);
+     variable_item_set_current_value_text(item, ">");
+ 
+     variable_item_list_set_header(var_item_list, furi_string_get_cstr(app->version_tag));
+diff --git a/lib/momentum/settings.c b/lib/momentum/settings.c
+index 9da9a4762..4766fa920 100644
+--- a/lib/momentum/settings.c
++++ b/lib/momentum/settings.c
+@@ -42,6 +42,7 @@ MomentumSettings momentum_settings = {
+     .uart_nmea_channel = FuriHalSerialIdUsart, // pin 13,14
+     .file_naming_prefix_after = false, // Before
+     .spoof_color = FuriHalVersionColorUnknown, // Real
++    .spoof_status = false, // OFF
+     .rpc_color_fg = {{ScreenColorModeDefault, {.value = 0x000000}}}, // Default Black
+     .rpc_color_bg = {{ScreenColorModeDefault, {.value = 0xFF8200}}}, // Default Orange
+ };
+@@ -113,6 +114,7 @@ static const struct {
+     {setting_enum(uart_nmea_channel, FuriHalSerialIdMax)},
+     {setting_bool(file_naming_prefix_after)},
+     {setting_enum(spoof_color, FuriHalVersionColorCount)},
++    {setting_bool(spoof_status)},
+     {setting_uint(rpc_color_fg, 0x000000, 0xFFFFFF)},
+     {setting_uint(rpc_color_bg, 0x000000, 0xFFFFFF)},
+ };
+diff --git a/lib/momentum/settings.h b/lib/momentum/settings.h
+index 573924ee6..71f9e430a 100644
+--- a/lib/momentum/settings.h
++++ b/lib/momentum/settings.h
+@@ -99,6 +99,7 @@ typedef struct {
+     FuriHalSerialId uart_nmea_channel;
+     bool file_naming_prefix_after;
+     FuriHalVersionColor spoof_color;
++    bool spoof_status;
+     ScreenFrameColor rpc_color_fg;
+     ScreenFrameColor rpc_color_bg;
+ } MomentumSettings;
+diff --git a/scripts/fbt/elfmanifest.py b/scripts/fbt/elfmanifest.py
+index 4096d279b..bf8e82641 100644
+--- a/scripts/fbt/elfmanifest.py
++++ b/scripts/fbt/elfmanifest.py
+@@ -47,7 +47,7 @@ class ElfManifestV1:
+             "<hI32s?32s",
+             self.stack_size,
+             self.app_version,
+-            bytes(self.name.encode("ascii")),
++            bytes(self.name.encode("UTF-8")),
+             bool(self.icon),
+             self.icon,
+         )
+diff --git a/targets/f7/furi_hal/furi_hal_crypto.c b/targets/f7/furi_hal/furi_hal_crypto.c
+index 4deda293a..bf2f97aa0 100644
+--- a/targets/f7/furi_hal/furi_hal_crypto.c
++++ b/targets/f7/furi_hal/furi_hal_crypto.c
+@@ -3,6 +3,7 @@
+ #include <furi_hal_bt.h>
+ #include <furi_hal_random.h>
+ #include <furi_hal_bus.h>
++#include <momentum/momentum.h>
+ 
+ #include <stm32wbxx_ll_cortex.h>
+ #include <furi.h>
+@@ -148,6 +149,9 @@ bool furi_hal_crypto_enclave_verify(uint8_t* keys_nb, uint8_t* valid_keys_nb) {
+     }
+     *keys_nb = keys;
+     *valid_keys_nb = keys_valid;
++    if(momentum_settings.spoof_status) {
++    *valid_keys_nb = ENCLAVE_FACTORY_KEY_SLOTS;
++    }
+     if(*valid_keys_nb == ENCLAVE_FACTORY_KEY_SLOTS)
+         return true;
+     else
+-- 
+2.39.5 (Apple Git-154)
+

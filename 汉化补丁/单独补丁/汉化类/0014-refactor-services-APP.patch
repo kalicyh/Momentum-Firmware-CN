@@ -1,0 +1,1854 @@
+From 82848911cf285c8c30e1b20211b78353628d04a7 Mon Sep 17 00:00:00 2001
+From: kalicyh <34980061+kaliCYH@users.noreply.github.com>
+Date: Tue, 21 Jan 2025 01:33:44 +0800
+Subject: [PATCH 14/16] =?UTF-8?q?=F0=9F=A6=84=20refactor(services+APP):=20?=
+ =?UTF-8?q?=E6=9C=8D=E5=8A=A1=20=E6=A1=8C=E9=9D=A2=20=E6=B5=B7=E8=B1=9A=20?=
+ =?UTF-8?q?=E7=AD=89=E6=B1=89=E5=8C=96?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ applications/services/desktop/desktop.c       |  7 ++-
+ .../services/desktop/desktop_keybinds.c       |  4 +-
+ .../services/gui/modules/file_browser.c       |  2 +-
+ .../power_service/views/power_unplug_usb.c    |  2 +-
+ applications/settings/about/about.c           | 36 ++++++++----
+ applications/settings/about/application.fam   |  2 +-
+ .../settings/bt_settings_app/application.fam  |  2 +-
+ .../bt_settings_scene_forget_dev_confirm.c    |  8 +--
+ .../bt_settings_scene_forget_dev_success.c    |  2 +-
+ .../scenes/bt_settings_scene_start.c          | 12 ++--
+ .../settings/desktop_settings/application.fam |  2 +-
+ .../desktop_settings/desktop_settings_app.c   |  2 +-
+ .../desktop_settings_scene_happy_mode.c       |  8 +--
+ ...ktop_settings_scene_keybinds_action_type.c | 12 ++--
+ .../desktop_settings_scene_keybinds_key.c     | 10 ++--
+ .../desktop_settings_scene_keybinds_reset.c   |  8 +--
+ .../desktop_settings_scene_keybinds_type.c    |  6 +-
+ .../scenes/desktop_settings_scene_pin_auth.c  |  4 +-
+ .../desktop_settings_scene_pin_disable.c      |  2 +-
+ .../scenes/desktop_settings_scene_pin_error.c |  6 +-
+ .../scenes/desktop_settings_scene_pin_menu.c  |  8 +--
+ .../scenes/desktop_settings_scene_pin_setup.c |  8 +--
+ .../desktop_settings_scene_pin_setup_done.c   |  6 +-
+ .../scenes/desktop_settings_scene_start.c     | 40 ++++++-------
+ .../desktop_settings_view_pin_setup_howto.c   |  6 +-
+ .../desktop_settings_view_pin_setup_howto2.c  | 10 ++--
+ .../settings/dolphin_passport/application.fam |  2 +-
+ .../settings/dolphin_passport/passport.c      | 16 ++---
+ .../expansion_settings_app/application.fam    |  2 +-
+ .../expansion_settings_app.c                  |  2 +-
+ .../notification_settings_app.c               | 24 ++++----
+ .../power_settings_app/application.fam        |  2 +-
+ .../scenes/power_settings_scene_power_off.c   | 10 ++--
+ .../scenes/power_settings_scene_reboot.c      |  6 +-
+ .../power_settings_scene_reboot_confirm.c     | 14 ++---
+ .../scenes/power_settings_scene_start.c       | 10 ++--
+ .../power_settings_app/views/battery_info.c   | 21 ++++---
+ .../settings/storage_settings/application.fam |  2 +-
+ .../scenes/storage_settings_scene_benchmark.c | 10 ++--
+ ...storage_settings_scene_benchmark_confirm.c | 14 ++---
+ .../storage_settings_scene_factory_reset.c    |  8 +--
+ .../storage_settings_scene_format_confirm.c   | 14 ++---
+ .../storage_settings_scene_formatting.c       |  8 +--
+ .../storage_settings_scene_internal_info.c    | 10 ++--
+ .../scenes/storage_settings_scene_sd_info.c   | 23 ++++----
+ .../scenes/storage_settings_scene_start.c     | 16 ++---
+ .../storage_settings_scene_unmount_confirm.c  | 16 ++---
+ .../scenes/storage_settings_scene_unmounted.c | 14 ++---
+ .../storage_settings_scene_wipe_device.c      |  8 +--
+ applications/settings/system/application.fam  |  2 +-
+ .../settings/system/system_settings.c         | 58 +++++++++----------
+ .../system/updater/util/update_task.c         | 38 ++++++------
+ .../system/updater/views/updater_main.c       |  2 +-
+ 53 files changed, 291 insertions(+), 276 deletions(-)
+
+diff --git a/applications/services/desktop/desktop.c b/applications/services/desktop/desktop.c
+index bcd10e0d9..d22cd829c 100644
+--- a/applications/services/desktop/desktop.c
++++ b/applications/services/desktop/desktop.c
+@@ -455,11 +455,11 @@ int32_t desktop_shutdown(void* context) {
+     if(result != LoaderStatusOk) {
+         // Mimic applications/settings/power_settings_app/scenes/power_settings_scene_power_off.c
+         DialogMessage* message = dialog_message_alloc();
+-        dialog_message_set_header(message, "Turn Off Device?", 64, 0, AlignCenter, AlignTop);
++        dialog_message_set_header(message, "是否关机?", 64, 2, AlignCenter, AlignTop);
+         dialog_message_set_text(
+-            message, "   I will be\nwaiting for\n you here...", 78, 14, AlignLeft, AlignTop);
++            message, "   我会在这里\n等待你...", 78, 14, AlignLeft, AlignTop);
+         dialog_message_set_icon(message, &I_dolph_cry_49x54, 14, 10);
+-        dialog_message_set_buttons(message, "Cancel", NULL, "Power Off");
++        dialog_message_set_buttons(message, "取消", NULL, "关机");
+         DialogMessageButton res = dialog_message_show(furi_record_open(RECORD_DIALOGS), message);
+         furi_record_close(RECORD_DIALOGS);
+         dialog_message_free(message);
+@@ -472,6 +472,7 @@ int32_t desktop_shutdown(void* context) {
+     return 0;
+ }
+ 
++
+ void desktop_set_stealth_mode_state(Desktop* desktop, bool enabled) {
+     desktop->in_transition = true;
+ 
+diff --git a/applications/services/desktop/desktop_keybinds.c b/applications/services/desktop/desktop_keybinds.c
+index 7f74520b7..425a3416b 100644
+--- a/applications/services/desktop/desktop_keybinds.c
++++ b/applications/services/desktop/desktop_keybinds.c
+@@ -63,7 +63,7 @@ const char* desktop_keybinds_defaults[DesktopKeybindTypeMAX][DesktopKeybindKeyMA
+         {
+             [DesktopKeybindKeyUp] = "Lock Menu",
+             [DesktopKeybindKeyDown] = "Archive",
+-            [DesktopKeybindKeyRight] = "Passport",
++            [DesktopKeybindKeyRight] = "护照",
+             [DesktopKeybindKeyLeft] = "Clock",
+         },
+     [DesktopKeybindTypeHold] =
+@@ -208,7 +208,7 @@ void desktop_run_keybind(Desktop* desktop, InputType _type, InputKey _key) {
+         loader_start_detached_with_gui_error(
+             desktop->loader, EXT_PATH("apps/Tools/nightstand.fap"), "");
+     } else if(furi_string_equal(keybind, "Device Info")) {
+-        loader_start_detached_with_gui_error(desktop->loader, "Power", "about_battery");
++        loader_start_detached_with_gui_error(desktop->loader, "电源", "about_battery");
+     } else if(furi_string_equal(keybind, "Lock Menu")) {
+         view_dispatcher_send_custom_event(desktop->view_dispatcher, DesktopMainEventOpenLockMenu);
+     } else if(furi_string_equal(keybind, "Lock Keypad")) {
+diff --git a/applications/services/gui/modules/file_browser.c b/applications/services/gui/modules/file_browser.c
+index ef1d9b04e..8ca745b37 100644
+--- a/applications/services/gui/modules/file_browser.c
++++ b/applications/services/gui/modules/file_browser.c
+@@ -635,7 +635,7 @@ static void browser_draw_list(Canvas* canvas, FileBrowserModel* model) {
+             canvas_height(canvas) / 2,
+             AlignCenter,
+             AlignCenter,
+-            "<Empty>");
++            "<空>");
+     }
+ 
+     furi_string_free(filename);
+diff --git a/applications/services/power/power_service/views/power_unplug_usb.c b/applications/services/power/power_service/views/power_unplug_usb.c
+index da230d892..760de20d2 100644
+--- a/applications/services/power/power_service/views/power_unplug_usb.c
++++ b/applications/services/power/power_service/views/power_unplug_usb.c
+@@ -18,7 +18,7 @@ static void power_unplug_usb_draw_callback(Canvas* canvas, void* _model) {
+     canvas_set_color(canvas, ColorWhite);
+     canvas_set_font(canvas, FontPrimary);
+     elements_multiline_text_aligned(
+-        canvas, 64, 32, AlignCenter, AlignCenter, "It's now safe to unplug\nthe USB cable");
++        canvas, 64, 32, AlignCenter, AlignCenter, "现在可以安全地拔掉USB线了");
+ }
+ 
+ PowerUnplugUsb* power_unplug_usb_alloc(void) {
+diff --git a/applications/settings/about/about.c b/applications/settings/about/about.c
+index 3052e63b8..1274c5fa0 100644
+--- a/applications/settings/about/about.c
++++ b/applications/settings/about/about.c
+@@ -18,7 +18,7 @@ static DialogMessageButton about_screen_product(DialogsApp* dialogs, DialogMessa
+     DialogMessageButton result;
+ 
+     FuriString* screen_header = furi_string_alloc_printf(
+-        "Product: %s\n"
++        "产品: %s\n"
+         "Model: %s",
+         furi_hal_version_get_model_name(),
+         furi_hal_version_get_model_code());
+@@ -30,9 +30,9 @@ static DialogMessageButton about_screen_product(DialogsApp* dialogs, DialogMessa
+         furi_hal_version_get_ic_id());
+ 
+     dialog_message_set_header(
+-        message, furi_string_get_cstr(screen_header), 0, 0, AlignLeft, AlignTop);
++        message, furi_string_get_cstr(screen_header), 0, 3, AlignLeft, AlignTop);
+     dialog_message_set_text(
+-        message, furi_string_get_cstr(screen_text), 0, 26, AlignLeft, AlignTop);
++        message, furi_string_get_cstr(screen_text), 0, 29, AlignLeft, AlignTop);
+     result = dialog_message_show(dialogs, message);
+ 
+     furi_string_free(screen_header);
+@@ -68,6 +68,19 @@ static DialogMessageButton about_screen_compliance(DialogsApp* dialogs, DialogMe
+     return result;
+ }
+ 
++static DialogMessageButton about_screen_group(DialogsApp* dialogs, DialogMessage* message) {
++    DialogMessageButton result;
++
++    const char* screen_text = "QQ交流群：716547787\n"
++                              "固件源码地址:\n"
++                              "kalicyh/Momentum-Firmware";
++
++    dialog_message_set_text(message, screen_text, 0, 3, AlignLeft, AlignTop);
++    result = dialog_message_show(dialogs, message);
++
++    return result;
++}
++
+ static DialogMessageButton about_screen_icon1(DialogsApp* dialogs, DialogMessage* message) {
+     DialogMessageButton result;
+ 
+@@ -145,14 +158,14 @@ static DialogMessageButton about_screen_hw_version(DialogsApp* dialogs, DialogMe
+         furi_hal_region_get_name(),
+         my_name ? my_name : "Unknown");
+ 
+-    furi_string_cat_printf(buffer, "Serial Number:\n");
++    furi_string_cat_printf(buffer, "序列号:\n");
+     const uint8_t* uid = furi_hal_version_uid();
+     for(size_t i = 0; i < furi_hal_version_uid_size(); i++) {
+         furi_string_cat_printf(buffer, "%02X", uid[i]);
+     }
+ 
+-    dialog_message_set_header(message, "Hardware Info:", 0, 0, AlignLeft, AlignTop);
+-    dialog_message_set_text(message, furi_string_get_cstr(buffer), 0, 13, AlignLeft, AlignTop);
++    dialog_message_set_header(message, "硬件信息:", 0, 3, AlignLeft, AlignTop);
++    dialog_message_set_text(message, furi_string_get_cstr(buffer), 0, 16, AlignLeft, AlignTop);
+     result = dialog_message_show(dialogs, message);
+     furi_string_free(buffer);
+ 
+@@ -194,8 +207,8 @@ static DialogMessageButton about_screen_fw_version(DialogsApp* dialogs, DialogMe
+         }
+     }
+ 
+-    dialog_message_set_header(message, "Firmware Info:", 0, 0, AlignLeft, AlignTop);
+-    dialog_message_set_text(message, furi_string_get_cstr(buffer), 0, 13, AlignLeft, AlignTop);
++    dialog_message_set_header(message, "固件信息:", 0, 3, AlignLeft, AlignTop);
++    dialog_message_set_text(message, furi_string_get_cstr(buffer), 0, 14, AlignLeft, AlignTop);
+     result = dialog_message_show(dialogs, message);
+     furi_string_free(buffer);
+ 
+@@ -206,6 +219,7 @@ const AboutDialogScreen about_screens[] = {
+     about_screen_product,
+     about_screen_hw_version,
+     about_screen_fw_version,
++    about_screen_group,
+     about_screen_compliance,
+     about_screen_address,
+     about_screen_icon1,
+@@ -235,11 +249,11 @@ int32_t about_settings_app(void* p) {
+     int32_t ret = 0;
+     while(1) {
+         if(screen_index >= COUNT_OF(about_screens) - 1) {
+-            dialog_message_set_buttons(message, "Prev.", NULL, NULL);
++            dialog_message_set_buttons(message, "上一页", NULL, NULL);
+         } else if(screen_index == 0) {
+-            dialog_message_set_buttons(message, NULL, NULL, "Next");
++            dialog_message_set_buttons(message, NULL, NULL, "下一页");
+         } else {
+-            dialog_message_set_buttons(message, "Prev.", NULL, "Next");
++            dialog_message_set_buttons(message, "上一页", NULL, "下一页");
+         }
+ 
+         screen_result = about_screens[screen_index](dialogs, message);
+diff --git a/applications/settings/about/application.fam b/applications/settings/about/application.fam
+index e7b474c22..cbf0c32d3 100644
+--- a/applications/settings/about/application.fam
++++ b/applications/settings/about/application.fam
+@@ -1,6 +1,6 @@
+ App(
+     appid="about",
+-    name="About",
++    name="关于",
+     apptype=FlipperAppType.SETTINGS,
+     entry_point="about_settings_app",
+     cdefines=["APP_ABOUT"],
+diff --git a/applications/settings/bt_settings_app/application.fam b/applications/settings/bt_settings_app/application.fam
+index 3807fe426..65324e25a 100644
+--- a/applications/settings/bt_settings_app/application.fam
++++ b/applications/settings/bt_settings_app/application.fam
+@@ -1,6 +1,6 @@
+ App(
+     appid="bt_settings",
+-    name="Bluetooth",
++    name="蓝牙",
+     apptype=FlipperAppType.SETTINGS,
+     entry_point="bt_settings_app",
+     stack_size=1 * 1024,
+diff --git a/applications/settings/bt_settings_app/scenes/bt_settings_scene_forget_dev_confirm.c b/applications/settings/bt_settings_app/scenes/bt_settings_scene_forget_dev_confirm.c
+index cfc945751..6bcdb3e9f 100644
+--- a/applications/settings/bt_settings_app/scenes/bt_settings_scene_forget_dev_confirm.c
++++ b/applications/settings/bt_settings_app/scenes/bt_settings_scene_forget_dev_confirm.c
+@@ -11,11 +11,11 @@ void bt_settings_scene_forget_dev_confirm_dialog_callback(DialogExResult result,
+ void bt_settings_scene_forget_dev_confirm_on_enter(void* context) {
+     BtSettingsApp* app = context;
+     DialogEx* dialog = app->dialog;
+-    dialog_ex_set_header(dialog, "Unpair All Devices?", 64, 0, AlignCenter, AlignTop);
++    dialog_ex_set_header(dialog, "取消配对所有设备？", 64, 2, AlignCenter, AlignTop);
+     dialog_ex_set_text(
+-        dialog, "All previous pairings\nwill be lost!", 64, 14, AlignCenter, AlignTop);
+-    dialog_ex_set_left_button_text(dialog, "Cancel");
+-    dialog_ex_set_right_button_text(dialog, "Unpair");
++        dialog, "所有之前的配对\n将会丢失！", 64, 16, AlignCenter, AlignTop);
++    dialog_ex_set_left_button_text(dialog, "取消");
++    dialog_ex_set_right_button_text(dialog, "取消配对");
+     dialog_ex_set_context(dialog, app);
+     dialog_ex_set_result_callback(dialog, bt_settings_scene_forget_dev_confirm_dialog_callback);
+ 
+diff --git a/applications/settings/bt_settings_app/scenes/bt_settings_scene_forget_dev_success.c b/applications/settings/bt_settings_app/scenes/bt_settings_scene_forget_dev_success.c
+index b7ed63f63..a734e85f1 100644
+--- a/applications/settings/bt_settings_app/scenes/bt_settings_scene_forget_dev_success.c
++++ b/applications/settings/bt_settings_app/scenes/bt_settings_scene_forget_dev_success.c
+@@ -11,7 +11,7 @@ void bt_settings_scene_forget_dev_success_on_enter(void* context) {
+     Popup* popup = app->popup;
+ 
+     popup_set_icon(popup, 48, 6, &I_DolphinDone_80x58);
+-    popup_set_header(popup, "Done", 14, 15, AlignLeft, AlignTop);
++    popup_set_header(popup, "完成", 14, 15, AlignLeft, AlignTop);
+     popup_set_timeout(popup, 1500);
+     popup_set_context(popup, app);
+     popup_set_callback(popup, bt_settings_app_scene_forget_dev_success_popup_callback);
+diff --git a/applications/settings/bt_settings_app/scenes/bt_settings_scene_start.c b/applications/settings/bt_settings_app/scenes/bt_settings_scene_start.c
+index a76740bd1..3e6a5237b 100644
+--- a/applications/settings/bt_settings_app/scenes/bt_settings_scene_start.c
++++ b/applications/settings/bt_settings_app/scenes/bt_settings_scene_start.c
+@@ -13,8 +13,8 @@ enum BtSettingIndex {
+ };
+ 
+ const char* const bt_settings_text[BtSettingNum] = {
+-    "OFF",
+-    "ON",
++    "关闭",
++    "开启",
+ };
+ 
+ static void bt_settings_scene_start_var_list_change_callback(VariableItem* item) {
+@@ -42,7 +42,7 @@ void bt_settings_scene_start_on_enter(void* context) {
+     if(furi_hal_bt_is_gatt_gap_supported()) {
+         item = variable_item_list_add(
+             var_item_list,
+-            "Bluetooth",
++            "蓝牙",
+             BtSettingNum,
+             bt_settings_scene_start_var_list_change_callback,
+             app);
+@@ -53,12 +53,12 @@ void bt_settings_scene_start_on_enter(void* context) {
+             variable_item_set_current_value_index(item, BtSettingOff);
+             variable_item_set_current_value_text(item, bt_settings_text[BtSettingOff]);
+         }
+-        variable_item_list_add(var_item_list, "Unpair All Devices", 1, NULL, NULL);
++        variable_item_list_add(var_item_list, "取消配对所有设备", 1, NULL, NULL);
+         variable_item_list_set_enter_callback(
+             var_item_list, bt_settings_scene_start_var_list_enter_callback, app);
+     } else {
+-        item = variable_item_list_add(var_item_list, "Bluetooth", 1, NULL, NULL);
+-        variable_item_set_current_value_text(item, "Broken");
++        item = variable_item_list_add(var_item_list, "蓝牙", 1, NULL, NULL);
++        variable_item_set_current_value_text(item, "损坏");
+     }
+ 
+     view_dispatcher_switch_to_view(app->view_dispatcher, BtSettingsAppViewVarItemList);
+diff --git a/applications/settings/desktop_settings/application.fam b/applications/settings/desktop_settings/application.fam
+index 09d7b97ae..94196c6d7 100644
+--- a/applications/settings/desktop_settings/application.fam
++++ b/applications/settings/desktop_settings/application.fam
+@@ -1,6 +1,6 @@
+ App(
+     appid="desktop_settings",
+-    name="Desktop",
++    name="桌面",
+     apptype=FlipperAppType.SETTINGS,
+     entry_point="desktop_settings_app",
+     requires=[
+diff --git a/applications/settings/desktop_settings/desktop_settings_app.c b/applications/settings/desktop_settings/desktop_settings_app.c
+index db44c5304..0804f09fe 100644
+--- a/applications/settings/desktop_settings/desktop_settings_app.c
++++ b/applications/settings/desktop_settings/desktop_settings_app.c
+@@ -17,7 +17,7 @@ const char* EXTRA_KEYBINDS[] = {
+     "Lock Menu",
+     "Lock Keypad",
+     "Lock with PIN",
+-    "Passport",
++    "护照",
+     "Wipe Device",
+ };
+ const size_t EXTRA_KEYBINDS_COUNT = COUNT_OF(EXTRA_KEYBINDS);
+diff --git a/applications/settings/desktop_settings/scenes/desktop_settings_scene_happy_mode.c b/applications/settings/desktop_settings/scenes/desktop_settings_scene_happy_mode.c
+index 31fcbfd2a..d5562b0eb 100644
+--- a/applications/settings/desktop_settings/scenes/desktop_settings_scene_happy_mode.c
++++ b/applications/settings/desktop_settings/scenes/desktop_settings_scene_happy_mode.c
+@@ -26,17 +26,17 @@ void desktop_settings_scene_happy_mode_on_enter(void* context) {
+     dolphin_get_settings(dolphin, &settings);
+     furi_record_close(RECORD_DOLPHIN);
+ 
+-    dialog_ex_set_header(app->dialog_ex, "Happy Mode", 64, 0, AlignCenter, AlignTop);
++    dialog_ex_set_header(app->dialog_ex, "快乐模式", 64, 2, AlignCenter, AlignTop);
+     dialog_ex_set_text(
+         app->dialog_ex,
+-        "I will never get angry at you\nfor not spending time with me\nas long as this mode is enabled",
++        "只要启用了这个模式\n我永远不会因为你\n没陪我而生气",
+         64,
+         30,
+         AlignCenter,
+         AlignCenter);
+-    dialog_ex_set_left_button_text(app->dialog_ex, settings.happy_mode ? "Disable" : "Go back");
++    dialog_ex_set_left_button_text(app->dialog_ex, settings.happy_mode ? "禁用" : "返回");
+     dialog_ex_set_right_button_text(
+-        app->dialog_ex, settings.happy_mode ? "Keep enabled" : "Enable");
++        app->dialog_ex, settings.happy_mode ? "保持开启" : "启用");
+     dialog_ex_set_result_callback(app->dialog_ex, desktop_settings_scene_happy_mode_done_callback);
+     dialog_ex_set_context(app->dialog_ex, app);
+     view_dispatcher_switch_to_view(app->view_dispatcher, DesktopSettingsAppViewDialogEx);
+diff --git a/applications/settings/desktop_settings/scenes/desktop_settings_scene_keybinds_action_type.c b/applications/settings/desktop_settings/scenes/desktop_settings_scene_keybinds_action_type.c
+index b3a001c2d..2dc4d398b 100644
+--- a/applications/settings/desktop_settings/scenes/desktop_settings_scene_keybinds_action_type.c
++++ b/applications/settings/desktop_settings/scenes/desktop_settings_scene_keybinds_action_type.c
+@@ -84,35 +84,35 @@ void desktop_settings_scene_keybinds_action_type_on_enter(void* context) {
+ 
+     submenu_add_item(
+         submenu,
+-        "Main App",
++        "主应用",
+         DesktopSettingsAppKeybindActionTypeMainApp,
+         desktop_settings_scene_keybinds_action_type_submenu_callback,
+         app);
+ 
+     submenu_add_item(
+         submenu,
+-        "External App",
++        "外部应用",
+         DesktopSettingsAppKeybindActionTypeExternalApp,
+         desktop_settings_scene_keybinds_action_type_submenu_callback,
+         app);
+ 
+     submenu_add_item(
+         submenu,
+-        "Open File",
++        "打开文件",
+         DesktopSettingsAppKeybindActionTypeOpenFile,
+         desktop_settings_scene_keybinds_action_type_submenu_callback,
+         app);
+ 
+     submenu_add_item(
+         submenu,
+-        "More Actions",
++        "更多操作",
+         DesktopSettingsAppKeybindActionTypeMoreActions,
+         desktop_settings_scene_keybinds_action_type_submenu_callback,
+         app);
+ 
+     submenu_add_item(
+         submenu,
+-        "Remove Keybind",
++        "移除快捷键",
+         DesktopSettingsAppKeybindActionTypeRemoveKeybind,
+         desktop_settings_scene_keybinds_action_type_submenu_callback,
+         app);
+@@ -151,7 +151,7 @@ void desktop_settings_scene_keybinds_action_type_on_enter(void* context) {
+         }
+     }
+ 
+-    submenu_set_header(submenu, "Keybind action:");
++    submenu_set_header(submenu, "快捷键操作：");
+     submenu_set_selected_item(submenu, selected);
+ 
+     view_dispatcher_switch_to_view(app->view_dispatcher, DesktopSettingsAppViewMenu);
+diff --git a/applications/settings/desktop_settings/scenes/desktop_settings_scene_keybinds_key.c b/applications/settings/desktop_settings/scenes/desktop_settings_scene_keybinds_key.c
+index a2a1f8a76..ad478ec9f 100644
+--- a/applications/settings/desktop_settings/scenes/desktop_settings_scene_keybinds_key.c
++++ b/applications/settings/desktop_settings/scenes/desktop_settings_scene_keybinds_key.c
+@@ -15,33 +15,33 @@ void desktop_settings_scene_keybinds_key_on_enter(void* context) {
+ 
+     submenu_add_item(
+         submenu,
+-        "Up",
++        "上",
+         DesktopKeybindKeyUp,
+         desktop_settings_scene_keybinds_key_submenu_callback,
+         app);
+ 
+     submenu_add_item(
+         submenu,
+-        "Down",
++        "下",
+         DesktopKeybindKeyDown,
+         desktop_settings_scene_keybinds_key_submenu_callback,
+         app);
+ 
+     submenu_add_item(
+         submenu,
+-        "Right",
++        "右",
+         DesktopKeybindKeyRight,
+         desktop_settings_scene_keybinds_key_submenu_callback,
+         app);
+ 
+     submenu_add_item(
+         submenu,
+-        "Left",
++        "左",
+         DesktopKeybindKeyLeft,
+         desktop_settings_scene_keybinds_key_submenu_callback,
+         app);
+ 
+-    submenu_set_header(submenu, "Keybind key:");
++    submenu_set_header(submenu, "快捷键按键：");
+ 
+     submenu_set_selected_item(
+         submenu,
+diff --git a/applications/settings/desktop_settings/scenes/desktop_settings_scene_keybinds_reset.c b/applications/settings/desktop_settings/scenes/desktop_settings_scene_keybinds_reset.c
+index ed91bb05c..689ea9b21 100644
+--- a/applications/settings/desktop_settings/scenes/desktop_settings_scene_keybinds_reset.c
++++ b/applications/settings/desktop_settings/scenes/desktop_settings_scene_keybinds_reset.c
+@@ -12,10 +12,10 @@ void desktop_settings_scene_keybinds_reset_on_enter(void* context) {
+     DesktopSettingsApp* app = context;
+     DialogEx* dialog_ex = app->dialog_ex;
+ 
+-    dialog_ex_set_header(dialog_ex, "Reset Desktop Keybinds?", 64, 10, AlignCenter, AlignCenter);
+-    dialog_ex_set_text(dialog_ex, "Your edits will be lost!", 64, 32, AlignCenter, AlignCenter);
+-    dialog_ex_set_left_button_text(dialog_ex, "Cancel");
+-    dialog_ex_set_right_button_text(dialog_ex, "Reset");
++    dialog_ex_set_header(dialog_ex, "重置桌面快捷键？", 64, 10, AlignCenter, AlignCenter);
++    dialog_ex_set_text(dialog_ex, "您的更改将会丢失！", 64, 32, AlignCenter, AlignCenter);
++    dialog_ex_set_left_button_text(dialog_ex, "取消");
++    dialog_ex_set_right_button_text(dialog_ex, "重置");
+ 
+     dialog_ex_set_context(dialog_ex, app);
+     dialog_ex_set_result_callback(
+diff --git a/applications/settings/desktop_settings/scenes/desktop_settings_scene_keybinds_type.c b/applications/settings/desktop_settings/scenes/desktop_settings_scene_keybinds_type.c
+index 8d52e6ffa..448040582 100644
+--- a/applications/settings/desktop_settings/scenes/desktop_settings_scene_keybinds_type.c
++++ b/applications/settings/desktop_settings/scenes/desktop_settings_scene_keybinds_type.c
+@@ -15,19 +15,19 @@ void desktop_settings_scene_keybinds_type_on_enter(void* context) {
+ 
+     submenu_add_item(
+         submenu,
+-        "Press",
++        "按下",
+         DesktopKeybindTypePress,
+         desktop_settings_scene_keybinds_type_submenu_callback,
+         app);
+ 
+     submenu_add_item(
+         submenu,
+-        "Hold",
++        "长按",
+         DesktopKeybindTypeHold,
+         desktop_settings_scene_keybinds_type_submenu_callback,
+         app);
+ 
+-    submenu_set_header(submenu, "Keybind type:");
++    submenu_set_header(submenu, "快捷键类型：");
+ 
+     submenu_set_selected_item(
+         submenu,
+diff --git a/applications/settings/desktop_settings/scenes/desktop_settings_scene_pin_auth.c b/applications/settings/desktop_settings/scenes/desktop_settings_scene_pin_auth.c
+index 0d1543359..a2d523e56 100644
+--- a/applications/settings/desktop_settings/scenes/desktop_settings_scene_pin_auth.c
++++ b/applications/settings/desktop_settings/scenes/desktop_settings_scene_pin_auth.c
+@@ -38,10 +38,10 @@ void desktop_settings_scene_pin_auth_on_enter(void* context) {
+     desktop_view_pin_input_set_context(app->pin_input_view, app);
+     desktop_view_pin_input_set_back_callback(app->pin_input_view, pin_auth_back_callback);
+     desktop_view_pin_input_set_done_callback(app->pin_input_view, pin_auth_done_callback);
+-    desktop_view_pin_input_set_label_button(app->pin_input_view, "OK");
++    desktop_view_pin_input_set_label_button(app->pin_input_view, "确定");
+     desktop_view_pin_input_set_label_primary(app->pin_input_view, 0, 0, NULL);
+     desktop_view_pin_input_set_label_secondary(
+-        app->pin_input_view, 0, 8, "Enter your current PIN:");
++        app->pin_input_view, 0, 8, "输入您当前的PIN码：");
+     desktop_view_pin_input_reset_pin(app->pin_input_view);
+     desktop_view_pin_input_unlock_input(app->pin_input_view);
+     view_dispatcher_switch_to_view(app->view_dispatcher, DesktopSettingsAppViewIdPinInput);
+diff --git a/applications/settings/desktop_settings/scenes/desktop_settings_scene_pin_disable.c b/applications/settings/desktop_settings/scenes/desktop_settings_scene_pin_disable.c
+index a97ce8aaa..90a65d3b7 100644
+--- a/applications/settings/desktop_settings/scenes/desktop_settings_scene_pin_disable.c
++++ b/applications/settings/desktop_settings/scenes/desktop_settings_scene_pin_disable.c
+@@ -22,7 +22,7 @@ void desktop_settings_scene_pin_disable_on_enter(void* context) {
+     popup_set_context(app->popup, app);
+     popup_set_callback(app->popup, pin_disable_back_callback);
+     popup_set_icon(app->popup, 0, 2, &I_DolphinMafia_119x62);
+-    popup_set_header(app->popup, "Removed", 100, 10, AlignCenter, AlignTop);
++    popup_set_header(app->popup, "已移除", 100, 10, AlignCenter, AlignTop);
+     popup_set_timeout(app->popup, 1500);
+     popup_enable_timeout(app->popup);
+     view_dispatcher_switch_to_view(app->view_dispatcher, DesktopSettingsAppViewIdPopup);
+diff --git a/applications/settings/desktop_settings/scenes/desktop_settings_scene_pin_error.c b/applications/settings/desktop_settings/scenes/desktop_settings_scene_pin_error.c
+index 695f431a0..321ff11a9 100644
+--- a/applications/settings/desktop_settings/scenes/desktop_settings_scene_pin_error.c
++++ b/applications/settings/desktop_settings/scenes/desktop_settings_scene_pin_error.c
+@@ -34,14 +34,14 @@ void desktop_settings_scene_pin_error_on_enter(void* context) {
+     uint32_t state =
+         scene_manager_get_scene_state(app->scene_manager, DesktopSettingsAppScenePinError);
+     if(state == SCENE_STATE_PIN_ERROR_MISMATCH) {
+-        desktop_view_pin_input_set_label_primary(app->pin_input_view, 29, 8, "PIN mismatch!");
++        desktop_view_pin_input_set_label_primary(app->pin_input_view, 29, 8, "PIN不匹配！");
+     } else if(state == SCENE_STATE_PIN_ERROR_WRONG) {
+-        desktop_view_pin_input_set_label_primary(app->pin_input_view, 35, 8, "Wrong PIN!");
++        desktop_view_pin_input_set_label_primary(app->pin_input_view, 35, 8, "PIN错误！");
+     } else {
+         furi_crash();
+     }
+     desktop_view_pin_input_set_label_secondary(app->pin_input_view, 0, 8, NULL);
+-    desktop_view_pin_input_set_label_button(app->pin_input_view, "Retry");
++    desktop_view_pin_input_set_label_button(app->pin_input_view, "重试");
+     desktop_view_pin_input_lock_input(app->pin_input_view);
+     desktop_view_pin_input_set_pin(app->pin_input_view, &app->pincode_buffer);
+ 
+diff --git a/applications/settings/desktop_settings/scenes/desktop_settings_scene_pin_menu.c b/applications/settings/desktop_settings/scenes/desktop_settings_scene_pin_menu.c
+index cf8436dc9..59cb76c49 100644
+--- a/applications/settings/desktop_settings/scenes/desktop_settings_scene_pin_menu.c
++++ b/applications/settings/desktop_settings/scenes/desktop_settings_scene_pin_menu.c
+@@ -19,7 +19,7 @@ void desktop_settings_scene_pin_menu_on_enter(void* context) {
+     if(!desktop_pin_code_is_set()) {
+         submenu_add_item(
+             submenu,
+-            "Set PIN",
++            "设置PIN",
+             DesktopSettingsCustomEventSetPin,
+             desktop_settings_scene_pin_menu_submenu_callback,
+             app);
+@@ -27,20 +27,20 @@ void desktop_settings_scene_pin_menu_on_enter(void* context) {
+     } else {
+         submenu_add_item(
+             submenu,
+-            "Change PIN",
++            "更改PIN",
+             DesktopSettingsCustomEventChangePin,
+             desktop_settings_scene_pin_menu_submenu_callback,
+             app);
+ 
+         submenu_add_item(
+             submenu,
+-            "Remove PIN",
++            "移除PIN",
+             DesktopSettingsCustomEventDisablePin,
+             desktop_settings_scene_pin_menu_submenu_callback,
+             app);
+     }
+ 
+-    submenu_set_header(app->submenu, "PIN Code Settings");
++    submenu_set_header(app->submenu, "PIN码设置");
+     submenu_set_selected_item(app->submenu, app->pin_menu_idx);
+     view_dispatcher_switch_to_view(app->view_dispatcher, DesktopSettingsAppViewMenu);
+ }
+diff --git a/applications/settings/desktop_settings/scenes/desktop_settings_scene_pin_setup.c b/applications/settings/desktop_settings/scenes/desktop_settings_scene_pin_setup.c
+index 95f50d2e1..2cf7c9e66 100644
+--- a/applications/settings/desktop_settings/scenes/desktop_settings_scene_pin_setup.c
++++ b/applications/settings/desktop_settings/scenes/desktop_settings_scene_pin_setup.c
+@@ -44,10 +44,10 @@ void desktop_settings_scene_pin_setup_on_enter(void* context) {
+     desktop_view_pin_input_set_context(app->pin_input_view, app);
+     desktop_view_pin_input_set_back_callback(app->pin_input_view, pin_setup_back_callback);
+     desktop_view_pin_input_set_done_callback(app->pin_input_view, pin_setup_done_callback);
+-    desktop_view_pin_input_set_label_button(app->pin_input_view, "OK");
++    desktop_view_pin_input_set_label_button(app->pin_input_view, "确定");
+     desktop_view_pin_input_set_label_primary(app->pin_input_view, 0, 0, NULL);
+     desktop_view_pin_input_set_label_secondary(
+-        app->pin_input_view, 0, 8, "Enter from 4 to 10 arrows:");
++        app->pin_input_view, 0, 8, "输入4到10个箭头：");
+     desktop_view_pin_input_reset_pin(app->pin_input_view);
+     desktop_view_pin_input_unlock_input(app->pin_input_view);
+     view_dispatcher_switch_to_view(app->view_dispatcher, DesktopSettingsAppViewIdPinInput);
+@@ -60,10 +60,10 @@ bool desktop_settings_scene_pin_setup_on_event(void* context, SceneManagerEvent
+     if(event.type == SceneManagerEventTypeCustom) {
+         switch(event.event) {
+         case DesktopSettingsCustomEvent1stPinEntered:
+-            desktop_view_pin_input_set_label_button(app->pin_input_view, "OK");
++            desktop_view_pin_input_set_label_button(app->pin_input_view, "确定");
+             desktop_view_pin_input_set_label_primary(app->pin_input_view, 0, 0, NULL);
+             desktop_view_pin_input_set_label_secondary(
+-                app->pin_input_view, 0, 8, "Confirm your PIN:");
++                app->pin_input_view, 0, 8, "确认您的PIN码：");
+             desktop_view_pin_input_reset_pin(app->pin_input_view);
+             desktop_view_pin_input_unlock_input(app->pin_input_view);
+             consumed = true;
+diff --git a/applications/settings/desktop_settings/scenes/desktop_settings_scene_pin_setup_done.c b/applications/settings/desktop_settings/scenes/desktop_settings_scene_pin_setup_done.c
+index ad5784b55..71e2d8f25 100644
+--- a/applications/settings/desktop_settings/scenes/desktop_settings_scene_pin_setup_done.c
++++ b/applications/settings/desktop_settings/scenes/desktop_settings_scene_pin_setup_done.c
+@@ -32,10 +32,10 @@ void desktop_settings_scene_pin_setup_done_on_enter(void* context) {
+     desktop_view_pin_input_set_back_callback(app->pin_input_view, NULL);
+     desktop_view_pin_input_set_done_callback(app->pin_input_view, pin_setup_done_callback);
+     desktop_view_pin_input_set_pin(app->pin_input_view, &app->pincode_buffer);
+-    desktop_view_pin_input_set_label_button(app->pin_input_view, "Done");
+-    desktop_view_pin_input_set_label_primary(app->pin_input_view, 29, 8, "PIN Activated!");
++    desktop_view_pin_input_set_label_button(app->pin_input_view, "完成");
++    desktop_view_pin_input_set_label_primary(app->pin_input_view, 29, 8, "PIN已激活！");
+     desktop_view_pin_input_set_label_secondary(
+-        app->pin_input_view, 7, 45, "Remember or write it down");
++        app->pin_input_view, 7, 45, "请记住或写下来");
+     desktop_view_pin_input_lock_input(app->pin_input_view);
+     desktop_view_pin_input_set_pin_position(app->pin_input_view, 64, 24);
+     view_dispatcher_switch_to_view(app->view_dispatcher, DesktopSettingsAppViewIdPinInput);
+diff --git a/applications/settings/desktop_settings/scenes/desktop_settings_scene_start.c b/applications/settings/desktop_settings/scenes/desktop_settings_scene_start.c
+index 16e32e324..32b3d0ed3 100644
+--- a/applications/settings/desktop_settings/scenes/desktop_settings_scene_start.c
++++ b/applications/settings/desktop_settings/scenes/desktop_settings_scene_start.c
+@@ -16,23 +16,23 @@ typedef enum {
+ 
+ #define AUTO_LOCK_DELAY_COUNT 9
+ static const char* const auto_lock_delay_text[AUTO_LOCK_DELAY_COUNT] = {
+-    "OFF",
+-    "10s",
+-    "15s",
+-    "30s",
+-    "60s",
+-    "90s",
+-    "2min",
+-    "5min",
+-    "10min",
++    "关闭",
++    "10秒",
++    "15秒",
++    "30秒",
++    "60秒",
++    "90秒",
++    "2分钟",
++    "5分钟",
++    "10分钟",
+ };
+ static const uint32_t auto_lock_delay_value[AUTO_LOCK_DELAY_COUNT] =
+     {0, 10000, 15000, 30000, 60000, 90000, 120000, 300000, 600000};
+ 
+ #define CLOCK_ENABLE_COUNT 2
+ const char* const clock_enable_text[CLOCK_ENABLE_COUNT] = {
+-    "OFF",
+-    "ON",
++    "关闭",
++    "开启",
+ };
+ 
+ const uint32_t clock_enable_value[CLOCK_ENABLE_COUNT] = {0, 1};
+@@ -62,7 +62,7 @@ static void desktop_settings_scene_start_auto_lock_pin_changed(VariableItem* ite
+     DesktopSettingsApp* app = variable_item_get_context(item);
+     uint8_t value = variable_item_get_current_value_index(item);
+ 
+-    variable_item_set_current_value_text(item, value ? "ON" : "OFF");
++    variable_item_set_current_value_text(item, value ? "开启" : "关闭");
+     app->settings.auto_lock_with_pin = value;
+ }
+ 
+@@ -73,15 +73,15 @@ void desktop_settings_scene_start_on_enter(void* context) {
+     VariableItem* item;
+     uint8_t value_index;
+ 
+-    variable_item_list_add(variable_item_list, "PIN Setup", 1, NULL, NULL);
++    variable_item_list_add(variable_item_list, "PIN设置", 1, NULL, NULL);
+ 
+-    variable_item_list_add(variable_item_list, "Keybinds Setup", 1, NULL, NULL);
++    variable_item_list_add(variable_item_list, "快捷键设置", 1, NULL, NULL);
+ 
+-    variable_item_list_add(variable_item_list, "Reset Keybinds to Default", 1, NULL, NULL);
++    variable_item_list_add(variable_item_list, "重置快捷键为默认", 1, NULL, NULL);
+ 
+     item = variable_item_list_add(
+         variable_item_list,
+-        "Auto Lock Time",
++        "自动锁定时间",
+         AUTO_LOCK_DELAY_COUNT,
+         desktop_settings_scene_start_auto_lock_delay_changed,
+         app);
+@@ -93,17 +93,17 @@ void desktop_settings_scene_start_on_enter(void* context) {
+ 
+     item = variable_item_list_add(
+         variable_item_list,
+-        "Auto Lock Pin",
++        "自动锁定PIN",
+         2,
+         desktop_settings_scene_start_auto_lock_pin_changed,
+         app);
+ 
+     variable_item_set_current_value_index(item, app->settings.auto_lock_with_pin);
+-    variable_item_set_current_value_text(item, app->settings.auto_lock_with_pin ? "ON" : "OFF");
++    variable_item_set_current_value_text(item, app->settings.auto_lock_with_pin ? "开启" : "关闭");
+ 
+     item = variable_item_list_add(
+         variable_item_list,
+-        "Show Clock",
++        "显示时钟",
+         CLOCK_ENABLE_COUNT,
+         desktop_settings_scene_start_clock_enable_changed,
+         app);
+@@ -113,7 +113,7 @@ void desktop_settings_scene_start_on_enter(void* context) {
+     variable_item_set_current_value_index(item, value_index);
+     variable_item_set_current_value_text(item, clock_enable_text[value_index]);
+ 
+-    variable_item_list_add(variable_item_list, "Happy Mode", 1, NULL, NULL);
++    variable_item_list_add(variable_item_list, "快乐模式", 1, NULL, NULL);
+ 
+     variable_item_list_set_enter_callback(
+         variable_item_list, desktop_settings_scene_start_var_list_enter_callback, app);
+diff --git a/applications/settings/desktop_settings/views/desktop_settings_view_pin_setup_howto.c b/applications/settings/desktop_settings/views/desktop_settings_view_pin_setup_howto.c
+index b86d6c045..027593a8f 100644
+--- a/applications/settings/desktop_settings/views/desktop_settings_view_pin_setup_howto.c
++++ b/applications/settings/desktop_settings/views/desktop_settings_view_pin_setup_howto.c
+@@ -20,13 +20,13 @@ static void desktop_settings_view_pin_setup_howto_draw(Canvas* canvas, void* mod
+     UNUSED(model);
+ 
+     canvas_draw_icon(canvas, 16, 18, &I_Pin_attention_dpad_29x29);
+-    elements_button_right(canvas, "Next");
++    elements_button_right(canvas, "下一步");
+ 
+     canvas_set_font(canvas, FontPrimary);
+-    elements_multiline_text_aligned(canvas, 64, 0, AlignCenter, AlignTop, "Setting Up PIN");
++    elements_multiline_text_aligned(canvas, 64, 0, AlignCenter, AlignTop, "设置PIN码");
+ 
+     canvas_set_font(canvas, FontSecondary);
+-    elements_multiline_text(canvas, 58, 24, "Prepare to use\narrows as\nPIN symbols");
++    elements_multiline_text(canvas, 58, 24, "准备使用\n箭头作为\nPIN符号");
+ }
+ 
+ static bool desktop_settings_view_pin_setup_howto_input(InputEvent* event, void* context) {
+diff --git a/applications/settings/desktop_settings/views/desktop_settings_view_pin_setup_howto2.c b/applications/settings/desktop_settings/views/desktop_settings_view_pin_setup_howto2.c
+index ee33a7e0a..d4f9dae89 100644
+--- a/applications/settings/desktop_settings/views/desktop_settings_view_pin_setup_howto2.c
++++ b/applications/settings/desktop_settings/views/desktop_settings_view_pin_setup_howto2.c
+@@ -27,12 +27,12 @@ static void desktop_settings_view_pin_setup_howto2_draw(Canvas* canvas, void* mo
+         0,
+         AlignCenter,
+         AlignTop,
+-        "Forgotten PIN can only be\n"
+-        "reset with entire device.\n"
+-        "Read docs: How to reset PIN.");
++        "忘记 PIN 码只能通过\n"
++        "重置整个设备来恢复。\n"
++        "请阅读文档：如何重置 PIN。");
+ 
+-    elements_button_right(canvas, "OK");
+-    elements_button_left(canvas, "Cancel");
++    elements_button_right(canvas, "确定");
++    elements_button_left(canvas, "取消");
+ }
+ 
+ static bool desktop_settings_view_pin_setup_howto2_input(InputEvent* event, void* context) {
+diff --git a/applications/settings/dolphin_passport/application.fam b/applications/settings/dolphin_passport/application.fam
+index 9d4f31144..f393665a2 100644
+--- a/applications/settings/dolphin_passport/application.fam
++++ b/applications/settings/dolphin_passport/application.fam
+@@ -1,6 +1,6 @@
+ App(
+     appid="passport",
+-    name="Passport",
++    name="护照",
+     apptype=FlipperAppType.SETTINGS,
+     entry_point="passport_app",
+     cdefines=["APP_PASSPORT"],
+diff --git a/applications/settings/dolphin_passport/passport.c b/applications/settings/dolphin_passport/passport.c
+index ac1a39456..38cdfe3cd 100644
+--- a/applications/settings/dolphin_passport/passport.c
++++ b/applications/settings/dolphin_passport/passport.c
+@@ -33,20 +33,20 @@ static void render_callback(Canvas* canvas, void* _ctx) {
+     PassportContext* ctx = _ctx;
+     DolphinStats* stats = ctx->stats;
+ 
+-    char level_str[12];
+-    char xp_str[12];
++    char level_str[32];
++    char xp_str[32];
+     const char* mood_str = NULL;
+     const Icon* portrait = NULL;
+ 
+     if(stats->butthurt <= 4) {
+         portrait = &I_passport_happy_46x49;
+-        mood_str = "Mood: Happy";
++        mood_str = "心情：开心";
+     } else if(stats->butthurt <= 9) {
+         portrait = &I_passport_okay_46x49;
+-        mood_str = "Mood: Okay";
++        mood_str = "心情：一般";
+     } else {
+         portrait = &I_passport_bad_46x49;
+-        mood_str = "Mood: Angry";
++        mood_str = "心情：生气";
+     }
+ 
+     uint32_t xp_progress = 0;
+@@ -77,13 +77,13 @@ static void render_callback(Canvas* canvas, void* _ctx) {
+     canvas_draw_icon(canvas, 11, 2, portrait);
+ 
+     const char* my_name = furi_hal_version_get_name_ptr();
+-    snprintf(level_str, sizeof(level_str), "Level: %hu", stats->level);
+-    canvas_draw_str(canvas, 59, 10, my_name ? my_name : "Unknown");
++    snprintf(level_str, sizeof(level_str), "等级：%hu", stats->level);
++    canvas_draw_str(canvas, 59, 10, my_name ? my_name : "未知");
+     canvas_draw_str(canvas, 59, 22, mood_str);
+     canvas_draw_str(canvas, 59, 34, level_str);
+ 
+     if(stats->level == DOLPHIN_LEVEL_COUNT + 1) {
+-        snprintf(xp_str, sizeof(xp_str), "Max Level!");
++        snprintf(xp_str, sizeof(xp_str), "最高等级！");
+     } else {
+         snprintf(xp_str, sizeof(xp_str), "%lu/%lu", xp_have, xp_target);
+     }
+diff --git a/applications/settings/expansion_settings_app/application.fam b/applications/settings/expansion_settings_app/application.fam
+index 75418cdd3..0ccdedd55 100644
+--- a/applications/settings/expansion_settings_app/application.fam
++++ b/applications/settings/expansion_settings_app/application.fam
+@@ -1,6 +1,6 @@
+ App(
+     appid="expansion_settings",
+-    name="Expansion Modules",
++    name="扩展模块",
+     apptype=FlipperAppType.SETTINGS,
+     entry_point="expansion_settings_app",
+     requires=["gui"],
+diff --git a/applications/settings/expansion_settings_app/expansion_settings_app.c b/applications/settings/expansion_settings_app/expansion_settings_app.c
+index 639f7f23d..25c0b1533 100644
+--- a/applications/settings/expansion_settings_app/expansion_settings_app.c
++++ b/applications/settings/expansion_settings_app/expansion_settings_app.c
+@@ -44,7 +44,7 @@ static ExpansionSettingsApp* expansion_settings_app_alloc(void) {
+ 
+     item = variable_item_list_add(
+         app->var_item_list,
+-        "Listen UART",
++        "监听 UART",
+         COUNT_OF(expansion_uart_text),
+         expansion_settings_app_uart_changed,
+         app);
+diff --git a/applications/settings/notification_settings/notification_settings_app.c b/applications/settings/notification_settings/notification_settings_app.c
+index 2462b32bd..0548d785e 100644
+--- a/applications/settings/notification_settings/notification_settings_app.c
++++ b/applications/settings/notification_settings/notification_settings_app.c
+@@ -99,8 +99,8 @@ const uint32_t delay_value[DELAY_COUNT] =
+ 
+ #define VIBRO_COUNT 2
+ const char* const vibro_text[VIBRO_COUNT] = {
+-    "OFF",
+-    "ON",
++    "关闭",
++    "开启",
+ };
+ const bool vibro_value[VIBRO_COUNT] = {false, true};
+ 
+@@ -186,41 +186,41 @@ static NotificationAppSettings* alloc_settings(void) {
+     uint8_t value_index;
+ 
+     item = variable_item_list_add(
+-        app->variable_item_list, "LCD Contrast", CONTRAST_COUNT, contrast_changed, app);
++        app->variable_item_list, "LCD对比度", CONTRAST_COUNT, contrast_changed, app);
+     value_index =
+         value_index_int32(app->notification->settings.contrast, contrast_value, CONTRAST_COUNT);
+     variable_item_set_current_value_index(item, value_index);
+     variable_item_set_current_value_text(item, contrast_text[value_index]);
+ 
+     item = variable_item_list_add(
+-        app->variable_item_list, "LCD Backlight", BACKLIGHT_COUNT, backlight_changed, app);
++        app->variable_item_list, "LCD背光", BACKLIGHT_COUNT, backlight_changed, app);
+     value_index = value_index_float(
+         app->notification->settings.display_brightness, backlight_value, BACKLIGHT_COUNT);
+     variable_item_set_current_value_index(item, value_index);
+     variable_item_set_current_value_text(item, backlight_text[value_index]);
+ 
+     item = variable_item_list_add(
+-        app->variable_item_list, "Backlight Time", DELAY_COUNT, screen_changed, app);
++        app->variable_item_list, "背光时间", DELAY_COUNT, screen_changed, app);
+     value_index = value_index_uint32(
+         app->notification->settings.display_off_delay_ms, delay_value, DELAY_COUNT);
+     variable_item_set_current_value_index(item, value_index);
+     variable_item_set_current_value_text(item, delay_text[value_index]);
+ 
+     item = variable_item_list_add(
+-        app->variable_item_list, "LED Brightness", BACKLIGHT_COUNT, led_changed, app);
++        app->variable_item_list, "LED亮度", BACKLIGHT_COUNT, led_changed, app);
+     value_index = value_index_float(
+         app->notification->settings.led_brightness, backlight_value, BACKLIGHT_COUNT);
+     variable_item_set_current_value_index(item, value_index);
+     variable_item_set_current_value_text(item, backlight_text[value_index]);
+ 
+     if(furi_hal_rtc_is_flag_set(FuriHalRtcFlagStealthMode)) {
+-        item = variable_item_list_add(app->variable_item_list, "Volume", 1, NULL, app);
++        item = variable_item_list_add(app->variable_item_list, "音量", 1, NULL, app);
+         value_index = 0;
+         variable_item_set_current_value_index(item, value_index);
+-        variable_item_set_current_value_text(item, "Stealth");
++        variable_item_set_current_value_text(item, "隐匿模式");
+     } else {
+         item = variable_item_list_add(
+-            app->variable_item_list, "Volume", VOLUME_COUNT, volume_changed, app);
++            app->variable_item_list, "音量", VOLUME_COUNT, volume_changed, app);
+         value_index = value_index_float(
+             app->notification->settings.speaker_volume, volume_value, VOLUME_COUNT);
+         variable_item_set_current_value_index(item, value_index);
+@@ -228,13 +228,13 @@ static NotificationAppSettings* alloc_settings(void) {
+     }
+ 
+     if(furi_hal_rtc_is_flag_set(FuriHalRtcFlagStealthMode)) {
+-        item = variable_item_list_add(app->variable_item_list, "Vibro", 1, NULL, app);
++        item = variable_item_list_add(app->variable_item_list, "震动", 1, NULL, app);
+         value_index = 0;
+         variable_item_set_current_value_index(item, value_index);
+-        variable_item_set_current_value_text(item, "Stealth");
++        variable_item_set_current_value_text(item, "隐匿模式");
+     } else {
+         item = variable_item_list_add(
+-            app->variable_item_list, "Vibro", VIBRO_COUNT, vibro_changed, app);
++            app->variable_item_list, "震动", VIBRO_COUNT, vibro_changed, app);
+         value_index =
+             value_index_bool(app->notification->settings.vibro_on, vibro_value, VIBRO_COUNT);
+         variable_item_set_current_value_index(item, value_index);
+diff --git a/applications/settings/power_settings_app/application.fam b/applications/settings/power_settings_app/application.fam
+index 23cfdfabc..18993dfe5 100644
+--- a/applications/settings/power_settings_app/application.fam
++++ b/applications/settings/power_settings_app/application.fam
+@@ -1,6 +1,6 @@
+ App(
+     appid="power_settings",
+-    name="Power",
++    name="电源",
+     apptype=FlipperAppType.SETTINGS,
+     entry_point="power_settings_app",
+     requires=[
+diff --git a/applications/settings/power_settings_app/scenes/power_settings_scene_power_off.c b/applications/settings/power_settings_app/scenes/power_settings_scene_power_off.c
+index fb3b7575b..7046c6b31 100644
+--- a/applications/settings/power_settings_app/scenes/power_settings_scene_power_off.c
++++ b/applications/settings/power_settings_app/scenes/power_settings_scene_power_off.c
+@@ -17,18 +17,18 @@ void power_settings_scene_power_off_on_enter(void* context) {
+ 
+     dialog_ex_set_header(
+         dialog,
+-        "Turn Off Device?",
++        "关闭设备？",
+         64,
+-        settings.happy_mode ? 32 : 0,
++        settings.happy_mode ? 32 : 2,
+         AlignCenter,
+         settings.happy_mode ? AlignCenter : AlignTop);
+     if(!settings.happy_mode) {
+         dialog_ex_set_text(
+-            dialog, "   I will be\nwaiting for\n you here...", 78, 14, AlignLeft, AlignTop);
++            dialog, "我会在这里\n等着你...", 78, 14, AlignLeft, AlignTop);
+         dialog_ex_set_icon(dialog, 14, 10, &I_dolph_cry_49x54);
+     }
+-    dialog_ex_set_left_button_text(dialog, "Battery");
+-    dialog_ex_set_right_button_text(dialog, "Power Off");
++    dialog_ex_set_left_button_text(dialog, "电池");
++    dialog_ex_set_right_button_text(dialog, "关机");
+     dialog_ex_set_result_callback(dialog, power_settings_scene_power_off_dialog_callback);
+     dialog_ex_set_context(dialog, app);
+ 
+diff --git a/applications/settings/power_settings_app/scenes/power_settings_scene_reboot.c b/applications/settings/power_settings_app/scenes/power_settings_scene_reboot.c
+index 187d969ed..d6de12908 100644
+--- a/applications/settings/power_settings_app/scenes/power_settings_scene_reboot.c
++++ b/applications/settings/power_settings_app/scenes/power_settings_scene_reboot.c
+@@ -15,16 +15,16 @@ void power_settings_scene_reboot_on_enter(void* context) {
+     PowerSettingsApp* app = context;
+     Submenu* submenu = app->submenu;
+ 
+-    submenu_set_header(submenu, "Reboot Type");
++    submenu_set_header(submenu, "重启类型");
+     submenu_add_item(
+         submenu,
+-        "Firmware Upgrade",
++        "固件升级",
+         PowerSettingsRebootSubmenuIndexDfu,
+         power_settings_scene_reboot_submenu_callback,
+         app);
+     submenu_add_item(
+         submenu,
+-        "Reboot Flipper",
++        "重启Flipper",
+         PowerSettingsRebootSubmenuIndexOs,
+         power_settings_scene_reboot_submenu_callback,
+         app);
+diff --git a/applications/settings/power_settings_app/scenes/power_settings_scene_reboot_confirm.c b/applications/settings/power_settings_app/scenes/power_settings_scene_reboot_confirm.c
+index 25e7b2bc4..fefdc0126 100644
+--- a/applications/settings/power_settings_app/scenes/power_settings_scene_reboot_confirm.c
++++ b/applications/settings/power_settings_app/scenes/power_settings_scene_reboot_confirm.c
+@@ -14,24 +14,24 @@ void power_settings_scene_reboot_confirm_on_enter(void* context) {
+         scene_manager_get_scene_state(app->scene_manager, PowerSettingsAppSceneRebootConfirm);
+ 
+     if(reboot_type == RebootTypeDFU) {
+-        dialog_ex_set_header(dialog, "Reboot to DFU Mode?", 64, 0, AlignCenter, AlignTop);
++        dialog_ex_set_header(dialog, "重启到 DFU 模式？", 64, 0, AlignCenter, AlignTop);
+         dialog_ex_set_text(
+             dialog,
+-            "Needed for device maintenance\nor firmware upgrades",
++            "用于设备维护或固件升级",
+             64,
+             14,
+             AlignCenter,
+             AlignTop);
+     } else if(reboot_type == RebootTypeNormal) {
+-        dialog_ex_set_header(dialog, "Reboot Flipper?", 64, 0, AlignCenter, AlignTop);
++        dialog_ex_set_header(dialog, "重启 Flipper？", 64, 0, AlignCenter, AlignTop);
+         dialog_ex_set_text(
+-            dialog, "May help with some firmware\n issues", 64, 14, AlignCenter, AlignTop);
++            dialog, "可能有助于解决一些固件问题", 64, 14, AlignCenter, AlignTop);
+     } else {
+-        furi_crash("Invalid reboot type");
++        furi_crash("无效的重启类型");
+     }
+ 
+-    dialog_ex_set_left_button_text(dialog, "Cancel");
+-    dialog_ex_set_right_button_text(dialog, "Reboot");
++    dialog_ex_set_left_button_text(dialog, "取消");
++    dialog_ex_set_right_button_text(dialog, "重启");
+ 
+     dialog_ex_set_result_callback(dialog, power_settings_scene_reboot_confirm_dialog_callback);
+     dialog_ex_set_context(dialog, app);
+diff --git a/applications/settings/power_settings_app/scenes/power_settings_scene_start.c b/applications/settings/power_settings_app/scenes/power_settings_scene_start.c
+index cf9616d96..9dc41c263 100644
+--- a/applications/settings/power_settings_app/scenes/power_settings_scene_start.c
++++ b/applications/settings/power_settings_app/scenes/power_settings_scene_start.c
+@@ -11,7 +11,7 @@ enum PowerSettingsSubmenuIndex {
+ 
+ #define SHUTDOWN_IDLE_DELAY_COUNT 9
+ const char* const shutdown_idle_delay_text[SHUTDOWN_IDLE_DELAY_COUNT] = {
+-    "OFF",
++    "禁用",
+     "15m",
+     "30m",
+     "1h",
+@@ -45,15 +45,15 @@ void power_settings_scene_start_on_enter(void* context) {
+     VariableItem* item;
+     uint8_t value_index;
+ 
+-    variable_item_list_add(variable_item_list, "Battery Info", 1, NULL, NULL);
++    variable_item_list_add(variable_item_list, "电池信息", 1, NULL, NULL);
+ 
+-    variable_item_list_add(variable_item_list, "Reboot", 1, NULL, NULL);
++    variable_item_list_add(variable_item_list, "重启", 1, NULL, NULL);
+ 
+-    variable_item_list_add(variable_item_list, "Power OFF", 1, NULL, NULL);
++    variable_item_list_add(variable_item_list, "关机", 1, NULL, NULL);
+ 
+     item = variable_item_list_add(
+         variable_item_list,
+-        "Shutdown on Idle",
++        "闲置时关机",
+         SHUTDOWN_IDLE_DELAY_COUNT,
+         power_settings_scene_start_auto_lock_delay_changed,
+         app);
+diff --git a/applications/settings/power_settings_app/views/battery_info.c b/applications/settings/power_settings_app/views/battery_info.c
+index ba2d85bd3..305872a98 100644
+--- a/applications/settings/power_settings_app/views/battery_info.c
++++ b/applications/settings/power_settings_app/views/battery_info.c
+@@ -40,8 +40,8 @@ static void draw_battery(Canvas* canvas, BatteryInfoModel* data, int x, int y) {
+ 
+     // Set text
+     if(current > 0) {
+-        snprintf(emote, sizeof(emote), "%s", "Yummy!");
+-        snprintf(header, sizeof(header), "%s", "Charging at");
++        snprintf(emote, sizeof(emote), "%s", "好吃!");
++        snprintf(header, sizeof(header), "%s", "正在充电");
+         snprintf(
+             value,
+             sizeof(value),
+@@ -55,8 +55,8 @@ static void draw_battery(Canvas* canvas, BatteryInfoModel* data, int x, int y) {
+             emote,
+             sizeof(emote),
+             "%s",
+-            current < HIGH_DRAIN_CURRENT_THRESHOLD ? "Oh no!" : "Om-nom-nom!");
+-        snprintf(header, sizeof(header), "%s", "Consumption is");
++            current < HIGH_DRAIN_CURRENT_THRESHOLD ? "糟糕!" : "好吃好吃!");
++        snprintf(header, sizeof(header), "%s", "消耗为");
+         snprintf(
+             value,
+             sizeof(value),
+@@ -65,9 +65,8 @@ static void draw_battery(Canvas* canvas, BatteryInfoModel* data, int x, int y) {
+             current < HIGH_DRAIN_CURRENT_THRESHOLD ? "mA!" : "mA");
+     } else if(data->vbus_voltage > 0) {
+         if(data->charge_voltage_limit < 4.2f) {
+-            // Non-default battery charging limit, mention it
+-            snprintf(emote, sizeof(emote), "Charged!");
+-            snprintf(header, sizeof(header), "Limited to");
++            snprintf(emote, sizeof(emote), "已充满!");
++            snprintf(header, sizeof(header), "限制为");
+             snprintf(
+                 value,
+                 sizeof(value),
+@@ -75,10 +74,10 @@ static void draw_battery(Canvas* canvas, BatteryInfoModel* data, int x, int y) {
+                 (uint32_t)(data->charge_voltage_limit),
+                 (uint32_t)(data->charge_voltage_limit * 10) % 10);
+         } else {
+-            snprintf(header, sizeof(header), "Charged!");
++            snprintf(header, sizeof(header), "已充满!");
+         }
+     } else {
+-        snprintf(header, sizeof(header), "Napping...");
++        snprintf(header, sizeof(header), "小憩中...");
+         snprintf(value, sizeof(value), "(~%ld mA)", ABS(current));
+     }
+ 
+@@ -141,8 +140,8 @@ static void battery_info_draw_callback(Canvas* canvas, void* context) {
+     draw_stat(canvas, 104, h, &I_Health_16x16, health);
+ 
+     if(model->alt) {
+-        elements_button_left(canvas, "Back");
+-        elements_button_right(canvas, "Next");
++        elements_button_left(canvas, "返回");
++        elements_button_right(canvas, "下一页");
+         char uptime[15];
+         uint32_t sec = furi_get_tick() / furi_kernel_get_tick_frequency();
+         snprintf(
+diff --git a/applications/settings/storage_settings/application.fam b/applications/settings/storage_settings/application.fam
+index 560f1f56c..0b54760a5 100644
+--- a/applications/settings/storage_settings/application.fam
++++ b/applications/settings/storage_settings/application.fam
+@@ -1,6 +1,6 @@
+ App(
+     appid="storage_settings",
+-    name="Storage",
++    name="存储",
+     apptype=FlipperAppType.SETTINGS,
+     entry_point="storage_settings_app",
+     requires=["storage"],
+diff --git a/applications/settings/storage_settings/scenes/storage_settings_scene_benchmark.c b/applications/settings/storage_settings/scenes/storage_settings_scene_benchmark.c
+index c07ab1ae6..ea0331c56 100644
+--- a/applications/settings/storage_settings/scenes/storage_settings_scene_benchmark.c
++++ b/applications/settings/storage_settings/scenes/storage_settings_scene_benchmark.c
+@@ -77,7 +77,7 @@ static bool
+ static void storage_settings_scene_benchmark(StorageSettings* app) {
+     DialogEx* dialog_ex = app->dialog_ex;
+     uint8_t* bench_data;
+-    dialog_ex_set_header(dialog_ex, "Preparing Data...", 64, 32, AlignCenter, AlignCenter);
++    dialog_ex_set_header(dialog_ex, "准备数据...", 64, 32, AlignCenter, AlignCenter);
+ 
+     bench_data = malloc(BENCH_DATA_SIZE);
+     for(size_t i = 0; i < BENCH_DATA_SIZE; i++) {
+@@ -88,7 +88,7 @@ static void storage_settings_scene_benchmark(StorageSettings* app) {
+     uint32_t bench_w_speed[BENCH_COUNT] = {0, 0, 0, 0, 0, 0};
+     uint32_t bench_r_speed[BENCH_COUNT] = {0, 0, 0, 0, 0, 0};
+ 
+-    dialog_ex_set_header(dialog_ex, "Benchmarking...", 74, 32, AlignCenter, AlignCenter);
++    dialog_ex_set_header(dialog_ex, "基准测试中...", 74, 32, AlignCenter, AlignCenter);
+     dialog_ex_set_icon(dialog_ex, 12, 20, &I_LoadingHourglass_24x24);
+     for(size_t i = 0; i < BENCH_COUNT; i++) {
+         if(!storage_settings_scene_bench_write(
+@@ -136,10 +136,10 @@ void storage_settings_scene_benchmark_on_enter(void* context) {
+ 
+     if(sd_status != FSE_OK) {
+         dialog_ex_set_icon(dialog_ex, 83, 22, &I_WarningDolphinFlip_45x42);
+-        dialog_ex_set_header(dialog_ex, "SD Card Not Mounted", 64, 3, AlignCenter, AlignTop);
++        dialog_ex_set_header(dialog_ex, "SD卡未安装", 64, 3, AlignCenter, AlignTop);
+         dialog_ex_set_text(
+-            dialog_ex, "Try to reinsert\nor format SD\ncard.", 3, 19, AlignLeft, AlignTop);
+-        dialog_ex_set_center_button_text(dialog_ex, "Ok");
++            dialog_ex, "请尝试重新插入\n或格式化 SD\n卡。", 3, 19, AlignLeft, AlignTop);
++        dialog_ex_set_center_button_text(dialog_ex, "确定");
+     } else {
+         storage_settings_scene_benchmark(app);
+         notification_message(app->notification, &sequence_blink_green_100);
+diff --git a/applications/settings/storage_settings/scenes/storage_settings_scene_benchmark_confirm.c b/applications/settings/storage_settings/scenes/storage_settings_scene_benchmark_confirm.c
+index 2f8644761..aa3194de7 100644
+--- a/applications/settings/storage_settings/scenes/storage_settings_scene_benchmark_confirm.c
++++ b/applications/settings/storage_settings/scenes/storage_settings_scene_benchmark_confirm.c
+@@ -15,22 +15,22 @@ void storage_settings_scene_benchmark_confirm_on_enter(void* context) {
+ 
+     if(sd_status == FSE_NOT_READY) {
+         dialog_ex_set_icon(dialog_ex, 83, 22, &I_WarningDolphinFlip_45x42);
+-        dialog_ex_set_header(dialog_ex, "SD Card Not Mounted", 64, 3, AlignCenter, AlignTop);
++        dialog_ex_set_header(dialog_ex, "SD 卡未挂载", 64, 3, AlignCenter, AlignTop);
+         dialog_ex_set_text(
+-            dialog_ex, "Try to reinsert\nor format SD\ncard.", 3, 19, AlignLeft, AlignTop);
+-        dialog_ex_set_center_button_text(dialog_ex, "Ok");
++            dialog_ex, "请尝试重新插入\n或格式化 SD 卡。", 3, 19, AlignLeft, AlignTop);
++        dialog_ex_set_center_button_text(dialog_ex, "确定");
+     } else {
+-        dialog_ex_set_header(dialog_ex, "Benchmark SD Card?", 64, 0, AlignCenter, AlignTop);
++        dialog_ex_set_header(dialog_ex, "测试 SD 卡性能？", 64, 2, AlignCenter, AlignTop);
+         dialog_ex_set_text(
+             dialog_ex,
+-            "SD will be tested in SPI\nmode. Learn more:\nr.flipper.net/sd_test",
++            "SD 卡将以 SPI 模式\n进行测试。\n了解更多：\nr.flipper.net/sd_test",
+             0,
+             12,
+             AlignLeft,
+             AlignTop);
+         dialog_ex_set_icon(dialog_ex, 103, 12, &I_qr_benchmark_25x25);
+-        dialog_ex_set_left_button_text(dialog_ex, "Cancel");
+-        dialog_ex_set_right_button_text(dialog_ex, "Benchmark");
++        dialog_ex_set_left_button_text(dialog_ex, "取消");
++        dialog_ex_set_right_button_text(dialog_ex, "基准测试");
+     }
+ 
+     dialog_ex_set_context(dialog_ex, app);
+diff --git a/applications/settings/storage_settings/scenes/storage_settings_scene_factory_reset.c b/applications/settings/storage_settings/scenes/storage_settings_scene_factory_reset.c
+index 0f8e1aa96..8486b97f1 100644
+--- a/applications/settings/storage_settings/scenes/storage_settings_scene_factory_reset.c
++++ b/applications/settings/storage_settings/scenes/storage_settings_scene_factory_reset.c
+@@ -18,13 +18,13 @@ void storage_settings_scene_factory_reset_on_enter(void* context) {
+     dialog_ex_set_context(dialog_ex, app);
+     dialog_ex_set_result_callback(dialog_ex, storage_settings_scene_factory_reset_dialog_callback);
+ 
+-    dialog_ex_set_left_button_text(dialog_ex, "Cancel");
+-    dialog_ex_set_right_button_text(dialog_ex, "Erase");
++    dialog_ex_set_left_button_text(dialog_ex, "取消");
++    dialog_ex_set_right_button_text(dialog_ex, "擦除");
+ 
+-    dialog_ex_set_header(dialog_ex, "Confirm Factory Reset?", 64, 0, AlignCenter, AlignTop);
++    dialog_ex_set_header(dialog_ex, "确定恢复出厂模式？", 64, 2, AlignCenter, AlignTop);
+     dialog_ex_set_text(
+         dialog_ex,
+-        "Internal storage will be erased\ndata and settings will be lost!",
++        "内部存储将被清除\n数据和设置将会丢失！",
+         64,
+         14,
+         AlignCenter,
+diff --git a/applications/settings/storage_settings/scenes/storage_settings_scene_format_confirm.c b/applications/settings/storage_settings/scenes/storage_settings_scene_format_confirm.c
+index c79647ad2..e9e4c1e83 100644
+--- a/applications/settings/storage_settings/scenes/storage_settings_scene_format_confirm.c
++++ b/applications/settings/storage_settings/scenes/storage_settings_scene_format_confirm.c
+@@ -15,15 +15,15 @@ void storage_settings_scene_format_confirm_on_enter(void* context) {
+ 
+     if(sd_status == FSE_NOT_READY) {
+         dialog_ex_set_icon(dialog_ex, 83, 22, &I_WarningDolphinFlip_45x42);
+-        dialog_ex_set_header(dialog_ex, "SD Card Not Mounted", 64, 3, AlignCenter, AlignTop);
++        dialog_ex_set_header(dialog_ex, "SD 卡未挂载", 64, 3, AlignCenter, AlignTop);
+         dialog_ex_set_text(
+-            dialog_ex, "Try to reinsert\nor format SD\ncard.", 3, 19, AlignLeft, AlignTop);
+-        dialog_ex_set_center_button_text(dialog_ex, "Ok");
++            dialog_ex, "请尝试重新插入\n或格式化 SD 卡。", 3, 19, AlignLeft, AlignTop);
++        dialog_ex_set_center_button_text(dialog_ex, "确定");
+     } else {
+-        dialog_ex_set_header(dialog_ex, "Format SD Card?", 64, 0, AlignCenter, AlignTop);
+-        dialog_ex_set_text(dialog_ex, "All data will be lost!", 64, 12, AlignCenter, AlignTop);
+-        dialog_ex_set_left_button_text(dialog_ex, "Cancel");
+-        dialog_ex_set_right_button_text(dialog_ex, "Format");
++        dialog_ex_set_header(dialog_ex, "格式化 SD 卡？", 64, 2, AlignCenter, AlignTop);
++        dialog_ex_set_text(dialog_ex, "所有数据将会丢失！", 64, 14, AlignCenter, AlignTop);
++        dialog_ex_set_left_button_text(dialog_ex, "取消");
++        dialog_ex_set_right_button_text(dialog_ex, "格式化");
+     }
+ 
+     dialog_ex_set_context(dialog_ex, app);
+diff --git a/applications/settings/storage_settings/scenes/storage_settings_scene_formatting.c b/applications/settings/storage_settings/scenes/storage_settings_scene_formatting.c
+index d1652fa20..2d83c1c1c 100644
+--- a/applications/settings/storage_settings/scenes/storage_settings_scene_formatting.c
++++ b/applications/settings/storage_settings/scenes/storage_settings_scene_formatting.c
+@@ -34,7 +34,7 @@ void storage_settings_scene_formatting_on_enter(void* context) {
+     FS_Error error;
+     DialogEx* dialog_ex = app->dialog_ex;
+ 
+-    dialog_ex_set_header(dialog_ex, "Formatting...", 70, 32, AlignCenter, AlignCenter);
++    dialog_ex_set_header(dialog_ex, "正在格式化...", 70, 32, AlignCenter, AlignCenter);
+     dialog_ex_set_icon(dialog_ex, 15, 20, &I_LoadingHourglass_24x24);
+     view_dispatcher_switch_to_view(app->view_dispatcher, StorageSettingsViewDialogEx);
+ 
+@@ -47,7 +47,7 @@ void storage_settings_scene_formatting_on_enter(void* context) {
+     dialog_ex_set_result_callback(dialog_ex, storage_settings_scene_formatting_dialog_callback);
+ 
+     if(error != FSE_OK) {
+-        dialog_ex_set_header(dialog_ex, "Cannot Format SD Card", 64, 10, AlignCenter, AlignCenter);
++        dialog_ex_set_header(dialog_ex, "无法格式化 SD 卡", 64, 10, AlignCenter, AlignCenter);
+         dialog_ex_set_icon(dialog_ex, 0, 0, NULL);
+         dialog_ex_set_text(
+             dialog_ex, storage_error_get_desc(error), 64, 32, AlignCenter, AlignCenter);
+@@ -57,7 +57,7 @@ void storage_settings_scene_formatting_on_enter(void* context) {
+             power_reboot(power, PowerBootModeNormal);
+         } else {
+             dialog_ex_set_icon(dialog_ex, 48, 6, &I_DolphinDone_80x58);
+-            dialog_ex_set_header(dialog_ex, "Formatted", 5, 10, AlignLeft, AlignTop);
++            dialog_ex_set_header(dialog_ex, "已格式化", 5, 10, AlignLeft, AlignTop);
+             NotificationApp* notification = furi_record_open(RECORD_NOTIFICATION);
+             notification_message(notification, &sequence_single_vibro);
+             notification_message(notification, &sequence_set_green_255);
+@@ -65,7 +65,7 @@ void storage_settings_scene_formatting_on_enter(void* context) {
+             furi_record_close(RECORD_NOTIFICATION);
+         }
+     }
+-    dialog_ex_set_left_button_text(dialog_ex, "Finish");
++    dialog_ex_set_left_button_text(dialog_ex, "完成");
+ }
+ 
+ bool storage_settings_scene_formatting_on_event(void* context, SceneManagerEvent event) {
+diff --git a/applications/settings/storage_settings/scenes/storage_settings_scene_internal_info.c b/applications/settings/storage_settings/scenes/storage_settings_scene_internal_info.c
+index 87a7ac655..24a8b687f 100644
+--- a/applications/settings/storage_settings/scenes/storage_settings_scene_internal_info.c
++++ b/applications/settings/storage_settings/scenes/storage_settings_scene_internal_info.c
+@@ -22,24 +22,24 @@ void storage_settings_scene_internal_info_on_enter(void* context) {
+ 
+     if(error != FSE_OK) {
+         dialog_ex_set_header(
+-            dialog_ex, "Internal Storage Error", 64, 10, AlignCenter, AlignCenter);
++            dialog_ex, "内部存储错误", 64, 10, AlignCenter, AlignCenter);
+         dialog_ex_set_text(
+             dialog_ex, storage_error_get_desc(error), 64, 32, AlignCenter, AlignCenter);
+     } else {
+         furi_string_printf(
+             app->text_string,
+-            "Name: %s\nType: Virtual (/.int on SD)\nTotal: %lu KiB\nFree: %lu KiB\n",
+-            furi_hal_version_get_name_ptr() ? furi_hal_version_get_name_ptr() : "Unknown",
++            "名称: %s\n类型: 虚拟 (/.int 在 SD 卡上)\n总计: %lu KiB\n剩余: %lu KiB\n",
++            furi_hal_version_get_name_ptr() ? furi_hal_version_get_name_ptr() : "未知",
+             (uint32_t)(total_space / 1024),
+             (uint32_t)(free_space / 1024));
+ 
+         uint32_t free_flash =
+             furi_hal_flash_get_free_end_address() - furi_hal_flash_get_free_start_address();
+         if(free_flash < 1024) {
+-            furi_string_cat_printf(app->text_string, "Flash: %lu B free", free_flash);
++            furi_string_cat_printf(app->text_string, "闪存: %lu B 剩余", free_flash);
+         } else {
+             furi_string_cat_printf(
+-                app->text_string, "Flash: %.2f KiB free", (double)free_flash / 1024);
++                app->text_string, "闪存: %.2f KiB 剩余", (double)free_flash / 1024);
+         }
+ 
+         dialog_ex_set_text(
+diff --git a/applications/settings/storage_settings/scenes/storage_settings_scene_sd_info.c b/applications/settings/storage_settings/scenes/storage_settings_scene_sd_info.c
+index a24e2c282..faa048e62 100644
+--- a/applications/settings/storage_settings/scenes/storage_settings_scene_sd_info.c
++++ b/applications/settings/storage_settings/scenes/storage_settings_scene_sd_info.c
+@@ -20,38 +20,39 @@ void storage_settings_scene_sd_info_on_enter(void* context) {
+ 
+     if(sd_status != FSE_OK) {
+         dialog_ex_set_icon(dialog_ex, 83, 22, &I_WarningDolphinFlip_45x42);
+-        dialog_ex_set_header(dialog_ex, "SD Card Not Mounted", 64, 3, AlignCenter, AlignTop);
++        dialog_ex_set_header(dialog_ex, "SD卡未安装", 64, 3, AlignCenter, AlignTop);
+         dialog_ex_set_text(
+-            dialog_ex, "Try to reinsert\nor format SD\ncard.", 3, 19, AlignLeft, AlignTop);
+-        dialog_ex_set_center_button_text(dialog_ex, "Ok");
++            dialog_ex, "请尝试重新插入\n或格式化 SD\n卡。", 3, 19, AlignLeft, AlignTop);
++        dialog_ex_set_center_button_text(dialog_ex, "确定");
+     } else {
+         furi_string_printf(
+             app->text_string,
+-            "Label: %s\nType: %s\n",
++            "标签: %s\n类型: %s\n",
+             sd_info.label,
+             sd_api_get_fs_type_text(sd_info.fs_type));
+ 
+         if(sd_info.kb_total < 1024) {
+-            furi_string_cat_printf(app->text_string, "Total: %lu KiB\n", sd_info.kb_total);
++            furi_string_cat_printf(app->text_string, "总计: %lu KiB\n", sd_info.kb_total);
+         } else if(sd_info.kb_total < 1024 * 1024) {
+             furi_string_cat_printf(
+-                app->text_string, "Total: %.2f MiB\n", (double)sd_info.kb_total / 1024);
++                app->text_string, "总计: %.2f MiB\n", (double)sd_info.kb_total / 1024);
+         } else {
+             furi_string_cat_printf(
+-                app->text_string, "Total: %.2f GiB\n", (double)sd_info.kb_total / (1024 * 1024));
++                app->text_string, "总计: %.2f GiB\n", (double)sd_info.kb_total / (1024 * 1024));
+         }
+ 
+         if(sd_info.kb_free < 1024) {
+-            furi_string_cat_printf(app->text_string, "Free: %lu KiB", sd_info.kb_free);
++            furi_string_cat_printf(app->text_string, "剩余: %lu KiB", sd_info.kb_free);
+         } else if(sd_info.kb_free < 1024 * 1024) {
+             furi_string_cat_printf(
+-                app->text_string, "Free: %.2f MiB", (double)sd_info.kb_free / 1024);
++                app->text_string, "剩余: %.2f MiB", (double)sd_info.kb_free / 1024);
+         } else {
+             furi_string_cat_printf(
+-                app->text_string, "Free: %.2f GiB", (double)sd_info.kb_free / (1024 * 1024));
++                app->text_string, "剩余: %.2f GiB", (double)sd_info.kb_free / (1024 * 1024));
+         }
+         furi_string_cat_printf(
+-            app->text_string, "  (%.2f%%)\n", (double)sd_info.kb_free * 100 / sd_info.kb_total);
++            app->text_string,
++            "  (%.2f%%)\n", (double)sd_info.kb_free * 100 / sd_info.kb_total);
+ 
+         furi_string_cat_printf(
+             app->text_string,
+diff --git a/applications/settings/storage_settings/scenes/storage_settings_scene_start.c b/applications/settings/storage_settings/scenes/storage_settings_scene_start.c
+index ec0e8f2f9..6c7cf6168 100644
+--- a/applications/settings/storage_settings/scenes/storage_settings_scene_start.c
++++ b/applications/settings/storage_settings/scenes/storage_settings_scene_start.c
+@@ -22,13 +22,13 @@ void storage_settings_scene_start_on_enter(void* context) {
+ 
+     submenu_add_item(
+         submenu,
+-        "About Internal Storage",
++        "关于内部存储",
+         StorageSettingsStartSubmenuIndexInternalInfo,
+         storage_settings_scene_start_submenu_callback,
+         app);
+     submenu_add_item(
+         submenu,
+-        "About SD Card",
++        "关于 SD 卡",
+         StorageSettingsStartSubmenuIndexSDInfo,
+         storage_settings_scene_start_submenu_callback,
+         app);
+@@ -37,14 +37,14 @@ void storage_settings_scene_start_on_enter(void* context) {
+     if(sd_status != FSE_OK) {
+         submenu_add_item(
+             submenu,
+-            "Mount SD Card",
++            "挂载 SD 卡",
+             StorageSettingsStartSubmenuIndexUnmount,
+             storage_settings_scene_start_submenu_callback,
+             app);
+     } else {
+         submenu_add_item(
+             submenu,
+-            "Unmount SD Card",
++            "卸载 SD 卡",
+             StorageSettingsStartSubmenuIndexUnmount,
+             storage_settings_scene_start_submenu_callback,
+             app);
+@@ -52,25 +52,25 @@ void storage_settings_scene_start_on_enter(void* context) {
+ 
+     submenu_add_item(
+         submenu,
+-        "Format SD Card",
++        "格式化 SD 卡",
+         StorageSettingsStartSubmenuIndexFormat,
+         storage_settings_scene_start_submenu_callback,
+         app);
+     submenu_add_item(
+         submenu,
+-        "Benchmark SD Card",
++        "基准测试 SD 卡",
+         StorageSettingsStartSubmenuIndexBenchy,
+         storage_settings_scene_start_submenu_callback,
+         app);
+     submenu_add_item(
+         submenu,
+-        "Factory Reset",
++        "恢复出厂设置",
+         StorageSettingsStartSubmenuIndexFactoryReset,
+         storage_settings_scene_start_submenu_callback,
+         app);
+     submenu_add_item(
+         submenu,
+-        "Wipe Device",
++        "清除设备",
+         StorageSettingsStartSubmenuIndexWipeDevice,
+         storage_settings_scene_start_submenu_callback,
+         app);
+diff --git a/applications/settings/storage_settings/scenes/storage_settings_scene_unmount_confirm.c b/applications/settings/storage_settings/scenes/storage_settings_scene_unmount_confirm.c
+index 1b9970f9f..b3ab2f931 100644
+--- a/applications/settings/storage_settings/scenes/storage_settings_scene_unmount_confirm.c
++++ b/applications/settings/storage_settings/scenes/storage_settings_scene_unmount_confirm.c
+@@ -13,22 +13,22 @@ void storage_settings_scene_unmount_confirm_on_enter(void* context) {
+ 
+     FS_Error sd_status = storage_sd_status(app->fs_api);
+     if(sd_status == FSE_NOT_READY) {
+-        dialog_ex_set_header(dialog_ex, "Mount SD Card?", 64, 10, AlignCenter, AlignCenter);
++        dialog_ex_set_header(dialog_ex, "是否挂载 SD 卡？", 64, 10, AlignCenter, AlignCenter);
+         dialog_ex_set_text(
+             dialog_ex,
+-            "This may turn off power\nfor external modules",
++            "这可能会关闭外部模块的电源",
+             64,
+             32,
+             AlignCenter,
+             AlignCenter);
+-        dialog_ex_set_left_button_text(dialog_ex, "Cancel");
+-        dialog_ex_set_right_button_text(dialog_ex, "Mount");
++        dialog_ex_set_left_button_text(dialog_ex, "取消");
++        dialog_ex_set_right_button_text(dialog_ex, "挂载");
+     } else {
+-        dialog_ex_set_header(dialog_ex, "Unmount SD Card?", 64, 10, AlignCenter, AlignCenter);
++        dialog_ex_set_header(dialog_ex, "是否卸载 SD 卡？", 64, 10, AlignCenter, AlignCenter);
+         dialog_ex_set_text(
+-            dialog_ex, "SD card will be\nunavailable", 64, 32, AlignCenter, AlignCenter);
+-        dialog_ex_set_left_button_text(dialog_ex, "Cancel");
+-        dialog_ex_set_right_button_text(dialog_ex, "Unmount");
++            dialog_ex, "SD 卡将变为不可用", 64, 32, AlignCenter, AlignCenter);
++        dialog_ex_set_left_button_text(dialog_ex, "取消");
++        dialog_ex_set_right_button_text(dialog_ex, "卸载");
+     }
+ 
+     dialog_ex_set_context(dialog_ex, app);
+diff --git a/applications/settings/storage_settings/scenes/storage_settings_scene_unmounted.c b/applications/settings/storage_settings/scenes/storage_settings_scene_unmounted.c
+index 86398b1c9..af74b835d 100644
+--- a/applications/settings/storage_settings/scenes/storage_settings_scene_unmounted.c
++++ b/applications/settings/storage_settings/scenes/storage_settings_scene_unmounted.c
+@@ -15,12 +15,12 @@ void storage_settings_scene_unmounted_on_enter(void* context) {
+     if(sd_status == FSE_NOT_READY) {
+         FS_Error error = storage_sd_mount(app->fs_api);
+         if(error == FSE_OK) {
+-            dialog_ex_set_header(dialog_ex, "SD Card Mounted", 64, 3, AlignCenter, AlignTop);
++            dialog_ex_set_header(dialog_ex, "SD 卡已挂载", 64, 3, AlignCenter, AlignTop);
+             dialog_ex_set_text(
+-                dialog_ex, "Flipper can use\nSD card now.", 3, 22, AlignLeft, AlignTop);
++                dialog_ex, "Flipper 现在可以使用\nSD 卡了。", 3, 22, AlignLeft, AlignTop);
+             notification_message(app->notification, &sequence_blink_green_100);
+         } else {
+-            dialog_ex_set_header(dialog_ex, "Cannot Mount SD Card", 64, 3, AlignCenter, AlignTop);
++            dialog_ex_set_header(dialog_ex, "无法挂载 SD 卡", 64, 3, AlignCenter, AlignTop);
+             dialog_ex_set_text(
+                 dialog_ex, storage_error_get_desc(error), 3, 22, AlignLeft, AlignTop);
+             notification_message(app->notification, &sequence_blink_red_100);
+@@ -28,20 +28,20 @@ void storage_settings_scene_unmounted_on_enter(void* context) {
+     } else {
+         FS_Error error = storage_sd_unmount(app->fs_api);
+         if(error == FSE_OK) {
+-            dialog_ex_set_header(dialog_ex, "SD Card Unmounted", 64, 3, AlignCenter, AlignTop);
++            dialog_ex_set_header(dialog_ex, "SD 卡已卸载", 64, 3, AlignCenter, AlignTop);
+             dialog_ex_set_text(
+-                dialog_ex, "You can remove\nSD card now.", 3, 22, AlignLeft, AlignTop);
++                dialog_ex, "您可以现在移除\nSD 卡。", 3, 22, AlignLeft, AlignTop);
+             notification_message(app->notification, &sequence_blink_green_100);
+         } else {
+             dialog_ex_set_header(
+-                dialog_ex, "Cannot Unmount SD Card", 64, 3, AlignCenter, AlignTop);
++                dialog_ex, "无法卸载 SD 卡", 64, 3, AlignCenter, AlignTop);
+             dialog_ex_set_text(
+                 dialog_ex, storage_error_get_desc(error), 3, 22, AlignLeft, AlignTop);
+             notification_message(app->notification, &sequence_blink_red_100);
+         }
+     }
+ 
+-    dialog_ex_set_center_button_text(dialog_ex, "OK");
++    dialog_ex_set_center_button_text(dialog_ex, "确定");
+     dialog_ex_set_icon(dialog_ex, 83, 22, &I_WarningDolphinFlip_45x42);
+ 
+     dialog_ex_set_context(dialog_ex, app);
+diff --git a/applications/settings/storage_settings/scenes/storage_settings_scene_wipe_device.c b/applications/settings/storage_settings/scenes/storage_settings_scene_wipe_device.c
+index adecdf798..716cb295e 100644
+--- a/applications/settings/storage_settings/scenes/storage_settings_scene_wipe_device.c
++++ b/applications/settings/storage_settings/scenes/storage_settings_scene_wipe_device.c
+@@ -17,13 +17,13 @@ void storage_settings_scene_wipe_device_on_enter(void* context) {
+     dialog_ex_set_context(dialog_ex, app);
+     dialog_ex_set_result_callback(dialog_ex, storage_settings_scene_wipe_device_dialog_callback);
+ 
+-    dialog_ex_set_left_button_text(dialog_ex, "Cancel");
+-    dialog_ex_set_right_button_text(dialog_ex, "Erase");
++    dialog_ex_set_left_button_text(dialog_ex, "取消");
++    dialog_ex_set_right_button_text(dialog_ex, "擦除");
+ 
+-    dialog_ex_set_header(dialog_ex, "Confirm full Wipe", 64, 10, AlignCenter, AlignCenter);
++    dialog_ex_set_header(dialog_ex, "确认完全擦除", 64, 10, AlignCenter, AlignCenter);
+     dialog_ex_set_text(
+         dialog_ex,
+-        "Everything will be erased\r\nData and settings will be lost!",
++        "所有内容将被擦除\r\n数据和设置将丢失！",
+         64,
+         32,
+         AlignCenter,
+diff --git a/applications/settings/system/application.fam b/applications/settings/system/application.fam
+index f9668e5f4..42c9fdb86 100644
+--- a/applications/settings/system/application.fam
++++ b/applications/settings/system/application.fam
+@@ -1,6 +1,6 @@
+ App(
+     appid="system_settings",
+-    name="System",
++    name="系统",
+     apptype=FlipperAppType.SETTINGS,
+     entry_point="system_settings_app",
+     requires=["gui", "locale"],
+diff --git a/applications/settings/system/system_settings.c b/applications/settings/system/system_settings.c
+index 43163dc17..a9ef68a2e 100644
+--- a/applications/settings/system/system_settings.c
++++ b/applications/settings/system/system_settings.c
+@@ -19,13 +19,13 @@ enum VarItemListIndex {
+ };
+ 
+ const char* const log_level_text[] = {
+-    "Default",
+-    "None",
+-    "Error",
+-    "Warning",
+-    "Info",
+-    "Debug",
+-    "Trace",
++    "默认",
++    "无",
++    "错误",
++    "警告",
++    "信息",
++    "调试",
++    "跟踪",
+ };
+ 
+ const uint32_t log_level_value[] = {
+@@ -90,8 +90,8 @@ static void log_baud_rate_changed(VariableItem* item) {
+ }
+ 
+ const char* const debug_text[] = {
+-    "OFF",
+-    "ON",
++    "关闭",
++    "开启",
+ };
+ 
+ static void debug_changed(VariableItem* item) {
+@@ -134,8 +134,8 @@ static void heap_trace_mode_changed(VariableItem* item) {
+ }
+ 
+ const char* const measurement_units_text[] = {
+-    "Metric",
+-    "Imperial",
++    "公制",
++    "英制",
+ };
+ 
+ const uint32_t measurement_units_value[] = {
+@@ -184,8 +184,8 @@ static void date_format_changed(VariableItem* item) {
+ }
+ 
+ const char* const hand_mode[] = {
+-    "Righty",
+-    "Lefty",
++    "右手",
++    "左手",
+ };
+ 
+ static void hand_orient_changed(VariableItem* item) {
+@@ -199,8 +199,8 @@ static void hand_orient_changed(VariableItem* item) {
+ }
+ 
+ const char* const sleep_method[] = {
+-    "Default",
+-    "Legacy",
++    "默认",
++    "旧版",
+ };
+ 
+ static void sleep_method_changed(VariableItem* item) {
+@@ -215,8 +215,8 @@ static void sleep_method_changed(VariableItem* item) {
+ }
+ 
+ const char* const filename_scheme[] = {
+-    "Time",
+-    "Random",
++    "时间",
++    "随机",
+ };
+ 
+ static void filename_scheme_changed(VariableItem* item) {
+@@ -312,7 +312,7 @@ static bool system_settings_custom_event_callback(void* context, uint32_t event)
+ SystemSettings* system_settings_alloc(void) {
+     SystemSettings* app = malloc(sizeof(SystemSettings));
+ 
+-    // Load settings
++    // 加载设置
+     app->gui = furi_record_open(RECORD_GUI);
+ 
+     app->view_dispatcher = view_dispatcher_alloc();
+@@ -327,14 +327,14 @@ SystemSettings* system_settings_alloc(void) {
+     app->var_item_list = variable_item_list_alloc();
+ 
+     item = variable_item_list_add(
+-        app->var_item_list, "Hand Orient", COUNT_OF(hand_mode), hand_orient_changed, app);
++        app->var_item_list, "手部方向", COUNT_OF(hand_mode), hand_orient_changed, app);
+     value_index = furi_hal_rtc_is_flag_set(FuriHalRtcFlagHandOrient) ? 1 : 0;
+     variable_item_set_current_value_index(item, value_index);
+     variable_item_set_current_value_text(item, hand_mode[value_index]);
+ 
+     item = variable_item_list_add(
+         app->var_item_list,
+-        "Units",
++        "单位",
+         COUNT_OF(measurement_units_text),
+         measurement_units_changed,
+         app);
+@@ -344,28 +344,28 @@ SystemSettings* system_settings_alloc(void) {
+     variable_item_set_current_value_text(item, measurement_units_text[value_index]);
+ 
+     item = variable_item_list_add(
+-        app->var_item_list, "Time Format", COUNT_OF(time_format_text), time_format_changed, app);
++        app->var_item_list, "时间格式", COUNT_OF(time_format_text), time_format_changed, app);
+     value_index = value_index_uint32(
+         locale_get_time_format(), time_format_value, COUNT_OF(time_format_value));
+     variable_item_set_current_value_index(item, value_index);
+     variable_item_set_current_value_text(item, time_format_text[value_index]);
+ 
+     item = variable_item_list_add(
+-        app->var_item_list, "Date Format", COUNT_OF(date_format_text), date_format_changed, app);
++        app->var_item_list, "日期格式", COUNT_OF(date_format_text), date_format_changed, app);
+     value_index = value_index_uint32(
+         locale_get_date_format(), date_format_value, COUNT_OF(date_format_value));
+     variable_item_set_current_value_index(item, value_index);
+     variable_item_set_current_value_text(item, date_format_text[value_index]);
+ 
+     item = variable_item_list_add(
+-        app->var_item_list, "Log Level", COUNT_OF(log_level_text), log_level_changed, app);
++        app->var_item_list, "日志级别", COUNT_OF(log_level_text), log_level_changed, app);
+     value_index = value_index_uint32(
+         furi_hal_rtc_get_log_level(), log_level_value, COUNT_OF(log_level_text));
+     variable_item_set_current_value_index(item, value_index);
+     variable_item_set_current_value_text(item, log_level_text[value_index]);
+ 
+     item = variable_item_list_add(
+-        app->var_item_list, "Log Device", COUNT_OF(log_device_text), log_device_changed, app);
++        app->var_item_list, "日志设备", COUNT_OF(log_device_text), log_device_changed, app);
+     value_index = value_index_uint32(
+         furi_hal_rtc_get_log_device(), log_device_value, COUNT_OF(log_device_text));
+     variable_item_set_current_value_index(item, value_index);
+@@ -373,7 +373,7 @@ SystemSettings* system_settings_alloc(void) {
+ 
+     item = variable_item_list_add(
+         app->var_item_list,
+-        "Log Baud Rate",
++        "日志波特率",
+         COUNT_OF(log_baud_rate_text),
+         log_baud_rate_changed,
+         app);
+@@ -383,14 +383,14 @@ SystemSettings* system_settings_alloc(void) {
+     variable_item_set_current_value_text(item, log_baud_rate_text[value_index]);
+ 
+     item = variable_item_list_add(
+-        app->var_item_list, "Debug", COUNT_OF(debug_text), debug_changed, app);
++        app->var_item_list, "调试", COUNT_OF(debug_text), debug_changed, app);
+     value_index = furi_hal_rtc_is_flag_set(FuriHalRtcFlagDebug) ? 1 : 0;
+     variable_item_set_current_value_index(item, value_index);
+     variable_item_set_current_value_text(item, debug_text[value_index]);
+ 
+     item = variable_item_list_add(
+         app->var_item_list,
+-        "Heap Trace",
++        "堆栈跟踪",
+         COUNT_OF(heap_trace_mode_text),
+         heap_trace_mode_changed,
+         app);
+@@ -401,13 +401,13 @@ SystemSettings* system_settings_alloc(void) {
+     variable_item_set_current_value_text(item, heap_trace_mode_text[value_index]);
+ 
+     item = variable_item_list_add(
+-        app->var_item_list, "Sleep Method", COUNT_OF(sleep_method), sleep_method_changed, app);
++        app->var_item_list, "睡眠方式", COUNT_OF(sleep_method), sleep_method_changed, app);
+     value_index = furi_hal_rtc_is_flag_set(FuriHalRtcFlagLegacySleep) ? 1 : 0;
+     variable_item_set_current_value_index(item, value_index);
+     variable_item_set_current_value_text(item, sleep_method[value_index]);
+ 
+     item = variable_item_list_add(
+-        app->var_item_list, "File Naming", COUNT_OF(filename_scheme), filename_scheme_changed, app);
++        app->var_item_list, "文件命名", COUNT_OF(filename_scheme), filename_scheme_changed, app);
+     value_index = furi_hal_rtc_is_flag_set(FuriHalRtcFlagRandomFilename) ? 1 : 0;
+     variable_item_set_current_value_index(item, value_index);
+     variable_item_set_current_value_text(item, filename_scheme[value_index]);
+diff --git a/applications/system/updater/util/update_task.c b/applications/system/updater/util/update_task.c
+index b6e99e135..81df3241e 100644
+--- a/applications/system/updater/util/update_task.c
++++ b/applications/system/updater/util/update_task.c
+@@ -12,25 +12,25 @@
+ 
+ static const char* update_task_stage_descr[] = {
+     [UpdateTaskStageProgress] = "...",
+-    [UpdateTaskStageReadManifest] = "Loading update manifest",
+-    [UpdateTaskStageValidateDFUImage] = "Checking DFU file",
+-    [UpdateTaskStageFlashWrite] = "Writing flash",
+-    [UpdateTaskStageFlashValidate] = "Validating flash",
+-    [UpdateTaskStageRadioImageValidate] = "Checking radio FW",
+-    [UpdateTaskStageRadioErase] = "Uninstalling radio FW",
+-    [UpdateTaskStageRadioWrite] = "Writing radio FW",
+-    [UpdateTaskStageRadioInstall] = "Installing radio FW",
+-    [UpdateTaskStageRadioBusy] = "Core 2 busy",
+-    [UpdateTaskStageOBValidation] = "Validating opt. bytes",
+-    [UpdateTaskStageIntBackup] = "Backing up configuration",
+-    [UpdateTaskStageIntRestore] = "Restoring configuration",
+-    [UpdateTaskStageResourcesFileCleanup] = "Cleaning up files",
+-    [UpdateTaskStageResourcesDirCleanup] = "Cleaning up directories",
+-    [UpdateTaskStageResourcesFileUnpack] = "Extracting resources",
+-    [UpdateTaskStageSplashscreenInstall] = "Installing splashscreen",
+-    [UpdateTaskStageCompleted] = "Restarting...",
+-    [UpdateTaskStageError] = "Error",
+-    [UpdateTaskStageOBError] = "OB, report",
++    [UpdateTaskStageReadManifest] = "加载更新清单",
++    [UpdateTaskStageValidateDFUImage] = "检查 DFU 文件",
++    [UpdateTaskStageFlashWrite] = "写入闪存",
++    [UpdateTaskStageFlashValidate] = "验证闪存",
++    [UpdateTaskStageRadioImageValidate] = "检查无线固件",
++    [UpdateTaskStageRadioErase] = "卸载无线固件",
++    [UpdateTaskStageRadioWrite] = "写入无线固件",
++    [UpdateTaskStageRadioInstall] = "安装无线固件",
++    [UpdateTaskStageRadioBusy] = "核心 2 繁忙",
++    [UpdateTaskStageOBValidation] = "验证选项字节",
++    [UpdateTaskStageIntBackup] = "备份配置",
++    [UpdateTaskStageIntRestore] = "恢复配置",
++    [UpdateTaskStageResourcesFileCleanup] = "清理文件",
++    [UpdateTaskStageResourcesDirCleanup] = "清理目录",
++    [UpdateTaskStageResourcesFileUnpack] = "解压资源",
++    [UpdateTaskStageSplashscreenInstall] = "安装启动画面",
++    [UpdateTaskStageCompleted] = "正在重启...",
++    [UpdateTaskStageError] = "错误",
++    [UpdateTaskStageOBError] = "选项字节错误，请报告",
+ };
+ 
+ static const struct {
+diff --git a/applications/system/updater/views/updater_main.c b/applications/system/updater/views/updater_main.c
+index 243430fe6..b01ff49a5 100644
+--- a/applications/system/updater/views/updater_main.c
++++ b/applications/system/updater/views/updater_main.c
+@@ -94,7 +94,7 @@ static void updater_main_draw_callback(Canvas* canvas, void* _model) {
+         canvas_draw_icon(canvas, 75, 55, &I_Pin_back_arrow_10x8);
+     } else {
+         canvas_set_font(canvas, FontSecondary);
+-        canvas_draw_str_aligned(canvas, 82, 5, AlignCenter, AlignTop, "Installing");
++        canvas_draw_str_aligned(canvas, 82, 5, AlignCenter, AlignTop, "正在安装");
+         canvas_draw_str_aligned(
+             canvas, 64, 51, AlignCenter, AlignTop, furi_string_get_cstr(model->status));
+         canvas_draw_icon(canvas, 4, 5, &I_Updating_32x40);
+-- 
+2.39.5 (Apple Git-154)
+

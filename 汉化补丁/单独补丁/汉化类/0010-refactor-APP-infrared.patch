@@ -1,0 +1,149 @@
+From 16c7708bead23dadcdf3530976e59b30ddf820dc Mon Sep 17 00:00:00 2001
+From: kalicyh <34980061+kaliCYH@users.noreply.github.com>
+Date: Tue, 21 Jan 2025 01:26:20 +0800
+Subject: [PATCH 10/16] =?UTF-8?q?=F0=9F=A6=84=20refactor(APP):=20infrared?=
+ =?UTF-8?q?=20=E6=B1=89=E5=8C=96?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ .../infrared/scenes/infrared_scene_edit.c     | 12 ++++----
+ .../infrared/scenes/infrared_scene_learn.c    |  2 +-
+ .../infrared/scenes/infrared_scene_start.c    | 28 +++++++++----------
+ 3 files changed, 21 insertions(+), 21 deletions(-)
+
+diff --git a/applications/main/infrared/scenes/infrared_scene_edit.c b/applications/main/infrared/scenes/infrared_scene_edit.c
+index c22e95396..d4167853b 100644
+--- a/applications/main/infrared/scenes/infrared_scene_edit.c
++++ b/applications/main/infrared/scenes/infrared_scene_edit.c
+@@ -21,37 +21,37 @@ void infrared_scene_edit_on_enter(void* context) {
+ 
+     submenu_add_item(
+         submenu,
+-        "Add Button",
++        "添加按钮",
+         SubmenuIndexAddButton,
+         infrared_scene_edit_submenu_callback,
+         context);
+     submenu_add_item(
+         submenu,
+-        "Rename Button",
++        "重命名按钮",
+         SubmenuIndexRenameButton,
+         infrared_scene_edit_submenu_callback,
+         context);
+     submenu_add_item(
+         submenu,
+-        "Move Button",
++        "移动按钮",
+         SubmenuIndexMoveButton,
+         infrared_scene_edit_submenu_callback,
+         context);
+     submenu_add_item(
+         submenu,
+-        "Delete Button",
++        "删除按钮",
+         SubmenuIndexDeleteButton,
+         infrared_scene_edit_submenu_callback,
+         context);
+     submenu_add_item(
+         submenu,
+-        "Rename Remote",
++        "重命名遥控器",
+         SubmenuIndexRenameRemote,
+         infrared_scene_edit_submenu_callback,
+         context);
+     submenu_add_item(
+         submenu,
+-        "Delete Remote",
++        "删除遥控器",
+         SubmenuIndexDeleteRemote,
+         infrared_scene_edit_submenu_callback,
+         context);
+diff --git a/applications/main/infrared/scenes/infrared_scene_learn.c b/applications/main/infrared/scenes/infrared_scene_learn.c
+index bcd0a2cd0..55f008713 100644
+--- a/applications/main/infrared/scenes/infrared_scene_learn.c
++++ b/applications/main/infrared/scenes/infrared_scene_learn.c
+@@ -14,7 +14,7 @@ void infrared_scene_learn_on_enter(void* context) {
+     popup_set_icon(popup, 0, 32, &I_InfraredLearnShort_128x31);
+     popup_set_header(popup, NULL, 0, 0, AlignCenter, AlignCenter);
+     popup_set_text(
+-        popup, "Point the remote at IR port\nand push the button", 5, 10, AlignLeft, AlignCenter);
++        popup, "Point the remote at IR port\nand push the button", 5, 15, AlignLeft, AlignCenter);
+     popup_set_callback(popup, NULL);
+ 
+     view_dispatcher_switch_to_view(infrared->view_dispatcher, InfraredViewPopup);
+diff --git a/applications/main/infrared/scenes/infrared_scene_start.c b/applications/main/infrared/scenes/infrared_scene_start.c
+index 11944df19..a900be013 100644
+--- a/applications/main/infrared/scenes/infrared_scene_start.c
++++ b/applications/main/infrared/scenes/infrared_scene_start.c
+@@ -21,51 +21,51 @@ void infrared_scene_start_on_enter(void* context) {
+ 
+     submenu_add_item(
+         submenu,
+-        "Universal Remotes",
++        "万能遥控器",
+         SubmenuIndexUniversalRemotes,
+         infrared_scene_start_submenu_callback,
+         infrared);
+     submenu_add_item(
+         submenu,
+-        "Learn New Remote",
++        "学习新遥控器",
+         SubmenuIndexLearnNewRemote,
+         infrared_scene_start_submenu_callback,
+         infrared);
+     submenu_add_item(
+         submenu,
+-        "Saved Remotes",
++        "已保存的遥控器",
+         SubmenuIndexSavedRemotes,
+         infrared_scene_start_submenu_callback,
+         infrared);
+     submenu_add_item(
+         submenu,
+-        "GPIO Settings",
++        "GPIO 设置",
+         SubmenuIndexGpioSettings,
+         infrared_scene_start_submenu_callback,
+         infrared);
+ 
+     submenu_add_lockable_item(
+         submenu,
+-        "Learn New Remote RAW",
++        "学习新遥控器 RAW",
+         SubmenuIndexLearnNewRemoteRaw,
+         infrared_scene_start_submenu_callback,
+         infrared,
+         !infrared->app_state.is_debug_enabled,
+-        "Enable\n"
+-        "Settings >\n"
+-        "System >\n"
+-        "Debug");
++        "启用\n"
++        "设置 >\n"
++        "系统 >\n"
++        "调试");
+     submenu_add_lockable_item(
+         submenu,
+-        "Debug RX",
++        "调试 RX",
+         SubmenuIndexDebug,
+         infrared_scene_start_submenu_callback,
+         infrared,
+         !infrared->app_state.is_debug_enabled,
+-        "Enable\n"
+-        "Settings >\n"
+-        "System >\n"
+-        "Debug");
++        "启用\n"
++        "设置 >\n"
++        "系统 >\n"
++        "调试");
+ 
+     const uint32_t submenu_index =
+         scene_manager_get_scene_state(scene_manager, InfraredSceneStart);
+-- 
+2.39.5 (Apple Git-154)
+

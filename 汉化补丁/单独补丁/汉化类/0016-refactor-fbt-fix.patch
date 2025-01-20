@@ -1,0 +1,29 @@
+From d9bdbf05ec88cce6327acec55c439eea5abd4a9b Mon Sep 17 00:00:00 2001
+From: kalicyh <34980061+kaliCYH@users.noreply.github.com>
+Date: Tue, 21 Jan 2025 02:34:11 +0800
+Subject: [PATCH 16/16] =?UTF-8?q?=F0=9F=A6=84=20refactor(fbt):=20fix=20?=
+ =?UTF-8?q?=E8=A1=A5=E5=85=85=E4=BF=AE=E6=94=B9?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ scripts/fbt/elfmanifest.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/scripts/fbt/elfmanifest.py b/scripts/fbt/elfmanifest.py
+index bf8e82641..8f448e591 100644
+--- a/scripts/fbt/elfmanifest.py
++++ b/scripts/fbt/elfmanifest.py
+@@ -66,7 +66,7 @@ class ElfManifestV1Ext:
+             "<hI32s?32sB",
+             self.stack_size,
+             self.app_version,
+-            bytes(self.name.encode("ascii")),
++            bytes(self.name.encode("UTF-8")),
+             bool(self.icon),
+             self.icon,
+             self.flags,
+-- 
+2.39.5 (Apple Git-154)
+

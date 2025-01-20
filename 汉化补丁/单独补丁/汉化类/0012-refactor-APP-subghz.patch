@@ -1,0 +1,481 @@
+From 72a00eb3626976b612089f4ce8fdf4b7683ea03f Mon Sep 17 00:00:00 2001
+From: kalicyh <34980061+kaliCYH@users.noreply.github.com>
+Date: Tue, 21 Jan 2025 01:28:31 +0800
+Subject: [PATCH 12/16] =?UTF-8?q?=F0=9F=A6=84=20refactor(APP):=20subghz=20?=
+ =?UTF-8?q?=E6=B1=89=E5=8C=96?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ .../subghz/scenes/subghz_scene_more_raw.c     |  6 +--
+ .../subghz/scenes/subghz_scene_need_saving.c  |  8 +--
+ .../scenes/subghz_scene_receiver_config.c     | 52 +++++++++----------
+ .../subghz/scenes/subghz_scene_saved_menu.c   |  8 +--
+ .../main/subghz/scenes/subghz_scene_start.c   | 12 ++---
+ applications/main/subghz/views/receiver.c     |  8 +--
+ .../subghz/views/subghz_frequency_analyzer.c  |  2 +-
+ .../main/subghz/views/subghz_read_raw.c       | 18 +++----
+ applications/main/subghz/views/transmitter.c  |  2 +-
+ 9 files changed, 58 insertions(+), 58 deletions(-)
+
+diff --git a/applications/main/subghz/scenes/subghz_scene_more_raw.c b/applications/main/subghz/scenes/subghz_scene_more_raw.c
+index 95d586934..477d16484 100644
+--- a/applications/main/subghz/scenes/subghz_scene_more_raw.c
++++ b/applications/main/subghz/scenes/subghz_scene_more_raw.c
+@@ -16,21 +16,21 @@ void subghz_scene_more_raw_on_enter(void* context) {
+ 
+     submenu_add_item(
+         subghz->submenu,
+-        "Decode",
++        "解码",
+         SubmenuIndexDecode,
+         subghz_scene_more_raw_submenu_callback,
+         subghz);
+ 
+     submenu_add_item(
+         subghz->submenu,
+-        "Rename",
++        "重命名",
+         SubmenuIndexEdit,
+         subghz_scene_more_raw_submenu_callback,
+         subghz);
+ 
+     submenu_add_item(
+         subghz->submenu,
+-        "Delete",
++        "删除",
+         SubmenuIndexDelete,
+         subghz_scene_more_raw_submenu_callback,
+         subghz);
+diff --git a/applications/main/subghz/scenes/subghz_scene_need_saving.c b/applications/main/subghz/scenes/subghz_scene_need_saving.c
+index 5095b5ca2..f657990b8 100644
+--- a/applications/main/subghz/scenes/subghz_scene_need_saving.c
++++ b/applications/main/subghz/scenes/subghz_scene_need_saving.c
+@@ -16,7 +16,7 @@ void subghz_scene_need_saving_on_enter(void* context) {
+     SubGhz* subghz = context;
+ 
+     widget_add_string_multiline_element(
+-        subghz->widget, 64, 13, AlignCenter, AlignCenter, FontPrimary, "Discard Signals?");
++        subghz->widget, 64, 13, AlignCenter, AlignCenter, FontPrimary, "放弃信号？");
+     widget_add_string_multiline_element(
+         subghz->widget,
+         64,
+@@ -24,12 +24,12 @@ void subghz_scene_need_saving_on_enter(void* context) {
+         AlignCenter,
+         AlignCenter,
+         FontSecondary,
+-        "All unsaved data\nwill be lost!");
++        "所有未保存的数据\n将会丢失！");
+ 
+     widget_add_button_element(
+-        subghz->widget, GuiButtonTypeRight, "Stay", subghz_scene_need_saving_callback, subghz);
++        subghz->widget, GuiButtonTypeRight, "留在此处", subghz_scene_need_saving_callback, subghz);
+     widget_add_button_element(
+-        subghz->widget, GuiButtonTypeLeft, "Continue", subghz_scene_need_saving_callback, subghz);
++        subghz->widget, GuiButtonTypeLeft, "继续", subghz_scene_need_saving_callback, subghz);
+ 
+     view_dispatcher_switch_to_view(subghz->view_dispatcher, SubGhzViewIdWidget);
+ }
+diff --git a/applications/main/subghz/scenes/subghz_scene_receiver_config.c b/applications/main/subghz/scenes/subghz_scene_receiver_config.c
+index e5e7c1d05..99d4eb8fd 100644
+--- a/applications/main/subghz/scenes/subghz_scene_receiver_config.c
++++ b/applications/main/subghz/scenes/subghz_scene_receiver_config.c
+@@ -110,10 +110,10 @@ const float hopping_mode_value[HOPPING_MODE_COUNT] = {
+ 
+ #define REPEATER_COUNT 4
+ const char* const repeater_text[REPEATER_COUNT] = {
+-    "OFF",
+-    "Normal",
+-    "Long",
+-    "Short",
++    "关闭",
++    "正常",
++    "长",
++    "短",
+ };
+ const uint32_t repeater_value[REPEATER_COUNT] = {
+     SubGhzRepeaterStateOff,
+@@ -280,13 +280,13 @@ static void subghz_scene_receiver_config_set_hopping(VariableItem* item) {
+         variable_item_set_current_value_index(
+             frequency_item, subghz_setting_get_frequency_default_index(setting));
+ 
+-        variable_item_set_item_label(item, "Hopping");
++        variable_item_set_item_label(item, "跳频");
+     } else {
+         variable_item_set_current_value_text(frequency_item, " -----");
+         variable_item_set_current_value_index(
+             frequency_item, subghz_setting_get_frequency_default_index(setting));
+ 
+-        variable_item_set_item_label(item, "Hopping RSSI");
++        variable_item_set_item_label(item, "跳频 RSSI");
+     }
+     subghz->last_settings->enable_hopping = index != 0;
+     subghz->last_settings->hopping_threshold = hopping_mode_value[index];
+@@ -502,7 +502,7 @@ void subghz_scene_receiver_config_on_enter(void* context) {
+ 
+     item = variable_item_list_add(
+         subghz->variable_item_list,
+-        "Frequency",
++        "频率",
+         subghz_setting_get_frequency_count(setting),
+         subghz_scene_receiver_config_set_frequency,
+         subghz);
+@@ -520,7 +520,7 @@ void subghz_scene_receiver_config_on_enter(void* context) {
+ 
+     item = variable_item_list_add(
+         subghz->variable_item_list,
+-        "Modulation",
++        "调制",
+         subghz_setting_get_preset_count(setting),
+         subghz_scene_receiver_config_set_preset,
+         subghz);
+@@ -536,7 +536,7 @@ void subghz_scene_receiver_config_on_enter(void* context) {
+         value_index = subghz_scene_receiver_config_hopper_value_index(subghz);
+         item = variable_item_list_add(
+             subghz->variable_item_list,
+-            value_index ? "Hopping RSSI" : "Hopping",
++            value_index ? "跳频 RSSI" : "跳频",
+             HOPPING_MODE_COUNT,
+             subghz_scene_receiver_config_set_hopping,
+             subghz);
+@@ -549,7 +549,7 @@ void subghz_scene_receiver_config_on_enter(void* context) {
+        SubGhzCustomEventManagerSet) {
+         item = variable_item_list_add(
+             subghz->variable_item_list,
+-            "Bin RAW",
++            "二进制 RAW",
+             COMBO_BOX_COUNT,
+             subghz_scene_receiver_config_set_bin_raw,
+             subghz);
+@@ -558,11 +558,11 @@ void subghz_scene_receiver_config_on_enter(void* context) {
+         variable_item_set_current_value_index(item, value_index);
+         variable_item_set_current_value_text(item, combobox_text[value_index]);
+         variable_item_set_locked(
+-            item, subghz->repeater != SubGhzRepeaterStateOff, "Turn off\nRepeater\nto do that!");
++            item, subghz->repeater != SubGhzRepeaterStateOff, "关闭\n中继器\n以执行此操作！");
+ 
+         item = variable_item_list_add(
+             subghz->variable_item_list,
+-            "Repeater",
++            "中继器",
+             REPEATER_COUNT,
+             subghz_scene_receiver_config_set_repeater,
+             subghz);
+@@ -573,7 +573,7 @@ void subghz_scene_receiver_config_on_enter(void* context) {
+ 
+         item = variable_item_list_add(
+             subghz->variable_item_list,
+-            "Remove Duplicates",
++            "删除重复项",
+             COMBO_BOX_COUNT,
+             subghz_scene_receiver_config_set_duplicates,
+             subghz);
+@@ -584,7 +584,7 @@ void subghz_scene_receiver_config_on_enter(void* context) {
+ 
+         item = variable_item_list_add(
+             subghz->variable_item_list,
+-            "Delete Old Signals on Full Memory",
++            "内存满时删除旧信号",
+             COMBO_BOX_COUNT,
+             subghz_scene_receiver_config_set_delete_old_signals,
+             subghz);
+@@ -595,7 +595,7 @@ void subghz_scene_receiver_config_on_enter(void* context) {
+ 
+         item = variable_item_list_add(
+             subghz->variable_item_list,
+-            "Autosave",
++            "自动保存",
+             COMBO_BOX_COUNT,
+             subghz_scene_receiver_config_set_autosave,
+             subghz);
+@@ -606,7 +606,7 @@ void subghz_scene_receiver_config_on_enter(void* context) {
+ 
+         item = variable_item_list_add(
+             subghz->variable_item_list,
+-            "Ignore Starline",
++            "忽略 Starline",
+             COMBO_BOX_COUNT,
+             subghz_scene_receiver_config_set_starline,
+             subghz);
+@@ -618,7 +618,7 @@ void subghz_scene_receiver_config_on_enter(void* context) {
+ 
+         item = variable_item_list_add(
+             subghz->variable_item_list,
+-            "Ignore Cars",
++            "忽略 汽车报警",
+             COMBO_BOX_COUNT,
+             subghz_scene_receiver_config_set_auto_alarms,
+             subghz);
+@@ -630,7 +630,7 @@ void subghz_scene_receiver_config_on_enter(void* context) {
+ 
+         item = variable_item_list_add(
+             subghz->variable_item_list,
+-            "Ignore Magellan",
++            "忽略 Magellan",
+             COMBO_BOX_COUNT,
+             subghz_scene_receiver_config_set_magellan,
+             subghz);
+@@ -642,7 +642,7 @@ void subghz_scene_receiver_config_on_enter(void* context) {
+ 
+         item = variable_item_list_add(
+             subghz->variable_item_list,
+-            "Ignore Princeton",
++            "忽略 Princeton",
+             COMBO_BOX_COUNT,
+             subghz_scene_receiver_config_set_princeton,
+             subghz);
+@@ -654,7 +654,7 @@ void subghz_scene_receiver_config_on_enter(void* context) {
+ 
+         item = variable_item_list_add(
+             subghz->variable_item_list,
+-            "Ignore Nice Flor-S / Nice One",
++            "忽略 Nice Flor-S / Nice One",
+             COMBO_BOX_COUNT,
+             subghz_scene_receiver_config_set_niceflors,
+             subghz);
+@@ -666,7 +666,7 @@ void subghz_scene_receiver_config_on_enter(void* context) {
+ 
+         item = variable_item_list_add(
+             subghz->variable_item_list,
+-            "Ignore Weather",
++            "忽略 天气",
+             COMBO_BOX_COUNT,
+             subghz_scene_receiver_config_set_weather,
+             subghz);
+@@ -678,7 +678,7 @@ void subghz_scene_receiver_config_on_enter(void* context) {
+ 
+         item = variable_item_list_add(
+             subghz->variable_item_list,
+-            "Ignore TPMS",
++            "忽略 TPMS",
+             COMBO_BOX_COUNT,
+             subghz_scene_receiver_config_set_tpms,
+             subghz);
+@@ -692,7 +692,7 @@ void subghz_scene_receiver_config_on_enter(void* context) {
+     // Enable speaker, will send all incoming noises and signals to speaker so you can listen how your remote sounds like :)
+     item = variable_item_list_add(
+         subghz->variable_item_list,
+-        "Sound",
++        "声音",
+         COMBO_BOX_COUNT,
+         subghz_scene_receiver_config_set_speaker,
+         subghz);
+@@ -704,7 +704,7 @@ void subghz_scene_receiver_config_on_enter(void* context) {
+     if(scene_manager_get_scene_state(subghz->scene_manager, SubGhzSceneReadRAW) !=
+        SubGhzCustomEventManagerSet) {
+         // Reset to default
+-        variable_item_list_add(subghz->variable_item_list, "Reset to Default", 1, NULL, NULL);
++        variable_item_list_add(subghz->variable_item_list, "恢复默认", 1, NULL, NULL);
+ 
+         variable_item_list_set_enter_callback(
+             subghz->variable_item_list,
+@@ -714,7 +714,7 @@ void subghz_scene_receiver_config_on_enter(void* context) {
+     if(scene_manager_get_scene_state(subghz->scene_manager, SubGhzSceneReadRAW) !=
+        SubGhzCustomEventManagerSet) {
+         // Lock keyboard
+-        variable_item_list_add(subghz->variable_item_list, "Lock Keyboard", 1, NULL, NULL);
++        variable_item_list_add(subghz->variable_item_list, "锁定键盘", 1, NULL, NULL);
+         variable_item_list_set_enter_callback(
+             subghz->variable_item_list,
+             subghz_scene_receiver_config_var_list_enter_callback,
+@@ -725,7 +725,7 @@ void subghz_scene_receiver_config_on_enter(void* context) {
+        SubGhzCustomEventManagerSet) {
+         item = variable_item_list_add(
+             subghz->variable_item_list,
+-            "RSSI Threshold:",
++            "RSSI 阈值:",
+             RAW_THRESHOLD_RSSI_COUNT,
+             subghz_scene_receiver_config_set_raw_threshold_rssi,
+             subghz);
+diff --git a/applications/main/subghz/scenes/subghz_scene_saved_menu.c b/applications/main/subghz/scenes/subghz_scene_saved_menu.c
+index ec155e32b..eba51d597 100644
+--- a/applications/main/subghz/scenes/subghz_scene_saved_menu.c
++++ b/applications/main/subghz/scenes/subghz_scene_saved_menu.c
+@@ -16,21 +16,21 @@ void subghz_scene_saved_menu_on_enter(void* context) {
+     SubGhz* subghz = context;
+     submenu_add_item(
+         subghz->submenu,
+-        "Emulate",
++        "模拟",
+         SubmenuIndexEmulate,
+         subghz_scene_saved_menu_submenu_callback,
+         subghz);
+ 
+     submenu_add_item(
+         subghz->submenu,
+-        "Rename",
++        "重命名",
+         SubmenuIndexEdit,
+         subghz_scene_saved_menu_submenu_callback,
+         subghz);
+ 
+     submenu_add_item(
+         subghz->submenu,
+-        "Delete",
++        "删除",
+         SubmenuIndexDelete,
+         subghz_scene_saved_menu_submenu_callback,
+         subghz);
+@@ -39,7 +39,7 @@ void subghz_scene_saved_menu_on_enter(void* context) {
+        !isnanf(subghz_txrx_get_longitude(subghz->txrx)) || subghz->gps) {
+         submenu_add_item(
+             subghz->submenu,
+-            "Geographic info",
++            "地理信息",
+             SubmenuIndexGeo,
+             subghz_scene_saved_menu_submenu_callback,
+             subghz);
+diff --git a/applications/main/subghz/scenes/subghz_scene_start.c b/applications/main/subghz/scenes/subghz_scene_start.c
+index fd5ce9990..765f73426 100644
+--- a/applications/main/subghz/scenes/subghz_scene_start.c
++++ b/applications/main/subghz/scenes/subghz_scene_start.c
+@@ -25,30 +25,30 @@ void subghz_scene_start_on_enter(void* context) {
+     }
+ 
+     submenu_add_item(
+-        subghz->submenu, "Read", SubmenuIndexRead, subghz_scene_start_submenu_callback, subghz);
++        subghz->submenu, "读取", SubmenuIndexRead, subghz_scene_start_submenu_callback, subghz);
+     submenu_add_item(
+         subghz->submenu,
+-        "Read RAW",
++        "读取 RAW",
+         SubmenuIndexReadRAW,
+         subghz_scene_start_submenu_callback,
+         subghz);
+     submenu_add_item(
+-        subghz->submenu, "Saved", SubmenuIndexSaved, subghz_scene_start_submenu_callback, subghz);
++        subghz->submenu, "已保存", SubmenuIndexSaved, subghz_scene_start_submenu_callback, subghz);
+     submenu_add_item(
+         subghz->submenu,
+-        "Add Manually",
++        "手动添加",
+         SubmenuIndexAddManually,
+         subghz_scene_start_submenu_callback,
+         subghz);
+     submenu_add_item(
+         subghz->submenu,
+-        "Frequency Analyzer",
++        "频率分析仪",
+         SubmenuIndexFrequencyAnalyzer,
+         subghz_scene_start_submenu_callback,
+         subghz);
+     submenu_add_item(
+         subghz->submenu,
+-        "Radio Settings",
++        "无线电设置",
+         SubmenuIndexExtSettings,
+         subghz_scene_start_submenu_callback,
+         subghz);
+diff --git a/applications/main/subghz/views/receiver.c b/applications/main/subghz/views/receiver.c
+index af4a68f1d..0093ad89a 100644
+--- a/applications/main/subghz/views/receiver.c
++++ b/applications/main/subghz/views/receiver.c
+@@ -344,11 +344,11 @@ void subghz_view_receiver_draw(Canvas* canvas, SubGhzViewReceiverModel* model) {
+                                                                         &I_Fishing_123x52);
+             canvas_set_font(canvas, FontPrimary);
+             if(model->repeater_state != SubGhzRepeaterStateOff) {
+-                canvas_draw_str(canvas, 59, 46, "Repeater...");
++                canvas_draw_str(canvas, 59, 46, "中继器...");
+             } else if(model->hopping_enabled) {
+-                canvas_draw_str(canvas, 59, 46, "Hopper scan...");
++                canvas_draw_str(canvas, 59, 46, "跳频扫描...");
+             } else {
+-                canvas_draw_str(canvas, 59, 46, "Fixed scan...");
++                canvas_draw_str(canvas, 59, 46, "固定扫描...");
+             }
+             //canvas_draw_line(canvas, 46, 51, 125, 51);
+             canvas_set_font(canvas, FontSecondary);
+@@ -366,7 +366,7 @@ void subghz_view_receiver_draw(Canvas* canvas, SubGhzViewReceiverModel* model) {
+                 (model->device_type == SubGhzRadioDeviceTypeInternal) ? &I_Scanning_123x52 :
+                                                                         &I_Fishing_123x52);
+             canvas_set_font(canvas, FontPrimary);
+-            canvas_draw_str(canvas, 63, 46, "Decoding...");
++            canvas_draw_str(canvas, 63, 46, "解码中...");
+             canvas_set_font(canvas, FontSecondary);
+         }
+     }
+diff --git a/applications/main/subghz/views/subghz_frequency_analyzer.c b/applications/main/subghz/views/subghz_frequency_analyzer.c
+index b070d6f83..3cf6c5c3f 100644
+--- a/applications/main/subghz/views/subghz_frequency_analyzer.c
++++ b/applications/main/subghz/views/subghz_frequency_analyzer.c
+@@ -161,7 +161,7 @@ void subghz_frequency_analyzer_draw(Canvas* canvas, SubGhzFrequencyAnalyzerModel
+     canvas_set_font(canvas, FontSecondary);
+ 
+     //canvas_draw_str(canvas, 0, 7, model->is_ext_radio ? "Ext" : "Int");
+-    canvas_draw_str(canvas, 20, 7, "Frequency Analyzer");
++    canvas_draw_str(canvas, 20, 9, "频率分析仪");
+ 
+     // RSSI
+     canvas_draw_str(canvas, 33, 62, "RSSI");
+diff --git a/applications/main/subghz/views/subghz_read_raw.c b/applications/main/subghz/views/subghz_read_raw.c
+index c9c01e2ec..0aa275472 100644
+--- a/applications/main/subghz/views/subghz_read_raw.c
++++ b/applications/main/subghz/views/subghz_read_raw.c
+@@ -300,7 +300,7 @@ void subghz_read_raw_draw(Canvas* canvas, SubGhzReadRAWModel* model) {
+         // TODO
+         canvas_draw_str(
+             canvas,
+-            77,
++            67,
+             7,
+             (model->device_type == SubGhzRadioDeviceTypeInternal) ? "R: Int" : "R: Ext");
+     } else {
+@@ -317,16 +317,16 @@ void subghz_read_raw_draw(Canvas* canvas, SubGhzReadRAWModel* model) {
+ 
+     switch(model->status) {
+     case SubGhzReadRAWStatusIDLE:
+-        elements_button_left(canvas, "Erase");
+-        elements_button_center(canvas, "Send");
+-        elements_button_right(canvas, "Save");
++        elements_button_left(canvas, "清除");
++        elements_button_center(canvas, "发送");
++        elements_button_right(canvas, "保存");
+         break;
+     case SubGhzReadRAWStatusLoadKeyIDLE:
+         if(!model->raw_send_only) {
+             elements_button_left(canvas, "New");
+             elements_button_right(canvas, "More");
+         }
+-        elements_button_center(canvas, "Send");
++        elements_button_center(canvas, "发送");
+         elements_text_box(
+             canvas,
+             4,
+@@ -344,16 +344,16 @@ void subghz_read_raw_draw(Canvas* canvas, SubGhzReadRAWModel* model) {
+     case SubGhzReadRAWStatusLoadKeyTX:
+     case SubGhzReadRAWStatusLoadKeyTXRepeat:
+         graphics_mode = 0;
+-        elements_button_center(canvas, "Hold to repeat");
++        elements_button_center(canvas, "长按以重复");
+         break;
+ 
+     case SubGhzReadRAWStatusStart:
+-        elements_button_left(canvas, "Config");
+-        elements_button_center(canvas, "REC");
++        elements_button_left(canvas, "配置");
++        elements_button_center(canvas, "录制");
+         break;
+ 
+     default:
+-        elements_button_center(canvas, "Stop");
++        elements_button_center(canvas, "暂停");
+         break;
+     }
+ 
+diff --git a/applications/main/subghz/views/transmitter.c b/applications/main/subghz/views/transmitter.c
+index d4f15f22c..c7855f907 100644
+--- a/applications/main/subghz/views/transmitter.c
++++ b/applications/main/subghz/views/transmitter.c
+@@ -118,7 +118,7 @@ void subghz_view_transmitter_draw(Canvas* canvas, SubGhzViewTransmitterModel* mo
+             58,
+             62,
+             (model->device_type == SubGhzRadioDeviceTypeInternal) ? "R: Int" : "R: Ext");
+-        subghz_view_transmitter_button_right(canvas, "Send");
++        subghz_view_transmitter_button_right(canvas, "发送");
+     }
+ }
+ 
+-- 
+2.39.5 (Apple Git-154)
+
