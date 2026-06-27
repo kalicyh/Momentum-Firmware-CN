@@ -20,6 +20,7 @@
 - 主固件内置中文总字库
 - 添加更多 Tesla SubGhz 数据
 - 添加更多 Sextoy SubGhz 数据
+- 添加 RF_Jammer SubGhz 数据
 - 添加复刻设备状态开关
 
 当前中文方案已经不是旧版 `CN` / `CN_built-in` 的实现方式。
@@ -51,9 +52,11 @@ QQ 交流群：`716547787`
 - About 页面 QQ 群与中文信息页
 - Clipper / 复刻设备构建配置
 - Clipper 专用 U2F 证书资源
-- applications/external 外部应用包：244 个 `.fap` 应用，其中 243 个新增 name_zh 中文菜单名
+- applications/external 外部应用包：245 个 `.fap` 应用，其中 243 个新增 name_zh 中文菜单名
+- BLE Killer 与 SubGHz BF PT2262 外置 FAP 应用
 - 更多 Tesla SubGhz 数据
 - 更多 Sextoy SubGhz 数据
+- RF_Jammer SubGhz 信号资源
 - 小米等红外码库补充
 ```
 
