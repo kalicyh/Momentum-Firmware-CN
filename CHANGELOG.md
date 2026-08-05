@@ -1,5 +1,23 @@
 # Changelog
 
+## v1.1.5 - 2026-08-05
+
+### Added
+- 为 BadUSB 新增 `ja-JP` 日语键盘布局，并扩展 USB/BLE HID 键码范围以支持国际键盘。
+
+### Changed
+- 统一 Loader 与 Sub-GHz CLI 命令对带引号文件路径的解析行为。
+
+### Fixed
+- 修复 ISO15693 标签超过 64 个区块时，模拟器丢弃 `Read Multiple Blocks` 命令的问题。
+- 修复 NFC FeliCa 轮询器在读取系统码响应前未检查通信错误的问题。
+- 修复红外解码器计时数量未初始化及边界检查不正确的问题。
+- 修复 LF RFID PAC/Stanley 卡号解析前未添加字符串终止符，以及 Pyramid 尾部 Wiegand 奇偶校验位错误的问题。
+- 修复 JS 事件循环接受零或负数定时间隔的问题。
+- 修复 `bit_lib` 在数据不超过一个字节时可能越界读取的问题。
+- 修复 12 小时制日期时间输入界面使用空缓冲区预留 AM/PM 空间的问题。
+- 修复 `unit_tests` 在 CLI Pipe 迁移后仍引用已移除的 `cli` 字段，以及测试固件缺少 JS 引擎符号的问题。
+
 ## v1.1.4 - 2026-06-27
 
 ### Added
