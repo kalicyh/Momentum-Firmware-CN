@@ -10,6 +10,7 @@
 - 统一 Loader 与 Sub-GHz CLI 命令对带引号文件路径的解析行为。
 
 ### Fixed
+- 修复 Archive 打开超过 220 个文件的目录时光标位置错误的问题。
 - 修复 NFC Type 4 标签在 DF 选择模式下不支持指定 EF 时的读取边界情况。
 - 修复 ISO15693 标签超过 64 个区块时，模拟器丢弃 `Read Multiple Blocks` 命令的问题。
 - 修复 NFC FeliCa 轮询器在读取系统码响应前未检查通信错误的问题。
