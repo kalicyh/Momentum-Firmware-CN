@@ -6,6 +6,7 @@
 - 为 BadUSB 新增 `ja-JP` 日语键盘布局，并扩展 USB/BLE HID 键码范围以支持国际键盘。
 
 ### Changed
+- 修复 ESP Flasher 快速刷写，并将 Marauder 更新至 1.14.3。
 - 优化 FileBrowser 的 RAM 使用。
 - 统一 Loader 与 Sub-GHz CLI 命令对带引号文件路径的解析行为。
 
